@@ -1,0 +1,53 @@
+<template>
+  <div class="main_part">
+    <el-menu
+        router
+        :default-active="this.$route.path==='/student'?'/student/my_class':this.$route.path"
+        class="el_menu"
+    >
+      <el-menu-item index="/student/my_class">
+        <el-icon>
+          <Guide/>
+        </el-icon>
+        <span>我的班级</span>
+      </el-menu-item>
+      <el-menu-item index="/student/knowledge_world">
+        <el-icon>
+          <Reading/>
+        </el-icon>
+        <span>知识天地</span>
+      </el-menu-item>
+      <el-menu-item index="/student/exam_results">
+        <el-icon>
+          <Tickets/>
+        </el-icon>
+        <span>考试成绩</span>
+      </el-menu-item>
+      <el-menu-item index="/student/evaluate_courses">
+        <el-icon>
+          <Postcard/>
+        </el-icon>
+        <span>评价课程</span>
+      </el-menu-item>
+    </el-menu>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Aside"
+}
+</script>
+
+<style scoped>
+.main_part {
+  width: 240px;
+  background-color: white;
+}
+
+.main_part .el_menu {
+  min-height: 509px;
+  padding-top: 30px;
+}
+
+</style>
