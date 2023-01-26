@@ -7,10 +7,10 @@
       <span>班级同学</span>
       <el-table :data="students" height="250" style="width: 300px;font-size: 14px">
         <el-table-column type="index" label="#" width="60"/>
-        <el-table-column prop="name" label="姓名" width="120"/>
-        <el-table-column prop="sex" label="性别" width="120">
+        <el-table-column prop="studentName" label="姓名" width="120"/>
+        <el-table-column prop="studentSex" label="性别" width="120">
           <template #default="scope">
-            {{ scope.row.sex === 0 ? "女" : "男" }}
+            {{ scope.row.studentSex === 0 ? "女" : "男" }}
           </template>
         </el-table-column>
       </el-table>
@@ -19,10 +19,10 @@
       <span>班级教师</span>
       <el-table :data="teachers" height="250" style="width: 420px;font-size: 14px">
         <el-table-column type="index" label="#" width="60"/>
-        <el-table-column prop="name" label="姓名" width="120"/>
-        <el-table-column prop="sex" label="性别" width="120">
+        <el-table-column prop="teacherName" label="姓名" width="120"/>
+        <el-table-column prop="teacherName" label="性别" width="120">
           <template #default="scope">
-            {{ scope.row.sex === 0 ? "女" : "男" }}
+            {{ scope.row.teacherSex === 0 ? "女" : "男" }}
           </template>
         </el-table-column>
         <el-table-column prop="subjectName" label="科目" width="120"/>
@@ -32,101 +32,146 @@
 </template>
 
 <script>
+import request from "@/utils/request";
+
 export default {
-  name: "MyClassView",
+  studentId: 1,
+  studentName: "MyClassView",
   mounted() {
     // TODO 查询用户的班级
     this.classId = 1
     this.className = "B200113"
+    request
+        .get("/student/query_class_name")
+        .then(resp => {
+          console.log(resp)
+        })
 
     // TODO 查询班级人列表
     this.students = [
       {
-        name: "学生1",
-        sex: 1,
+        studentId: 1,
+        studentName: "学生1",
+        studentSex: 1,
       },
       {
-        name: "学生2",
-        sex: 0,
+        studentId: 1,
+        studentName: "学生2",
+        studentSex: 0,
       },
       {
-        name: "学生3",
-        sex: 1,
+        studentId: 1,
+        studentName: "学生3",
+        studentSex: 1,
       },
       {
-        name: "学生4",
-        sex: 1,
+        studentId: 1,
+        studentName: "学生4",
+        studentSex: 1,
       },
       {
-        name: "学生5",
-        sex: 1,
+        studentId: 1,
+        studentName: "学生5",
+        studentSex: 1,
       },
       {
-        name: "学生6",
-        sex: 1,
+        studentId: 1,
+        studentName: "学生6",
+        studentSex: 1,
       },
       {
-        name: "学生7",
-        sex: 1,
+        studentId: 1,
+        studentName: "学生7",
+        studentSex: 1,
       },
       {
-        name: "学生8",
-        sex: 1,
+        studentId: 1,
+        studentName: "学生8",
+        studentSex: 1,
       },
       {
-        name: "学生9",
-        sex: 1,
+        studentId: 1,
+        studentName: "学生9",
+        studentSex: 1,
       },
     ]
+    request
+        .get(`/student/query_student_list_by_class_id/${this.classId}`)
+        .then(resp => {
+          console.log(resp)
+        })
 
     // TODO 查询班级教师
     this.teachers = [
       {
-        name: "教师1",
-        sex: 1,
+        teacherId: 1,
+        teacherName: "教师1",
+        teacherSex: 1,
+        subjectId: 1,
         subjectName: "Java",
       },
       {
-        name: "教师2",
-        sex: 0,
+        teacherId: 1,
+        teacherName: "教师2",
+        teacherSex: 0,
+        subjectId: 1,
         subjectName: "Hadoop",
       },
       {
-        name: "教师3",
-        sex: 1,
+        teacherId: 1,
+        teacherName: "教师3",
+        teacherSex: 1,
+        subjectId: 1,
         subjectName: "C++",
       },
       {
-        name: "教师4",
-        sex: 0,
+        teacherId: 1,
+        teacherName: "教师4",
+        teacherSex: 0,
+        subjectId: 1,
         subjectName: "C",
       },
       {
-        name: "教师5",
-        sex: 1,
+        teacherId: 1,
+        teacherName: "教师5",
+        teacherSex: 1,
+        subjectId: 1,
         subjectName: "Spark",
       },
       {
-        name: "教师6",
-        sex: 1,
+        teacherId: 1,
+        teacherName: "教师6",
+        teacherSex: 1,
+        subjectId: 1,
         subjectName: "Golang",
       },
       {
-        name: "教师7",
-        sex: 0,
+        teacherId: 1,
+        teacherName: "教师7",
+        teacherSex: 0,
+        subjectId: 1,
         subjectName: "Python",
       },
       {
-        name: "教师8",
-        sex: 1,
+        teacherId: 1,
+        teacherName: "教师8",
+        teacherSex: 1,
+        subjectId: 1,
         subjectName: "Java",
       },
       {
-        name: "教师9",
-        sex: 1,
+        teacherId: 1,
+        teacherName: "教师9",
+        teacherSex: 1,
+        subjectId: 1,
         subjectName: "Java",
       }
     ]
+    request
+        .get(`/teacher/query_teacher_list_by_class_id/${this.classId}`)
+        .then(resp => {
+          console.log(resp)
+        })
 
   },
   data() {

@@ -76,6 +76,7 @@
 <script>
 import ValidCode from "@/components/ValidCode";
 import {ElMessage} from "element-plus";
+import axios from "axios";
 
 export default {
   name: "LoginView",
@@ -133,7 +134,14 @@ export default {
         this.user.code = ''
       } else {
         // TODO Login
-
+        const form = new FormData();
+        form.append("number", this.user.number)
+        form.append("password", this.user.password)
+        axios
+            .post("/user/login", form)
+            .then(resp => {
+              console.log(resp)
+            })
       }
     }
   }

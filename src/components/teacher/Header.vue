@@ -59,7 +59,7 @@
           :disable-transitions="false"
           @close="subjectClose(tag)"
       >
-        {{ tag.name }}
+        {{ tag.subjectName }}
       </el-tag>
       <el-input
           v-if="knowInputVisible"
@@ -90,7 +90,7 @@
           :disable-transitions="false"
           @close="subjectClose(tag)"
       >
-        {{ tag.name }}
+        {{ tag.subjectName }}
       </el-tag>
       <el-input
           v-if="skilledInputVisible"
@@ -121,7 +121,7 @@
           :disable-transitions="false"
           @close="subjectClose(tag)"
       >
-        {{ tag.name }}
+        {{ tag.subjectName }}
       </el-tag>
       <el-input
           v-if="masterInputVisible"
@@ -192,9 +192,10 @@
 
 <script>
 import {ElMessage} from "element-plus";
+import request from "@/utils/request";
 
 export default {
-  name: "Header",
+  subjectName: "Header",
   created() {
     // TODO 在session获取查询名字
     this.username = "张三"
@@ -236,29 +237,34 @@ export default {
   methods: {
     // TODO 加载教师特长
     loadLevel() {
+      request
+          .get("/teacher_subject/query_teacher_subject_level")
+          .then(resp => {
+            console.log(resp)
+          })
       this.subjectLevel = [
         {
-          name: "Java",
+          subjectName: "Java",
           level: 0,
         },
         {
-          name: "C",
+          subjectName: "C",
           level: 1,
         },
         {
-          name: "C++",
+          subjectName: "C++",
           level: 2,
         },
         {
-          name: "Rust",
+          subjectName: "Rust",
           level: 1,
         },
         {
-          name: "Python",
+          subjectName: "Python",
           level: 2,
         },
         {
-          name: "Golang",
+          subjectName: "Golang",
           level: 2,
         },
       ]
@@ -276,7 +282,7 @@ export default {
       }
       if (flag) {
         this.subjectLevel.forEach(function (value) {
-          if (value.name === input) {
+          if (value.subjectName === input) {
             ElMessage({
               message: "该科目已存在",
               type: "warning",
@@ -288,7 +294,7 @@ export default {
 
       if (flag) {
         this.subjectLevel.push({
-          name: input,
+          subjectName: input,
           level: n
         })
         switch (n) {
@@ -310,8 +316,13 @@ export default {
       this.loadLevel()
       this.addSubjectVisible = false
     },
-    // 确定修改教师特长
+    // TODO 确定修改教师特长
     saveChangeSubject() {
+      request
+          .put("/teacher_subject/modify_teacher_subject_level", this.subjectLevel)
+          .then(resp => {
+            console.log(resp)
+          })
       // 保存到数据库
       this.addSubjectVisible = false
     },
@@ -338,26 +349,42 @@ export default {
         })
       } else {
         // TODO 判断旧密码是否正确
-        if (this.user.oldPassword !== "1234") {
-          ElMessage({
-            message: '原密码错误',
-            type: 'warning',
-          })
-        } else if (this.user.confirmPassword !== this.user.newPassword) {
+        let oldPasswordFlag = false
+        request
+            .post("/user/judge_password", {
+              "password": this.user.oldPassword
+            })
+            .then(resp => {
+              // 密码正确
+              // oldPasswordFlag = true
+              // 密码错误
+              // oldPasswordFlag = false
+            })
+        if (this.user.confirmPassword !== this.user.newPassword) {
           // 判断两次输入是否相同
           ElMessage({
             message: '请输入相同的新密码',
             type: 'warning',
           })
+        } else if (!oldPasswordFlag) {
+          ElMessage({
+            message: '原密码错误',
+            type: 'warning',
+          })
         } else {
           // TODO 修改密码
+          request
+              .put("/user/update_password", {
+                "password": this.user.newPassword
+              })
+              .then(resp => {
+                ElMessage({
+                  message: '修改成功，请重新登录',
+                  type: 'success',
+                })
+              })
 
-
-          ElMessage({
-            message: '修改成功，请重新登录',
-            type: 'success',
-          })
-
+          // 休息2s
           setTimeout(function () {
           }, 2000)
 

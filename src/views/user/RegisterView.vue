@@ -95,6 +95,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
+import axios from "axios";
 
 export default {
   name: "RegisterView",
@@ -161,13 +162,13 @@ export default {
           grouping: true,
           type: "warning",
         })
-      }else if (user.username === '') {
+      } else if (user.username === '') {
         ElMessage({
           message: "用户名不能为空",
           grouping: true,
           type: "warning",
         })
-      }  else if (user.password === '') {
+      } else if (user.password === '') {
         ElMessage({
           message: "密码不能为空",
           grouping: true,
@@ -187,6 +188,11 @@ export default {
         })
       } else {
         // TODO 提交注册信息
+        axios
+            .post("/user/register", this.registerForm)
+            .then(resp => {
+              console.log(resp)
+            })
       }
     }
   }

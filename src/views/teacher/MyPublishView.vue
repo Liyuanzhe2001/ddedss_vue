@@ -4,10 +4,10 @@
       <div v-for="i in knowledgeList" v-bind="i">
         <span
             v-text="i.title.length<50?i.title:(i.title.substring(0,50)+'...')"
-            @click="jumpUrl(i.id)"
+            @click="jumpUrl(i.knowledgeId)"
         />
         <el-popconfirm
-            @confirm="confirmDelete(i.id)"
+            @confirm="confirmDelete(i.knowledgeId)"
             @cancel="cancelDelete()"
             title="确认删除?"
         >
@@ -34,15 +34,13 @@
 
 <script>
 import {ElMessage} from "element-plus";
+import request from "@/utils/request";
 
 export default {
   name: "MyPublishView",
   mounted() {
     // TODO 分页 查询知识
     this.getKnowledge()
-
-    // TODO 查询知识总条数
-    this.page.total = 10
   },
   data() {
     return {
@@ -55,28 +53,37 @@ export default {
     }
   },
   methods: {
-    getKnowledge(){
+    getKnowledge() {
       // TODO 分页查询知识 this.page.current
+      request
+          .get("/knowledge/query_knowledge_list_by_id", {
+            "currentPage": this.page.current,
+            "pageSize": this.page.size,
+          })
+          .then(resp => {
+            console.log(resp)
+          })
 
+      this.page.total = 10
       this.knowledgeList = [
         {
-          id: 1,
+          knowledgeId: 1,
           title: "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
         },
         {
-          id: 2,
+          knowledgeId: 2,
           title: "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
         },
         {
-          id: 3,
+          knowledgeId: 3,
           title: "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
         },
         {
-          id: 4,
+          knowledgeId: 4,
           title: "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
         },
         {
-          id: 5,
+          knowledgeId: 5,
           title: "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
         }
       ]
@@ -85,10 +92,10 @@ export default {
       console.log(page)
       this.page.current = page
     },
-    jumpUrl(id) {
-      window.open("./knowledge/" + id)
+    jumpUrl(knowledgeId) {
+      window.open("./knowledge/" + knowledgeId)
     },
-    confirmDelete(id) {
+    confirmDelete(knowledgeId) {
       ElMessage({
         message: "删除成功",
         type: "success",

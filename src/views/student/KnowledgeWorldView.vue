@@ -21,14 +21,13 @@
 </template>
 
 <script>
+import request from "@/utils/request";
+
 export default {
   name: "KnowledgeWorldView",
   mounted() {
     // TODO 分页 查询知识
     this.getKnowledge()
-
-    // TODO 查询知识总条数
-    this.page.total = 10
   },
   data() {
     return {
@@ -43,7 +42,6 @@ export default {
   methods: {
     getKnowledge() {
       // TODO 分页查询知识 this.page.current
-
       this.knowledgeList = [
         {
           id: 1,
@@ -67,6 +65,16 @@ export default {
           title: "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
         }
       ]
+      this.page.total = 10
+
+      request
+          .get("/knowledge/query_knowledge_list", {
+            "currentPage": this.page.current,
+            "pageSize": this.page.size,
+          })
+          .then(resp => {
+            console.log(resp)
+          })
     },
     handleCurrentChange(page) {
       console.log(page)

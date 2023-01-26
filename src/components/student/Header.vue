@@ -61,6 +61,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
+import request from "@/utils/request";
 
 export default {
   name: "Header",
@@ -109,26 +110,42 @@ export default {
         })
       } else {
         // TODO 判断旧密码是否正确
-        if (this.user.oldPassword !== "1234") {
-          ElMessage({
-            message: '原密码错误',
-            type: 'warning',
-          })
-        } else if (this.user.confirmPassword !== this.user.newPassword) {
+        let oldPasswordFlag = false
+        request
+            .post("/user/judge_password", {
+              "password": this.user.oldPassword
+            })
+            .then(resp => {
+              // 密码正确
+              // oldPasswordFlag = true
+              // 密码错误
+              // oldPasswordFlag = false
+            })
+        if (this.user.confirmPassword !== this.user.newPassword) {
           // 判断两次输入是否相同
           ElMessage({
             message: '请输入相同的新密码',
             type: 'warning',
           })
+        } else if (!oldPasswordFlag) {
+          ElMessage({
+            message: '原密码错误',
+            type: 'warning',
+          })
         } else {
           // TODO 修改密码
+          request
+              .put("/user/update_password", {
+                "password": this.user.newPassword
+              })
+              .then(resp => {
+                ElMessage({
+                  message: '修改成功，请重新登录',
+                  type: 'success',
+                })
+              })
 
-
-          ElMessage({
-            message: '修改成功，请重新登录',
-            type: 'success',
-          })
-
+          // 休息2s
           setTimeout(function () {
           }, 2000)
 

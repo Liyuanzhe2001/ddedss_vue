@@ -4,16 +4,16 @@
       <el-table :data="teachers" height="370" class="table_part">
         <el-table-column type="index" label="#" width="60"/>
         <el-table-column prop="subjectName" label="课程" width="80"/>
-        <el-table-column prop="name" label="教师" width="80"/>
+        <el-table-column prop="teacherName" label="教师" width="80"/>
         <el-table-column label="评价" width="120">
           <template #default="scope">
             <el-select
-                v-model="scope.row.evaluate"
+                v-model="scope.row.final_"
                 size="default"
                 @change="evaluateChange"
             >
-              <el-option label="优" value="good"/>
-              <el-option label="差" value="bad"/>
+              <el-option label="优" value="1"/>
+              <el-option label="差" value="0"/>
             </el-select>
           </template>
         </el-table-column>
@@ -41,104 +41,124 @@
 
 <script>
 import {ElMessage} from "element-plus";
+import request from "@/utils/request";
 
 export default {
-  name: "EvaluateCoursesView",
+  teacherName: "EvaluateCoursesView",
   mounted() {
     // TODO 是否有课程需要评价
     this.haveNotice = true
+    request
+        .get("haveEvaluateCourseNotice")
+        .then(resp => {
+          console.log(resp)
+        })
 
     // TODO 获取教师 课程表
+    // 1. 获取班级
+    request
+        .get("/student/query_class_name")
+        .then(resp=>{
+          console.log(resp)
+        })
+    let classId = 1
+    // 2. 通过班级id查询教师课程列表表
+    request
+        .get(`/teacher/query_teacher_list_by_class_id/${classId}`)
+        .then(resp=>{
+          console.log(resp)
+        })
+
     if (this.haveNotice) {
       this.teachers = [
         {
-          id: 0,
-          name: "教师1",
+          teacherId: 0,
+          teacherName: "教师1",
           subjectId: 0,
           subjectName: "科目1",
-          evaluate: '',
+          final_: '',
         },
         {
           subjectId: 0,
           subjectName: "科目2",
-          id: 0,
-          name: "教师2",
-          evaluate: '',
+          teacherId: 0,
+          teacherName: "教师2",
+          final_: '',
         },
         {
           subjectId: 0,
           subjectName: "科目3",
-          id: 0,
-          name: "教师3",
-          evaluate: '',
+          teacherId: 0,
+          teacherName: "教师3",
+          final_: '',
         },
         {
           subjectId: 0,
           subjectName: "科目4",
-          id: 0,
-          name: "教师4",
-          evaluate: '',
+          teacherId: 0,
+          teacherName: "教师4",
+          final_: '',
         },
         {
           subjectId: 0,
           subjectName: "科目5",
-          name: "教师5",
-          evaluate: '',
+          teacherName: "教师5",
+          final_: '',
         },
         {
           subjectId: 0,
           subjectName: "科目6",
-          id: 0,
-          name: "教师6",
-          evaluate: '',
+          teacherId: 0,
+          teacherName: "教师6",
+          final_: '',
         },
         {
           subjectId: 0,
           subjectName: "科目7",
-          id: 0,
-          name: "教师7",
-          evaluate: '',
+          teacherId: 0,
+          teacherName: "教师7",
+          final_: '',
         },
         {
           subjectId: 0,
           subjectName: "科目8",
-          name: "教师8",
-          evaluate: '',
+          teacherName: "教师8",
+          final_: '',
         },
         {
           subjectId: 0,
           subjectName: "科目9",
-          id: 0,
-          name: "教师9",
-          evaluate: '',
+          teacherId: 0,
+          teacherName: "教师9",
+          final_: '',
         },
         {
           subjectId: 0,
           subjectName: "科目10",
-          id: 0,
-          name: "教师10",
-          evaluate: '',
+          teacherId: 0,
+          teacherName: "教师10",
+          final_: '',
         },
         {
           subjectId: 0,
           subjectName: "科目11",
-          id: 0,
-          name: "教师11",
-          evaluate: '',
+          teacherId: 0,
+          teacherName: "教师11",
+          final_: '',
         },
         {
           subjectId: 0,
           subjectName: "科目12",
-          id: 0,
-          name: "教师12",
-          evaluate: '',
+          teacherId: 0,
+          teacherName: "教师12",
+          final_: '',
         }
       ]
     }
   },
   data() {
     return {
-      haveNotice: true,
+      haveNotice: false,
       loading: false,
       teachers: [],
       goodNum: 0,
@@ -150,10 +170,10 @@ export default {
       this.goodNum = 0
       this.badNum = 0
       for (let i = 0; i < this.teachers.length; i++) {
-        let evaluate = this.teachers[i].evaluate
-        if (evaluate === 'good') {
+        let final_ = this.teachers[i].final_
+        if (final_ === "1") {
           this.goodNum++
-        } else if (evaluate === 'bad') {
+        } else if (final_ === "0") {
           this.badNum++
         }
       }

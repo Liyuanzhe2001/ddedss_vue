@@ -8,8 +8,8 @@
           style="border-right: none"
           @select="selectExam"
       >
-        <el-menu-item :index="exam.id">
-          <span v-text="exam.name"/>
+        <el-menu-item :index="exam.examId">
+          <span v-text="exam.examName"/>
         </el-menu-item>
       </el-menu>
     </el-scrollbar>
@@ -27,6 +27,7 @@
 
 <script>
 import * as echarts from "echarts";
+import request from "@/utils/request";
 
 export default {
   name: "ExamResultsView",
@@ -34,49 +35,53 @@ export default {
     // TODO 获取考试列表
     this.exams = [
       {
-        id: 1,
-        name: "2022第一学期期末考试",
+        examId: 1,
+        examName: "2022第一学期期末考试",
       },
       {
-        id: 2,
-        name: "2022第二学期期末考试",
+        examId: 2,
+        examName: "2022第二学期期末考试",
       },
       {
-        id: 3,
-        name: "2021第一学期期末考试",
+        examId: 3,
+        examName: "2021第一学期期末考试",
       },
       {
-        id: 4,
-        name: "2021第二学期期末考试",
+        examId: 4,
+        examName: "2021第二学期期末考试",
       },
       {
-        id: 5,
-        name: "2020第一学期期末考试",
+        examId: 5,
+        examName: "2020第一学期期末考试",
       },
       {
-        id: 6,
-        name: "2020第二学期期末考试",
+        examId: 6,
+        examName: "2020第二学期期末考试",
       },
       {
-        id: 7,
-        name: "2019第一学期期末考试",
+        examId: 7,
+        examName: "2019第一学期期末考试",
       },
       {
-        id: 8,
-        name: "2019第二学期期末考试",
+        examId: 8,
+        examName: "2019第二学期期末考试",
       },
       {
-        id: 9,
-        name: "2018第一学期期末考试",
+        examId: 9,
+        examName: "2018第一学期期末考试",
       },
       {
-        id: 10,
-        name: "2018第二学期期末考试",
+        examId: 10,
+        examName: "2018第二学期期末考试",
       },
     ]
+    request
+        .get(`/exam/get_exam_list_by_student_id`)
+        .then(resp => {
+          console.log(resp)
+        })
 
     // 根据第一个考试id查询考试数据
-    this.queryResults(this.exams[0].id)
     this.result = [
       {
         subjectName: "Java",
@@ -128,10 +133,10 @@ export default {
         score: 90,
       },
     ]
-    this.totalScore = 1234
+    this.queryResults(this.exams[0].examId)
 
-    // 获取平均分
-    this.avgScore = 1023
+    // TODO 获取平均分
+    this.getAvgScore(this.exams[0].examId)
 
     let myChart = echarts.init(document.getElementById('e_main'));
     let option = {
@@ -177,7 +182,7 @@ export default {
       activeExam: 1,
       exams: [],
       result: [],
-      totalScore: 1234,
+      totalScore: 0,
       avgScore: 1023,
     }
   },
@@ -187,7 +192,26 @@ export default {
     },
     queryResults(examId) {
       // TODO 根据id查询分数
+      request
+          .get(`/result/get_result_by_exam_id/${examId}`)
+          .then(resp => {
+            console.log(resp)
+          })
 
+      // 获取总分
+      this.totalScore = 0
+      for (let i = 0; i < this.result.length; i++) {
+        let r = this.result[i]
+        this.totalScore += r.score
+      }
+    },
+    getAvgScore(examId) {
+      this.avgScore = 1023
+      request
+          .get(`/result/get_avg_score_by_exam_id/${examId}`)
+          .then(resp => {
+            console.log(resp)
+          })
     }
   }
 }

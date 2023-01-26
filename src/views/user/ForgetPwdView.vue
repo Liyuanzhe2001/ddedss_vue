@@ -75,6 +75,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
+import axios from "axios";
 
 export default {
   name: "ForgetPwdView",
@@ -150,7 +151,11 @@ export default {
         })
       } else {
         // TODO 忘记密码
-
+        axios
+            .post("/user/forget_password", this.registerForm)
+            .then(resp => {
+              console.log(resp)
+            })
       }
     }
   }

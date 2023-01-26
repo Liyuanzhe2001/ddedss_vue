@@ -2,12 +2,12 @@
   <div class="main_part">
     <el-page-header icon="ArrowLeft" @back="goBack">
       <template #content>
-        <span> {{ title }} </span>
+        <span> {{ className }} </span>
       </template>
     </el-page-header>
     <el-table :data="students" max-height="390" class="table_part">
       <el-table-column type="index" label="#" width="60"/>
-      <el-table-column prop="name" label="姓名" width="80"/>
+      <el-table-column prop="studentName" label="姓名" width="80"/>
       <el-table-column label="科目" width="80">
         <span>
           {{ subjectName }}
@@ -50,6 +50,7 @@
 <script>
 
 import {ElMessage, ElMessageBox} from "element-plus";
+import request from "@/utils/request";
 
 export default {
   name: "EditClassGradeView",
@@ -57,84 +58,99 @@ export default {
     let classId = this.$route.params.classId
     let subjectId = this.$route.params.subjectId
     // TODO 根据id查询班级名称
-    this.title = "B200113"
+    this.className = "B200113"
+    request
+        .get(`/class/get_class_name_by_id/${this.classId}`)
+        .then(resp => {
+          console.log(resp)
+        })
     // TODO 根据id查询科目名称
     this.subjectName = "Java"
+    request
+        .get(`/lesson/get_subject_name_by_id/${this.subjectId}`)
+        .then(resp => {
+          console.log(resp)
+        })
     // TODO 查询学生列表
+    request
+        .get(`/student/query_student_list_by_class_id/${this.classId}`)
+        .then(resp => {
+          console.log(resp)
+        })
     this.students = [
       {
-        id: 1,
-        name: "学生1",
+        studentId: 1,
+        studentName: "学生1",
         score: "",
       },
       {
-        id: 2,
-        name: "学生2",
+        studentId: 2,
+        studentName: "学生2",
         score: "",
       },
       {
-        id: 3,
-        name: "学生3",
+        studentId: 3,
+        studentName: "学生3",
         score: "",
       },
       {
-        id: 4,
-        name: "学生4",
+        studentId: 4,
+        studentName: "学生4",
         score: "",
       },
       {
-        id: 5,
-        name: "学生5",
+        studentId: 5,
+        studentName: "学生5",
         score: "",
       },
       {
-        id: 6,
-        name: "学生6",
+        studentId: 6,
+        studentName: "学生6",
         score: "",
       },
       {
-        id: 7,
-        name: "学生7",
+        studentId: 7,
+        studentName: "学生7",
         score: "",
       },
       {
-        id: 8,
-        name: "学生8",
+        studentId: 8,
+        studentName: "学生8",
         score: "",
       },
       {
-        id: 9,
-        name: "学生9",
+        studentId: 9,
+        studentName: "学生9",
         score: "",
       },
       {
-        id: 10,
-        name: "学生10",
+        studentId: 10,
+        studentName: "学生10",
         score: "",
       },
       {
-        id: 11,
-        name: "学生11",
+        studentId: 11,
+        studentName: "学生11",
         score: "",
       },
       {
-        id: 12,
-        name: "学生12",
+        studentId: 12,
+        studentName: "学生12",
         score: "",
       },
       {
-        id: 13,
-        name: "学生13",
+        studentId: 13,
+        studentName: "学生13",
         score: "",
       },
       {
-        id: 14,
-        name: "学生14",
+        studentId: 14,
+        studentName: "学生14",
         score: "",
       },
       {
-        id: 15,
-        name: "学生15",
+        studentId: 15,
+        studentName: "学生15",
         score: "",
       },
     ]
@@ -142,7 +158,7 @@ export default {
   },
   data() {
     return {
-      title: "",
+      className: "",
       subjectName: "",
       students: [],
       finish: 0,

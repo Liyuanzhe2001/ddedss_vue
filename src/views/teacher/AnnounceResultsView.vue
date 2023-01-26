@@ -9,9 +9,9 @@
         <el-table-column prop="haveFinish" label="是否完成打分" width="90">
           <template #default="scope">
             <el-tag
-                :type="scope.row.haveFinish === 0? 'success' : 'error'"
+                :type="scope.row.haveFinish === 1? 'success' : 'error'"
                 disable-transitions
-            >{{ scope.row.haveFinish === 0 ? '已完成' : '未完成' }}
+            >{{ scope.row.haveFinish === 1 ? '已完成' : '未完成' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -37,16 +37,29 @@
 
 <script>
 import * as echarts from "echarts";
+import request from "@/utils/request";
 
 export default {
   name: "AnnounceResultsView",
   created() {
     // TODO 是否有成绩需要公布
     this.haveNotice = true
+    request
+        .get("/result/have_announce_results_notice")
+        .then(resp => {
+          console.log(resp)
+        })
+
   },
   mounted() {
     if (this.haveNotice) {
       // TODO 加载教师教的班级和科目
+      request
+          .get("/teacher/query_class_and_subject_by_teacher_id")
+          .then(resp => {
+            console.log(resp)
+          })
+
       this.classSubject = [
         {
           classId: 1,

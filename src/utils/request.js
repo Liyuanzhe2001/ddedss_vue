@@ -1,6 +1,5 @@
 import axios from "axios";
 import router from "@/router";
-// import router from "@/router";
 
 const request = axios.create({
     baseURL: "/api",
@@ -15,11 +14,10 @@ request.interceptors.request.use(
         config.headers["Content-Type"] = "application/json;charset=utf-8";
 
         // 取出sessionStorage里面缓存的用户信息
-        const userJson = sessionStorage.getItem("user");
-        config.headers.token = userJson.password;
-        if (!userJson) {
-            router.push("/login");
-        }
+        // const user = sessionStorage.getItem("user");
+        // if (!user) {
+        //     router.push("/login");
+        // }
         return config;
     },
     (error) => {
