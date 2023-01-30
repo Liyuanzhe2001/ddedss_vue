@@ -77,7 +77,7 @@ export default {
           })
     },
     handleCurrentChange(page) {
-      console.log(page)
+      this.$router.push("/student/knowledge_world/" + page)
       this.page.current = page
     },
     jumpUrl(id) {

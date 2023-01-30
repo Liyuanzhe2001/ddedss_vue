@@ -2,7 +2,7 @@
   <div class="main_part">
     <el-menu
         router
-        :default-active="this.$route.path==='/professional'?'/professional/student_list':this.$route.path"
+        default-active="/professional/student_list"
         class="el_menu"
     >
       <el-menu-item index="/professional/student_list">

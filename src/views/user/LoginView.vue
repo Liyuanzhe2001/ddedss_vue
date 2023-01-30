@@ -141,7 +141,9 @@ export default {
             .post("/user/login", form)
             .then(resp => {
               console.log(resp)
+              //config.headers.token= token;
             })
+
       }
     }
   }

@@ -2,10 +2,10 @@
   <div class="main_part">
     <el-menu
         router
-        :default-active="this.$route.matched[1].path==='/teacher'?'/teacher/my_publish':this.$route.matched[1].path"
+        :default-active="this.$route.matched[1].path"
         class="el_menu"
     >
-      <el-menu-item index="/teacher/my_publish">
+      <el-menu-item route="/teacher/my_publish/1" index="/teacher/my_publish/:currentPage" @click="select()">
         <el-icon>
           <MessageBox/>
         </el-icon>
@@ -37,14 +37,18 @@
 <script>
 export default {
   name: "Aside",
-  created() {
-    console.log(this.$route.matched[1].path)
-  },
+  inject: ['reload'],
   data() {
     return {
       userIdentity: 0,
     }
+  },
+  methods:{
+    select(){
+      this.reload()
+    }
   }
+
 }
 </script>
 

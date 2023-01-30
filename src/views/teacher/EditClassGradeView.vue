@@ -55,8 +55,8 @@ import request from "@/utils/request";
 export default {
   name: "EditClassGradeView",
   mounted() {
-    let classId = this.$route.params.classId
-    let subjectId = this.$route.params.subjectId
+    this.classId = this.$route.params.classId
+    this.subjectId = this.$route.params.subjectId
     // TODO 根据id查询班级名称
     this.className = "B200113"
     request
@@ -158,7 +158,9 @@ export default {
   },
   data() {
     return {
+      classId: 0,
       className: "",
+      subjectId: 0,
       subjectName: "",
       students: [],
       finish: 0,

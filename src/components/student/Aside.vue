@@ -2,7 +2,7 @@
   <div class="main_part">
     <el-menu
         router
-        :default-active="this.$route.path==='/student'?'/student/my_class':this.$route.path"
+        :default-active="this.$route.matched[1].path"
         class="el_menu"
     >
       <el-menu-item index="/student/my_class">
@@ -11,7 +11,7 @@
         </el-icon>
         <span>我的班级</span>
       </el-menu-item>
-      <el-menu-item index="/student/knowledge_world">
+      <el-menu-item route="/student/knowledge_world/1" index="/student/knowledge_world/:currentPage" @click="select()">
         <el-icon>
           <Reading/>
         </el-icon>
@@ -35,7 +35,14 @@
 
 <script>
 export default {
-  name: "Aside"
+  name: "Aside",
+  inject: ['reload'],
+  methods:{
+    select(){
+      this.reload()
+    }
+  }
+
 }
 </script>
 

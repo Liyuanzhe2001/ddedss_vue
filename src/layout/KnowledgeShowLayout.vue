@@ -32,7 +32,7 @@ export default {
       title: "这里是标题这里是标题这里是标题这里是标题这里是标题这里是标题",
       teacherName: "教师名字",
       tags: ["Java", "Springboot", "SpringCloud"],
-      content: "内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n"
+      content: "内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n  "
     }
   }
 }

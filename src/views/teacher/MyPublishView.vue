@@ -93,7 +93,7 @@ export default {
       this.page.current = page
     },
     jumpUrl(knowledgeId) {
-      window.open("./knowledge/" + knowledgeId)
+      window.open("/knowledge/" + knowledgeId)
     },
     confirmDelete(knowledgeId) {
       ElMessage({

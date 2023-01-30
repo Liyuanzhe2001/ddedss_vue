@@ -49,18 +49,15 @@ const routes = [
         path: "/student",
         name: "student",
         component: StudentLayout,
+        redirect: "/student/my_class",
         children: [
-            {
-                path: "",
-                component: MyClassView,
-            },
             {
                 path: "my_class",
                 name: "my_class",
                 component: MyClassView,
             },
             {
-                path: "knowledge_world",
+                path: "knowledge_world/:currentPage",
                 name: "knowledge_world",
                 component: KnowledgeWorldView,
             },
@@ -86,13 +83,10 @@ const routes = [
         path: "/teacher",
         name: "teacher",
         component: TeacherLayout,
+        redirect: "/teacher/my_publish/1",
         children: [
             {
-                path: "",
-                component: MyPublishView,
-            },
-            {
-                path: "my_publish",
+                path: "my_publish/:currentPage",
                 name: "my_publish",
                 component: MyPublishView,
             },
@@ -122,11 +116,8 @@ const routes = [
         path: "/professional",
         name: "professional",
         component: ProfessionalLayout,
+        redirect: "/professional/student_list",
         children: [
-            {
-                path: "",
-                component: StudentListView,
-            },
             {
                 path: "student_list",
                 name: "student_list",

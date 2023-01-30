@@ -8,7 +8,7 @@
     </div>
     <!--主要内容-->
     <div style="display: inline-block;">
-      <router-view/>
+      <router-view v-if="isRouterAlive"/>
     </div>
   </div>
 </template>
@@ -22,6 +22,24 @@ export default {
   components: {
     Header,
     Aside,
+  },
+  provide () {
+    return {
+      reload: this.reload
+    }
+  },
+  data () {
+    return {
+      isRouterAlive: true
+    }
+  },
+  methods: {
+    reload () {
+      this.isRouterAlive = false
+      this.$nextTick(function () {
+        this.isRouterAlive = true
+      })
+    }
   }
 
 }
