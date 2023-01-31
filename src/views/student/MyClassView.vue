@@ -211,6 +211,7 @@ export default {
   float: left;
   margin: 10px 20px 16px 20px;
   padding: 30px;
+  border-radius: 10px;
   border: solid 1px darkgray;
 }
 
@@ -224,6 +225,7 @@ export default {
   float: right;
   margin: 10px 20px 16px 20px;
   padding: 30px;
+  border-radius: 10px;
   border: solid 1px darkgray;
 }
 

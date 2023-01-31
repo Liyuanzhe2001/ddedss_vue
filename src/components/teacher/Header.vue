@@ -29,7 +29,7 @@
         </el-icon>
         <span>修改密码</span>
       </el-menu-item>
-      <el-menu-item v-if="userIdentity===0" style="color: black" @click="this.codeVisible=true">
+      <el-menu-item v-if="userIdentity==='0'" style="color: black" @click="this.codeVisible=true">
         <el-icon>
           <Key/>
         </el-icon>
@@ -180,11 +180,31 @@
       @open="cleanUserPassword()"
       @keyup.enter="changePwd()"
   >
-    <div style="margin-bottom: 5px;">
-      注册码还有{{ code.day }}天{{ code.hour }}时过期 <br>
-    </div>
-    <div>
-      {{ code.text }}
+    <el-select
+        style="width: 100px"
+        v-model="selectClassId"
+    >
+      <el-option
+          v-for="item in classList"
+          :key="item.classId"
+          :label="item.className"
+          :value="item.classId"
+      />
+    </el-select>
+    <el-button
+        type="primary"
+        style="margin-left:10px;width: 50px;height: 20px"
+        @click="createCode()"
+    >
+      确定
+    </el-button>
+    <div id="displayCode" style="display: none">
+      <div style="margin: 10px 0">
+        注册码还有{{ code.day }}天{{ code.hour }}时过期 <br>
+      </div>
+      <div>
+        {{ code.text }}
+      </div>
     </div>
   </el-dialog>
 
@@ -201,6 +221,41 @@ export default {
     this.username = "张三"
 
     this.loadLevel()
+  },
+  mounted() {
+    this.userIdentity = sessionStorage.getItem("identity");
+    this.userIdentity = "0"
+    if (this.userIdentity === "0") {
+
+      this.classList = [
+        {
+          classId: 1,
+          className: "B200101",
+        },
+        {
+          classId: 2,
+          className: "B200102",
+        },
+        {
+          classId: 3,
+          className: "B200103",
+        },
+        {
+          classId: 4,
+          className: "B200104",
+        },
+        {
+          classId: 5,
+          className: "B200105",
+        },
+        {
+          classId: 6,
+          className: "B200106",
+        },
+      ]
+
+      this.selectClassId = this.classList[0].classId
+    }
   },
   data() {
     return {
@@ -227,6 +282,8 @@ export default {
       },
 
       codeVisible: false,
+      selectClassId: '',
+      classList: [],
       code: {
         day: 6,
         hour: 20,
@@ -392,6 +449,12 @@ export default {
           window.location.href = "/"
         }
       }
+    },
+    // 创建注册码
+    createCode() {
+      // TODO 创建注册码
+      console.log(this.selectClassId)
+      document.getElementById("displayCode").style.display = "block"
     },
     // 退出登录
     exit() {

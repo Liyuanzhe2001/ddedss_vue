@@ -1,136 +1,226 @@
 <template>
-  <el-scrollbar class="main_part">
-    <div class="label_part">
-      {{ className }}
+  <div class="main_part">
+    <div class="search_part">
+      <div class="class_name"> {{ showClassName }}</div>
+      <el-select
+          style="width: 100px"
+          v-model="selectClassId"
+          size="default"
+      >
+        <el-option
+            v-for="item in classList"
+            :key="item.classId"
+            :label="item.className"
+            :value="item.classId"
+        />
+      </el-select>
+      <el-button
+          type="primary"
+          style="margin-left:10px;width: 50px;height: 30px"
+          @click="queryClassAndTeacherList()"
+      >
+        搜索
+      </el-button>
     </div>
-    <div class="left_part">
-      <span>班级同学</span>
-      <el-table :data="studentList" height="250" style="width: 300px;font-size: 14px">
-        <el-table-column type="index" label="#" width="60"/>
-        <el-table-column prop="name" label="姓名" width="120"/>
-        <el-table-column prop="sex" label="性别" width="120">
-
-        </el-table-column>
-      </el-table>
+    <div class="table_part">
+      <div class="left_part">
+        <span>班级同学</span>
+        <el-table :data="students" height="250" style="width: 300px;font-size: 14px">
+          <el-table-column type="index" label="#" width="60"/>
+          <el-table-column prop="studentName" label="姓名" width="120"/>
+          <el-table-column prop="studentSex" label="性别" width="120">
+            <template #default="scope">
+              {{ scope.row.studentSex === 0 ? "女" : "男" }}
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="right_part">
+        <span>班级教师</span>
+        <el-table :data="teachers" height="250" style="width: 420px;font-size: 14px">
+          <el-table-column type="index" label="#" width="60"/>
+          <el-table-column prop="teacherName" label="姓名" width="120"/>
+          <el-table-column prop="teacherName" label="性别" width="120">
+            <template #default="scope">
+              {{ scope.row.teacherSex === 0 ? "女" : "男" }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="subjectName" label="科目" width="120"/>
+        </el-table>
+      </div>
     </div>
-    <div class="right_part">
-      <span>班级教师</span>
-      <el-table :data="classTeachers" height="250" style="width: 420px;font-size: 14px">
-        <el-table-column type="index" label="#" width="60"/>
-        <el-table-column prop="name" label="姓名" width="120"/>
-        <el-table-column prop="sex" label="性别" width="120"/>
-        <el-table-column prop="subject" label="科目" width="120"/>
-      </el-table>
-    </div>
-  </el-scrollbar>
+  </div>
 </template>
 
 <script>
 export default {
   name: "MyClassView",
   mounted() {
-    // TODO 查询用户的班级
-    this.classId = 1
-    this.className = "B200113"
-
-    // TODO 查询班级人列表
-    this.studentList = [
+    this.classList = [
       {
-        name: "学生1",
-        sex: 1,
+        classId: 1,
+        className: "B200101",
       },
       {
-        name: "学生2",
-        sex: 0,
+        classId: 2,
+        className: "B200102",
       },
       {
-        name: "学生3",
-        sex: 1,
+        classId: 3,
+        className: "B200103",
       },
       {
-        name: "学生4",
-        sex: 1,
+        classId: 4,
+        className: "B200104",
       },
       {
-        name: "学生5",
-        sex: 1,
+        classId: 5,
+        className: "B200105",
       },
       {
-        name: "学生6",
-        sex: 1,
-      },
-      {
-        name: "学生7",
-        sex: 1,
-      },
-      {
-        name: "学生8",
-        sex: 1,
-      },
-      {
-        name: "学生9",
-        sex: 1,
+        classId: 6,
+        className: "B200106",
       },
     ]
-
-    // TODO 查询班级教师
-    this.classTeachers = [
+    this.selectClassId = this.classList[0].classId
+    this.showClassName = this.classList[0].className
+    this.students = [
       {
-        name: "教师1",
-        sex: 1,
-        subject: "Java",
+        studentId: 1,
+        studentName: "学生1",
+        studentSex: 1,
       },
       {
-        name: "教师2",
-        sex: 0,
-        subject: "Hadoop",
+        studentId: 1,
+        studentName: "学生2",
+        studentSex: 0,
       },
       {
-        name: "教师3",
-        sex: 1,
-        subject: "C++",
+        studentId: 1,
+        studentName: "学生3",
+        studentSex: 1,
       },
       {
-        name: "教师4",
-        sex: 0,
-        subject: "C",
+        studentId: 1,
+        studentName: "学生4",
+        studentSex: 1,
       },
       {
-        name: "教师5",
-        sex: 1,
-        subject: "Spark",
+        studentId: 1,
+        studentName: "学生5",
+        studentSex: 1,
       },
       {
-        name: "教师6",
-        sex: 1,
-        subject: "Golang",
+        studentId: 1,
+        studentName: "学生6",
+        studentSex: 1,
       },
       {
-        name: "教师7",
-        sex: 0,
-        subject: "Python",
+        studentId: 1,
+        studentName: "学生7",
+        studentSex: 1,
       },
       {
-        name: "教师8",
-        sex: 1,
-        subject: "Java",
+        studentId: 1,
+        studentName: "学生8",
+        studentSex: 1,
       },
       {
-        name: "教师9",
-        sex: 1,
-        subject: "Java",
+        studentId: 1,
+        studentName: "学生9",
+        studentSex: 1,
+      },
+    ]
+    this.teachers = [
+      {
+        teacherId: 1,
+        teacherName: "教师1",
+        teacherSex: 1,
+        subjectId: 1,
+        subjectName: "Java",
+      },
+      {
+        teacherId: 1,
+        teacherName: "教师2",
+        teacherSex: 0,
+        subjectId: 1,
+        subjectName: "Hadoop",
+      },
+      {
+        teacherId: 1,
+        teacherName: "教师3",
+        teacherSex: 1,
+        subjectId: 1,
+        subjectName: "C++",
+      },
+      {
+        teacherId: 1,
+        teacherName: "教师4",
+        teacherSex: 0,
+        subjectId: 1,
+        subjectName: "C",
+      },
+      {
+        teacherId: 1,
+        teacherName: "教师5",
+        teacherSex: 1,
+        subjectId: 1,
+        subjectName: "Spark",
+      },
+      {
+        teacherId: 1,
+        teacherName: "教师6",
+        teacherSex: 1,
+        subjectId: 1,
+        subjectName: "Golang",
+      },
+      {
+        teacherId: 1,
+        teacherName: "教师7",
+        teacherSex: 0,
+        subjectId: 1,
+        subjectName: "Python",
+      },
+      {
+        teacherId: 1,
+        teacherName: "教师8",
+        teacherSex: 1,
+        subjectId: 1,
+        subjectName: "Java",
+      },
+      {
+        teacherId: 1,
+        teacherName: "教师9",
+        teacherSex: 1,
+        subjectId: 1,
+        subjectName: "Java",
       }
     ]
-
   },
   data() {
     return {
-      classId: '',
-      className: "",
-      studentList: [],
-      classTeachers: [],
+      selectClassId: '',
+      showClassName: '',
+      classList: [],
+      students: [],
+      teachers: [],
     }
   },
+  methods: {
+    queryClassAndTeacherList() {
+      for (let i = 0; i < this.classList.length; i++) {
+        let c = this.classList[i]
+        if (c.classId === this.selectClassId) {
+          this.showClassName = c.className
+          break
+        }
+      }
+
+      // TODO 通过班级id查询班级学生列表
+
+      // TODO 通过班级id查询班级教师列表
+    }
+  }
 }
 </script>
 
@@ -147,36 +237,40 @@ export default {
   height: 450px;
 }
 
-.main_part .label_part {
-  width: 150px;
-  padding: 20px 0;
-  margin-left: 20px;
-  text-align: center;
-  font-size: 1.7rem;
-  border-bottom: solid 1px gray;
+.main_part .search_part {
+  padding: 18px;
+  margin: 0 10px;
+  border-bottom: solid 1px darkgray;
 }
 
-.main_part .left_part {
+.main_part .search_part .class_name {
+  display: inline-block;
+  font-size: 30px;
+  padding-right: 580px;
+  text-align: left;
+}
+
+.main_part .table_part {
+
+}
+
+.main_part .table_part .left_part {
   float: left;
   margin: 10px 20px 16px 20px;
   padding: 30px;
+  border-radius: 10px;
   border: solid 1px darkgray;
 }
 
-.main_part .left_part span {
-  display: block;
-  font-size: 1.3rem;
-  padding-bottom: 20px;
-}
-
-.main_part .right_part {
+.main_part .table_part .right_part {
   float: right;
   margin: 10px 20px 16px 20px;
   padding: 30px;
+  border-radius: 10px;
   border: solid 1px darkgray;
 }
 
-.main_part .right_part span {
+span {
   display: block;
   font-size: 1.3rem;
   padding-bottom: 20px;
