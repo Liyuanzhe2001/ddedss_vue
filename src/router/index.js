@@ -20,6 +20,13 @@ import EvaluateCoursesView from "@/views/student/EvaluateCoursesView";
 import KnowledgeShowLayout from "@/layout/KnowledgeShowLayout";
 import CourseEvaluationView from "@/views/professional/CourseEvaluationView";
 import ClassListView from "@/views/teacher/ClassListView";
+import AdministratorLayout from "@/layout/AdministratorLayout";
+import UserListView from "@/views/administrator/UserListView";
+import KnowledgeListView from "@/views/administrator/KnowledgeListView";
+import ModifyPasswordView from "@/views/administrator/ModifyPasswordView";
+import AddProfessionalView from "@/views/administrator/AddProfessionalView";
+import AddTeacherView from "@/views/administrator/AddTeacherView";
+import AdministratorLoginView from "@/views/administrator/AdministratorLoginView";
 
 const routes = [
     {
@@ -42,6 +49,11 @@ const routes = [
                 path: "forget_pwd",
                 name: "forget_pwd",
                 component: ForgetPwdView,
+            },
+            {
+                path: "admin",
+                name:"admin_login",
+                component: AdministratorLoginView,
             }
         ],
     },
@@ -139,6 +151,39 @@ const routes = [
                 path: "results_analysis",
                 name: "results_analysis",
                 component: ResultsAnalysisView,
+            }
+        ]
+    },
+    {
+        path: "/admin",
+        name: "admin",
+        component: AdministratorLayout,
+        redirect: "/admin/user_list",
+        children: [
+            {
+                path: "user_list",
+                name: "user_list",
+                component: UserListView,
+            },
+            {
+                path: "knowledge_list/:currentPage",
+                name: "knowledge_list",
+                component: KnowledgeListView,
+            },
+            {
+                path: "modify_password",
+                name: "modify_password",
+                component: ModifyPasswordView,
+            },
+            {
+                path: "add_teacher",
+                name: "add_teacher",
+                component: AddTeacherView,
+            },
+            {
+                path: "add_professional",
+                name: "add_professional",
+                component: AddProfessionalView,
             }
         ]
     }
