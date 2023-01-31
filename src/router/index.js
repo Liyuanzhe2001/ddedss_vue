@@ -130,7 +130,7 @@ const routes = [
             },
 
             {
-                path: "course_evaluation",
+                path: "course_evaluation/:currentPage",
                 name: "course_evaluation",
                 component: CourseEvaluationView,
             },

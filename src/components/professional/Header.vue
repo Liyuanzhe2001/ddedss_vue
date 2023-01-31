@@ -11,7 +11,7 @@
       </el-badge>
       <span>欢迎，{{ username }}</span>
       <div class="avatar">
-        <el-avatar :size="30" :src="studentImg" @click="drawer = true"/>
+        <el-avatar :size="30" :src="teacherImg" @click="drawer = true"/>
       </div>
     </div>
   </div>
@@ -92,6 +92,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
+import request from "@/utils/request";
 
 export default {
   name: "Header",
@@ -99,7 +100,7 @@ export default {
     return {
       logoSrc: require("@/assets/images/LOGO.png"),
       username: "张三",
-      studentImg: require("@/assets/images/student.jpeg"),
+      teacherImg: require("@/assets/images/teacher.jpeg"),
       drawer: false,
       messageNum: "",
 
@@ -128,7 +129,7 @@ export default {
       // 分别判断是否为空
       if (this.user.oldPassword === '') {
         ElMessage({
-          message: '原密码不能为空',
+          message: '旧密码不能为空',
           type: 'warning',
         })
       } else if (this.user.newPassword === '') {
@@ -145,7 +146,7 @@ export default {
         // 判断旧密码是否正确
         if (this.user.oldPassword !== "1234") {
           ElMessage({
-            message: '原密码错误',
+            message: '旧密码错误',
             type: 'warning',
           })
         } else if (this.user.confirmPassword !== this.user.newPassword) {
@@ -155,12 +156,16 @@ export default {
             type: 'warning',
           })
         } else {
-          // 执行修改密码
-          ElMessage({
-            message: '修改成功',
-            type: 'success',
-          })
-          this.changePwdVisible = false
+          // TODO 修改密码
+          request
+              .put("/user/update_password", {
+                "password": this.user.newPassword
+              })
+              .then(resp => {
+                alert("修改成功，请重新登录")
+                // TODO 清除数据 返回登录界面 session token
+                window.location.href = "/"
+              })
         }
       }
     },

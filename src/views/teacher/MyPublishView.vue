@@ -89,7 +89,7 @@ export default {
       ]
     },
     handleCurrentChange(page) {
-      console.log(page)
+      this.$router.push("/teacher/my_publish/" + page)
       this.page.current = page
     },
     jumpUrl(knowledgeId) {

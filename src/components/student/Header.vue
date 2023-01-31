@@ -95,7 +95,7 @@ export default {
       // 分别判断是否为空
       if (this.user.oldPassword === '') {
         ElMessage({
-          message: '原密码不能为空',
+          message: '旧密码不能为空',
           type: 'warning',
         })
       } else if (this.user.newPassword === '') {
@@ -110,7 +110,8 @@ export default {
         })
       } else {
         // TODO 判断旧密码是否正确
-        let oldPasswordFlag = false
+        // let oldPasswordFlag = false
+        let oldPasswordFlag = true
         request
             .post("/user/judge_password", {
               "password": this.user.oldPassword
@@ -129,7 +130,7 @@ export default {
           })
         } else if (!oldPasswordFlag) {
           ElMessage({
-            message: '原密码错误',
+            message: '旧密码错误',
             type: 'warning',
           })
         } else {
@@ -139,18 +140,10 @@ export default {
                 "password": this.user.newPassword
               })
               .then(resp => {
-                ElMessage({
-                  message: '修改成功，请重新登录',
-                  type: 'success',
-                })
+                alert("修改成功，请重新登录")
+                // TODO 清除数据 返回登录界面 session token
+                window.location.href = "/"
               })
-
-          // 休息2s
-          setTimeout(function () {
-          }, 2000)
-
-          // TODO 清除数据 返回登录界面 session token
-          window.location.href = "/"
         }
       }
     },

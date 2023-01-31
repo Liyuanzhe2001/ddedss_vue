@@ -11,7 +11,7 @@
       </el-badge>
       <span>欢迎，{{ username }}</span>
       <div class="avatar">
-        <el-avatar :size="30" :src="studentImg" @click="drawer = true"/>
+        <el-avatar :size="30" :src="teacherImg" @click="drawer = true"/>
       </div>
     </div>
   </div>
@@ -262,7 +262,7 @@ export default {
       logoSrc: require("@/assets/images/LOGO.png"),
       username: "",
       userIdentity: 0,
-      studentImg: require("@/assets/images/student.jpeg"),
+      teacherImg: require("@/assets/images/teacher.jpeg"),
       drawer: false,
       messageNum: "",
 
@@ -435,18 +435,10 @@ export default {
                 "password": this.user.newPassword
               })
               .then(resp => {
-                ElMessage({
-                  message: '修改成功，请重新登录',
-                  type: 'success',
-                })
+                alert("修改成功，请重新登录")
+                // TODO 清除数据 返回登录界面 session token
+                window.location.href = "/"
               })
-
-          // 休息2s
-          setTimeout(function () {
-          }, 2000)
-
-          // TODO 清除数据 返回登录界面 session token
-          window.location.href = "/"
         }
       }
     },

@@ -8,10 +8,15 @@
       <div style="height: 300px">
         <el-table :data="evaluationList" border>
           <el-table-column type="index" label="#" width="60"/>
-          <el-table-column prop="teacherName" label="教师" width="150"/>
-          <el-table-column prop="subjectName" label="科目" width="150"/>
-          <el-table-column prop="good" label="好评" width="150"/>
-          <el-table-column prop="bad" label="差评" width="150"/>
+          <el-table-column prop="teacherName" label="教师" width="120"/>
+          <el-table-column prop="subjectName" label="科目" width="120"/>
+          <el-table-column prop="good" label="好评" width="120"/>
+          <el-table-column prop="bad" label="差评" width="120"/>
+          <el-table-column label="好评比(%)" width="120">
+            <template #default="scope">
+              {{ (100 * scope.row.good / (scope.row.good + scope.row.bad)).toFixed(2) }}
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <el-pagination
@@ -92,7 +97,11 @@ export default {
     search() {
       // 搜索
       console.log(this.inputSearch)
-    }
+    },
+    handleCurrentChange(page) {
+      this.$router.push("/professional/course_evaluation/" + page)
+      this.page.current = page
+    },
   }
 }
 </script>
