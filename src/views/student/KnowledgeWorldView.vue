@@ -10,9 +10,9 @@
       </div>
       <el-pagination
           layout="prev, pager, next"
-          :current-page="page.current"
-          :page-size="page.size"
-          :total="page.total"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :total="total"
           @current-change="handleCurrentChange"
       />
     </div>
@@ -31,11 +31,9 @@ export default {
   },
   data() {
     return {
-      page: {
-        size: 5,
-        current: 1,
-        total: 10,
-      },
+      currentPage: 1,
+      pageSize: 5,
+      total: 10,
       knowledgeList: []
     }
   },
@@ -78,7 +76,7 @@ export default {
     },
     handleCurrentChange(page) {
       this.$router.push("/student/knowledge_world/" + page)
-      this.page.current = page
+      this.currentPage = page
     },
     jumpUrl(id) {
       window.open("/knowledge/" + id)

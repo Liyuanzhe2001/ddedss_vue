@@ -21,9 +21,9 @@
       </div>
       <el-pagination
           layout="prev, pager, next"
-          :current-page="page.current"
-          :page-size="page.size"
-          :total="page.total"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :total="total"
           @current-change="handleCurrentChange"
       />
     </div>
@@ -44,11 +44,9 @@ export default {
   },
   data() {
     return {
-      page: {
-        size: 5,
-        current: 1,
-        total: 10,
-      },
+      currentPage: 1,
+      pageSize: 5,
+      total: 10,
       knowledgeList: []
     }
   },
@@ -57,14 +55,14 @@ export default {
       // TODO 分页查询知识 this.page.current
       request
           .get("/knowledge/query_knowledge_list_by_id", {
-            "currentPage": this.page.current,
-            "pageSize": this.page.size,
+            "currentPage": this.currentPage,
+            "pageSize": this.pageSize,
           })
           .then(resp => {
             console.log(resp)
           })
 
-      this.page.total = 10
+      this.total = 10
       this.knowledgeList = [
         {
           knowledgeId: 1,
@@ -90,7 +88,7 @@ export default {
     },
     handleCurrentChange(page) {
       this.$router.push("/teacher/my_publish/" + page)
-      this.page.current = page
+      this.currentPage = page
     },
     jumpUrl(knowledgeId) {
       window.open("/knowledge/" + knowledgeId)

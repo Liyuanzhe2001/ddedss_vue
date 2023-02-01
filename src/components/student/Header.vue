@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-  <el-drawer v-model="drawer" title="I am the title" :with-header="false">
+  <el-drawer v-model="drawer" :with-header="false">
     <el-menu class="drawer_main_part">
       <el-menu-item style="color: black" @click="this.dialogVisible=true">
         <el-icon>

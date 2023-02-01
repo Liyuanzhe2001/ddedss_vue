@@ -21,7 +21,7 @@
         <el-icon>
           <Edit/>
         </el-icon>
-        <span>新增科目</span>
+        <span>新增擅长科目</span>
       </el-menu-item>
       <el-menu-item style="color: black" @click="this.changePwdVisible=true">
         <el-icon>
