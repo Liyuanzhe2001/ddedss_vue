@@ -32,145 +32,69 @@
 </template>
 
 <script>
-import request from "@/utils/request";
+import studentRequest from "@/utils/studentRequest";
+import {ElMessage} from "element-plus";
 
 export default {
-  studentId: 1,
-  studentName: "MyClassView",
+  name: "MyClassView",
   mounted() {
+    // 判断用户身份
+    const identity = sessionStorage.getItem("identity")
+    if (identity === null) {
+      alert("无账号信息，请重新登录")
+      this.$router.push("/")
+    } else if (identity === '1') {
+      this.$router.push("/teacher")
+    } else if (identity === '2') {
+      this.$router.push('/professional')
+    } else if (identity === '3') {
+      this.$route.push("/admin/user_list")
+    }
     // TODO 查询用户的班级
-    this.classId = 1
-    this.className = "B200113"
-    request
-        .get("/student/query_class_name")
+    studentRequest
+        .get("/student/queryClassName")
         .then(resp => {
-          console.log(resp)
-        })
+          if (resp.code === 200) {
+            this.classId = resp.data.classId
+            this.className = resp.data.className
 
-    // TODO 查询班级人列表
-    this.students = [
-      {
-        studentId: 1,
-        studentName: "学生1",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生2",
-        studentSex: 0,
-      },
-      {
-        studentId: 1,
-        studentName: "学生3",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生4",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生5",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生6",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生7",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生8",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生9",
-        studentSex: 1,
-      },
-    ]
-    request
-        .get(`/student/query_student_list_by_class_id/${this.classId}`)
-        .then(resp => {
-          console.log(resp)
-        })
+            // TODO 查询班级人列表
+            studentRequest
+                .get(`/student/queryStudentListByClassId/${this.classId}`)
+                .then(resp => {
+                  if(resp.code === 200) {
+                    this.students = resp.data
+                  }else {
+                    ElMessage({
+                      message: "获取同学信息失败",
+                      type: "danger",
+                    })
+                    return
+                  }
+                })
 
-    // TODO 查询班级教师
-    this.teachers = [
-      {
-        teacherId: 1,
-        teacherName: "教师1",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "Java",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师2",
-        teacherSex: 0,
-        subjectId: 1,
-        subjectName: "Hadoop",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师3",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "C++",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师4",
-        teacherSex: 0,
-        subjectId: 1,
-        subjectName: "C",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师5",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "Spark",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师6",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "Golang",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师7",
-        teacherSex: 0,
-        subjectId: 1,
-        subjectName: "Python",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师8",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "Java",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师9",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "Java",
-      }
-    ]
-    request
-        .get(`/teacher/query_teacher_list_by_class_id/${this.classId}`)
-        .then(resp => {
-          console.log(resp)
+            // TODO 查询班级教师
+            studentRequest
+                .get(`/teacher/queryTeacherListByClassId/${this.classId}`)
+                .then(resp => {
+                  if(resp.code === 200) {
+                    this.teachers = resp.data
+                  }else{
+                    ElMessage({
+                      message: "获取教师信息失败",
+                      type: "danger",
+                    })
+                    return
+                  }
+                })
+
+          } else {
+            ElMessage({
+              message: "获取班级信息失败",
+              type: "danger",
+            })
+            return
+          }
         })
 
   },

@@ -76,7 +76,7 @@
 <script>
 import ValidCode from "@/components/ValidCode";
 import {ElMessage} from "element-plus";
-import axios from "axios";
+import userRequest from "@/utils/userRequest";
 
 export default {
   name: "LoginView",
@@ -93,15 +93,19 @@ export default {
     }
   },
   methods: {
+    // 注册
     register() {
       window.open("/register")
     },
+    // 忘记密码
     forgetPwd() {
       window.open("/forget_pwd")
     },
+    // 创建验证码
     createValidCode(data) {
       this.validCode = data.toLowerCase()
     },
+    // 登录提交
     submit() {
       const user = this.user
       if (user.number === '') {
@@ -133,15 +137,46 @@ export default {
         })
         this.user.code = ''
       } else {
-        // TODO Login
         const form = new FormData();
         form.append("number", this.user.number)
         form.append("password", this.user.password)
-        axios
+        userRequest
             .post("/user/login", form)
             .then(resp => {
               console.log(resp)
-              //config.headers.token= token;
+              if (resp.code === 200) {
+                ElMessage({
+                  message: "登录成功",
+                  grouping: true,
+                  type: "success",
+                })
+                const user = resp.data
+                sessionStorage.setItem("username", user.username)
+                sessionStorage.setItem("identity", user.identity)
+                sessionStorage.setItem("token", user.token)
+                switch (user.identity) {
+                  case 0:
+                    this.$router.push("/student")
+                    break
+                  case 1:
+                    this.$router.push("/teacher")
+                    break
+                  case 2:
+                    this.$router.push("/professional")
+                    break
+                  case 3:
+                    this.$router.push("/admin")
+                    break
+
+                }
+              } else {
+                ElMessage({
+                  message: "用户名或密码错误",
+                  grouping: true,
+                  type: "warning",
+                })
+                this.$refs.ValidCode.refreshCode()
+              }
             })
 
       }

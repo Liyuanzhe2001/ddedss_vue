@@ -66,8 +66,7 @@ import request from "@/utils/request";
 export default {
   name: "Header",
   mounted() {
-    // TODO 在session获取查询名字
-    this.username = "张三"
+    this.username = sessionStorage.getItem("username")
   },
   data() {
     return {

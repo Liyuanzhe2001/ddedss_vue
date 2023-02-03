@@ -79,8 +79,8 @@ export default {
         userId: 1,
         userNumber: 202000621,
         userName: "名字一",
-        // 身份（0辅导员 1教师 2教育专家 3学生）
         userEmail: "1234567890@qq.com",
+        // 身份（0辅导员 1教师 2教育专家 3学生）
         userIdentity: 0,
       },
       {

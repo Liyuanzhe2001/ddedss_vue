@@ -10,13 +10,13 @@
       <el-form :model="registerForm" label-width="0px">
         <br>
         <el-form-item>
-          <label for="number">学号</label>
+          <label for="number">用户名</label>
           <el-input
               id="number"
               style="height: 30px;width: 242px;"
               v-model="registerForm.number"
               prefix-icon="Place"
-              placeholder="请输入学号"
+              placeholder="请输入学号/工号"
           />
         </el-form-item>
         <el-form-item>
@@ -54,7 +54,11 @@
               style="height: 30px;width: 242px;"
               v-model="registerForm.password"
               prefix-icon="Lock"
-              placeholder="新密码"
+              placeholder="请输入 6~32 位密码"
+              type="password"
+              minlength="6"
+              maxlength="32"
+              show-password
           />
         </el-form-item>
       </el-form>
@@ -76,6 +80,7 @@
 <script>
 import {ElMessage} from "element-plus";
 import axios from "axios";
+import userRequest from "@/utils/userRequest";
 
 export default {
   name: "ForgetPwdView",
@@ -95,6 +100,7 @@ export default {
     }
   },
   methods: {
+    // 发送验证码
     getCode() {
       if (this.registerForm.email === '') {
         ElMessage({
@@ -103,6 +109,15 @@ export default {
           type: "warning",
         })
         return
+      } else {
+        if (this.registerForm.email.search("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(.com)")) {
+          ElMessage({
+            message: "请输入正确的邮箱地址",
+            grouping: true,
+            type: "warning",
+          })
+          return
+        }
       }
       let TIME_COUNT = 60;
       if (!this.timer) {
@@ -119,10 +134,21 @@ export default {
             this.codeText = "发送";
           }
         }, 1000);
+        // TODO 发送验证码
+        userRequest
+            .post("/user/sendVerificationCode/" + this.registerForm.email)
+            .then(resp => {
+              if (resp.code !== 200) {
+                ElMessage({
+                  message: "验证码发送失败",
+                  grouping: true,
+                  type: "warning",
+                })
+              }
+            })
       }
-      // TODO 发送验证码
-
     },
+    // 提交忘记密码
     submit() {
       const user = this.registerForm
       if (user.number === '') {
@@ -149,12 +175,27 @@ export default {
           grouping: true,
           type: "warning",
         })
+      }else if (user.password.length > 32 || user.password.length < 6) {
+        ElMessage({
+          message: "密码长度应为 6~32 位",
+          grouping: true,
+          type: "warning",
+        })
       } else {
         // TODO 忘记密码
-        axios
-            .post("/user/forget_password", this.registerForm)
+        userRequest
+            .post("/user/forgetPassword", this.registerForm)
             .then(resp => {
-              console.log(resp)
+              if (resp.code === 200) {
+                alert("修改成功")
+                this.$router.push("/login")
+              } else {
+                ElMessage({
+                  message: "修改失败",
+                  grouping: true,
+                  type: "warning",
+                })
+              }
             })
       }
     }

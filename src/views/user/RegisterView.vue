@@ -7,20 +7,19 @@
       </div>
     </div>
     <div class="main_part">
-      <el-form :model="registerForm" label-width="0px">
+      <el-form :model="registerForm" label-width="0px" label-position="top">
         <br>
-        <el-form-item>
-          <label for="invite">邀请码</label>
+        <el-form-item label="注册码">
           <el-input
               id="invite"
+              maxlength="8"
               style="height: 30px;width: 242px;"
               v-model="registerForm.invite"
               prefix-icon="Message"
-              placeholder="请输入班级邀请码"
+              placeholder="请输入班级注册码"
           />
         </el-form-item>
-        <el-form-item>
-          <label for="number">学号</label>
+        <el-form-item label="学号">
           <el-input
               id="number"
               style="height: 30px;width: 242px;"
@@ -29,8 +28,7 @@
               placeholder="请输入学号"
           />
         </el-form-item>
-        <el-form-item>
-          <label for="username">姓名</label>
+        <el-form-item label="姓名">
           <el-input
               id="username"
               style="height: 30px;width: 242px;"
@@ -39,18 +37,26 @@
               placeholder="请输入姓名"
           />
         </el-form-item>
-        <el-form-item>
-          <label for="password">密码</label>
+        <el-form-item label="性别">
+          <el-radio-group v-model="registerForm.sex" size="default">
+            <el-radio-button label="1">男</el-radio-button>
+            <el-radio-button label="0">女</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="密码">
           <el-input
               id="password"
               style="height: 30px;width: 242px;"
               v-model="registerForm.password"
               prefix-icon="Lock"
-              placeholder="请输入密码"
+              minlength="6"
+              maxlength="32"
+              type="password"
+              show-password
+              placeholder="请输入 6~32 位密码"
           />
         </el-form-item>
-        <el-form-item>
-          <label for="email">邮箱</label>
+        <el-form-item label="邮箱">
           <el-input
               id="email"
               style="height: 30px;width: 242px;"
@@ -59,8 +65,7 @@
               placeholder="请输入邮箱"
           />
         </el-form-item>
-        <el-form-item>
-          <label for="code">验证码</label>
+        <el-form-item label="验证码">
           <el-input
               id="code"
               style="height: 30px;width: 110px;"
@@ -96,6 +101,7 @@
 <script>
 import {ElMessage} from "element-plus";
 import axios from "axios";
+import userRequest from "@/utils/userRequest";
 
 export default {
   name: "RegisterView",
@@ -105,6 +111,7 @@ export default {
         invite: "",
         number: "",
         username: "",
+        sex: 1,
         password: "",
         email: "",
         code: "",
@@ -127,6 +134,15 @@ export default {
           type: "warning",
         })
         return
+      } else {
+        if (this.registerForm.email.search("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(.com)")) {
+          ElMessage({
+            message: "请输入正确的邮箱地址",
+            grouping: true,
+            type: "warning",
+          })
+          return
+        }
       }
       let TIME_COUNT = 60;
       if (!this.timer) {
@@ -145,7 +161,17 @@ export default {
         }, 1000);
       }
       // TODO 发送验证码
-
+      userRequest
+          .post("/user/sendVerificationCode/" + this.registerForm.email)
+          .then(resp => {
+            if (resp.code !== 200) {
+              ElMessage({
+                message: "验证码发送失败",
+                grouping: true,
+                type: "warning",
+              })
+            }
+          })
     },
     // 提交
     submit() {
@@ -174,6 +200,12 @@ export default {
           grouping: true,
           type: "warning",
         })
+      } else if (user.password.length > 32 || user.password.length < 6) {
+        ElMessage({
+          message: "密码长度应为 6~32 位",
+          grouping: true,
+          type: "warning",
+        })
       } else if (user.email === '') {
         ElMessage({
           message: "邮箱不能为空",
@@ -188,10 +220,20 @@ export default {
         })
       } else {
         // TODO 提交注册信息
-        axios
+        userRequest
             .post("/user/register", this.registerForm)
             .then(resp => {
               console.log(resp)
+              if (resp.code === 200) {
+                alert("注册成功")
+                this.$router.push("/login")
+              } else {
+                ElMessage({
+                  message: "注册失败",
+                  grouping: true,
+                  type: "warning",
+                })
+              }
             })
       }
     }
@@ -204,7 +246,7 @@ export default {
 .part {
   margin: 30px auto;
   width: 360px;
-  height: 620px;
+  height: 730px;
   border-radius: 10px;
   background-color: white;
 }
@@ -227,12 +269,11 @@ export default {
 
 .part .main_part {
   width: 320px;
-  height: 440px;
+  height: 520px;
   padding-left: 40px;
 }
 
 .part .main_part label {
-  width: 320px;
   text-align: left;
   font-size: 14px;
 }
