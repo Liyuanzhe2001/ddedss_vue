@@ -25,14 +25,27 @@
 </template>
 
 <script>
+import userRequest from "@/utils/userRequest";
+
 export default {
   name: "KnowledgeShowLayout",
+  mounted() {
+    const knowledgeId = this.$route.params.id
+    userRequest
+        .get(`/knowledge/queryKnowledgeById/${knowledgeId}`)
+        .then(resp => {
+          this.title = resp.data.knowledgeTitle
+          this.teacherName = resp.data.teacherName
+          this.tags = resp.data.tags
+          this.content = resp.data.content
+        })
+  },
   data() {
     return {
-      title: "这里是标题这里是标题这里是标题这里是标题这里是标题这里是标题",
-      teacherName: "教师名字",
-      tags: ["Java", "Springboot", "SpringCloud"],
-      content: "内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n内容\n  "
+      title: "",
+      teacherName: "",
+      tags: [],
+      content: ""
     }
   }
 }
