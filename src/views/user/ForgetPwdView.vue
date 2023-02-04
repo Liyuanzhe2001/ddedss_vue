@@ -105,6 +105,7 @@ export default {
       if (this.registerForm.email === '') {
         ElMessage({
           message: "邮箱不能为空",
+          showClose: true,
           grouping: true,
           type: "warning",
         })
@@ -113,6 +114,7 @@ export default {
         if (this.registerForm.email.search("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(.com)")) {
           ElMessage({
             message: "请输入正确的邮箱地址",
+            showClose: true,
             grouping: true,
             type: "warning",
           })
@@ -141,6 +143,7 @@ export default {
               if (resp.code !== 200) {
                 ElMessage({
                   message: "验证码发送失败",
+                  showClose: true,
                   grouping: true,
                   type: "warning",
                 })
@@ -154,30 +157,35 @@ export default {
       if (user.number === '') {
         ElMessage({
           message: "学号不能为空",
+          showClose: true,
           grouping: true,
           type: "warning",
         })
       } else if (user.email === '') {
         ElMessage({
           message: "邮箱不能为空",
+          showClose: true,
           grouping: true,
           type: "warning",
         })
       } else if (user.code === '') {
         ElMessage({
           message: "验证码不能为空",
+          showClose: true,
           grouping: true,
           type: "warning",
         })
       } else if (user.password === '') {
         ElMessage({
           message: "新密码不能为空",
+          showClose: true,
           grouping: true,
           type: "warning",
         })
-      }else if (user.password.length > 32 || user.password.length < 6) {
+      } else if (user.password.length > 32 || user.password.length < 6) {
         ElMessage({
           message: "密码长度应为 6~32 位",
+          showClose: true,
           grouping: true,
           type: "warning",
         })
@@ -192,6 +200,7 @@ export default {
               } else {
                 ElMessage({
                   message: "修改失败",
+                  showClose: true,
                   grouping: true,
                   type: "warning",
                 })

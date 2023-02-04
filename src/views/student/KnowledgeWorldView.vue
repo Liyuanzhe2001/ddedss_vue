@@ -69,6 +69,8 @@ export default {
             } else {
               ElMessage({
                 message: "获取知识列表失败",
+                showClose: true,
+                grouping: true,
                 type: "error",
               })
             }

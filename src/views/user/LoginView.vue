@@ -10,7 +10,7 @@
       </div>
       <!--主要部分-->
       <div>
-        <el-form :model="user" label-width="0px" class="login_main">
+        <el-form :model="user" label-width="0px" class="login_main" @keyup.enter="submit">
           <br>
           <el-form-item>
             <label for="number">用户名</label>
@@ -111,12 +111,14 @@ export default {
       if (user.number === '') {
         ElMessage({
           message: "用户名不能为空",
+          showClose: true,
           grouping: true,
           type: "warning",
         })
       } else if (user.password === '') {
         ElMessage({
           message: "密码不能为空",
+          showClose: true,
           grouping: true,
           type: "warning",
         })
@@ -124,6 +126,7 @@ export default {
         if (user.invite === '') {
           ElMessage({
             message: "验证码不能为空",
+            showClose: true,
             grouping: true,
             type: "warning",
           })
@@ -132,6 +135,7 @@ export default {
         this.$refs.ValidCode.refreshCode()
         ElMessage({
           message: "验证码错误",
+          showClose: true,
           grouping: true,
           type: "warning",
         })
@@ -147,6 +151,7 @@ export default {
               if (resp.code === 200) {
                 ElMessage({
                   message: "登录成功",
+                  showClose: true,
                   grouping: true,
                   type: "success",
                 })
@@ -172,6 +177,7 @@ export default {
               } else {
                 ElMessage({
                   message: "用户名或密码错误",
+                  showClose: true,
                   grouping: true,
                   type: "warning",
                 })

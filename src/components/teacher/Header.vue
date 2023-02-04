@@ -155,18 +155,18 @@
       title="修改密码"
       width="400px"
       @open="cleanUserPassword()"
-      @keyup.enter="changePwd()"
+      @keyup.enter="judgePwd()"
   >
     <label class="password_label" for="oldP">旧密码</label>
-    <el-input id="oldP" v-model="user.oldPassword" style="width: 200px;"/>
+    <el-input id="oldP" v-model="user.oldPassword" show-password type="password" style="width: 200px;"/>
     <label class="password_label" for="newP">新密码</label>
-    <el-input id="newP" v-model="user.newPassword" style="width: 200px;"/>
+    <el-input id="newP" v-model="user.newPassword" show-password type="password" style="width: 200px;"/>
     <label class="password_label" for="confirmP">确认密码</label>
-    <el-input id="confirmP" v-model="user.confirmPassword" style="width: 200px;"/>
+    <el-input id="confirmP" v-model="user.confirmPassword" show-password type="password" style="width: 200px;"/>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="changePwdVisible = false">取消</el-button>
-        <el-button type="primary" @click="changePwd()">
+        <el-button type="primary" @click="judgePwd()">
           确定
         </el-button>
       </span>
@@ -178,7 +178,7 @@
       title="创建注册码"
       width="400px"
       @open="cleanUserPassword()"
-      @keyup.enter="changePwd()"
+      @keyup.enter=""
   >
     <el-select
         style="width: 100px"
@@ -213,20 +213,20 @@
 <script>
 import {ElMessage} from "element-plus";
 import request from "@/utils/request";
+import teacherRequest from "@/utils/teacherRequest";
 
 export default {
   subjectName: "Header",
-  created() {
-    // TODO 在session获取查询名字
-    this.username = "张三"
-
-    this.loadLevel()
-  },
   mounted() {
-    this.userIdentity = sessionStorage.getItem("identity");
-    this.userIdentity = "0"
-    if (this.userIdentity === "0") {
+    // TODO 在session获取查询名字
+    this.username = sessionStorage.getItem("username")
 
+    // 加载擅长科目
+    this.loadLevel()
+
+    // 判断辅导员身份
+    this.userIdentity = sessionStorage.getItem("identity");
+    if (this.userIdentity === "0") {
       this.classList = [
         {
           classId: 1,
@@ -253,7 +253,6 @@ export default {
           className: "B200106",
         },
       ]
-
       this.selectClassId = this.classList[0].classId
     }
   },
@@ -294,43 +293,28 @@ export default {
   methods: {
     // TODO 加载教师特长
     loadLevel() {
-      request
-          .get("/teacher_subject/query_teacher_subject_level")
+      teacherRequest
+          .get("/teacherSubject/queryTeacherSubjectLevel")
           .then(resp => {
-            console.log(resp)
+            if (resp.code === 200) {
+              this.subjectLevel = resp.data
+            } else {
+              ElMessage({
+                message: "获取教师特长失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
           })
-      this.subjectLevel = [
-        {
-          subjectName: "Java",
-          level: 0,
-        },
-        {
-          subjectName: "C",
-          level: 1,
-        },
-        {
-          subjectName: "C++",
-          level: 2,
-        },
-        {
-          subjectName: "Rust",
-          level: 1,
-        },
-        {
-          subjectName: "Python",
-          level: 2,
-        },
-        {
-          subjectName: "Golang",
-          level: 2,
-        },
-      ]
     },
+    // 删除教师特长
     subjectClose(tag) {
       this.subjectLevel = this.subjectLevel.filter(function (item) {
         return item !== tag
       })
     },
+    // 增加教师特长
     subjectAdd(n) {
       let input = this.inputValue
       let flag = true
@@ -339,6 +323,7 @@ export default {
       }
       if (flag) {
         this.subjectLevel.forEach(function (value) {
+          console.log(value)
           if (value.subjectName === input) {
             ElMessage({
               message: "该科目已存在",
@@ -375,71 +360,105 @@ export default {
     },
     // TODO 确定修改教师特长
     saveChangeSubject() {
-      request
-          .put("/teacher_subject/modify_teacher_subject_level", this.subjectLevel)
+      teacherRequest
+          .put("/teacherSubject/modifyTeacherSubjectLevel", {
+            subjectLevelList: this.subjectLevel
+          })
           .then(resp => {
             console.log(resp)
           })
       // 保存到数据库
       this.addSubjectVisible = false
     },
+    // 清空密码输入框
     cleanUserPassword() {
       this.user.oldPassword = this.user.confirmPassword = this.user.newPassword = ''
     },
-    // 修改密码
-    changePwd() {
+    // 判断旧密码
+    judgePwd() {
       // 分别判断是否为空
       if (this.user.oldPassword === '') {
         ElMessage({
-          message: '原密码不能为空',
-          type: 'warning',
+          message: '旧密码不能为空',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
         })
-      } else if (this.user.newPassword === '') {
+      } else {
+        // TODO 判断旧密码是否正确
+        teacherRequest
+            .post("/user/judgePassword", {
+              "password": this.user.oldPassword
+            })
+            .then(resp => {
+              if (resp.code === 200) {
+                // 密码正确 进行修改密码
+                this.changePwd()
+              } else {
+                // 密码错误
+                ElMessage({
+                  message: '旧密码错误',
+                  showClose: true,
+                  grouping: true,
+                  type: 'error',
+                })
+              }
+            })
+      }
+    },
+    // 修改密码
+    changePwd() {
+      if (this.user.newPassword === '') {
         ElMessage({
           message: '新密码不能为空',
-          type: 'warning',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
         })
       } else if (this.user.confirmPassword === '') {
         ElMessage({
           message: '请再次输入新密码',
-          type: 'warning',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
+        })
+      } else if (this.user.confirmPassword !== this.user.newPassword) {
+        // 判断两次输入是否相同
+        ElMessage({
+          message: '请输入相同的新密码',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
+        })
+      } else if (this.user.newPassword.length > 32 || this.user.newPassword.length < 6) {
+        ElMessage({
+          message: "密码长度应为 6~32 位",
+          showClose: true,
+          grouping: true,
+          type: "warning",
         })
       } else {
-        // TODO 判断旧密码是否正确
-        let oldPasswordFlag = false
-        request
-            .post("/user/judge_password", {
-              "password": this.user.oldPassword
+        // TODO 修改密码
+        teacherRequest
+            .put("/user/updatePassword", {
+              "password": this.user.newPassword
             })
             .then(resp => {
-              // 密码正确
-              // oldPasswordFlag = true
-              // 密码错误
-              // oldPasswordFlag = false
-            })
-        if (this.user.confirmPassword !== this.user.newPassword) {
-          // 判断两次输入是否相同
-          ElMessage({
-            message: '请输入相同的新密码',
-            type: 'warning',
-          })
-        } else if (!oldPasswordFlag) {
-          ElMessage({
-            message: '原密码错误',
-            type: 'warning',
-          })
-        } else {
-          // TODO 修改密码
-          request
-              .put("/user/update_password", {
-                "password": this.user.newPassword
-              })
-              .then(resp => {
-                alert("修改成功，请重新登录")
+              console.log(resp)
+              if (resp.code === 200) {
+                alert("密码修改成功，请重新登录")
                 // TODO 清除数据 返回登录界面 session token
+                sessionStorage.clear()
                 window.location.href = "/"
-              })
-        }
+              } else {
+                ElMessage({
+                  message: "密码修改失败",
+                  showClose: true,
+                  grouping: true,
+                  type: "error"
+                })
+              }
+            })
       }
     },
     // 创建注册码
@@ -451,6 +470,7 @@ export default {
     // 退出登录
     exit() {
       // TODO 清除数据 返回登录界面 session token
+      sessionStorage.clear()
       window.location.href = "/"
     }
   }

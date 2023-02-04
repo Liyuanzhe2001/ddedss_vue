@@ -1,4 +1,6 @@
 import axios from "axios";
+import router from "@/router";
+import {ElMessage} from "element-plus";
 
 const request = axios.create({
     baseURL: "/api",
@@ -10,6 +12,22 @@ const request = axios.create({
 request.interceptors.request.use(
     (config) => {
         config.headers["Content-Type"] = "application/json;charset=utf-8";
+        const token = sessionStorage.getItem("token")
+        const identity = sessionStorage.getItem("identity")
+        if (token === "") {
+            alert("无登录信息，请重新登录")
+            sessionStorage.clear()
+            this.$router.push("/")
+            return
+        }
+        if (identity === '0') {
+            this.$router.push("/student")
+        } else if (identity === '2') {
+            this.$router.push('/professional')
+        } else if(identity === '3') {
+            this.$router.push('/admin/user_list/1')
+        }
+        config.headers['token'] = token
         return config;
     },
     (error) => {

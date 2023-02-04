@@ -52,6 +52,8 @@ export default {
           } else {
             ElMessage({
               message: "获取考试列表失败",
+              showClose: true,
+              grouping: true,
               type: "error"
             })
           }
@@ -93,6 +95,8 @@ export default {
             } else {
               ElMessage({
                 message: "获取成绩失败",
+                showClose: true,
+                grouping: true,
                 type: "error"
               })
             }
@@ -112,6 +116,8 @@ export default {
             } else {
               ElMessage({
                 message: "获取平均分失败",
+                showClose: true,
+                grouping: true,
                 type: "error"
               })
             }

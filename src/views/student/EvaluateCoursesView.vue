@@ -60,6 +60,8 @@ export default {
           } else {
             ElMessage({
               message: "课程评价通知获取失败",
+              showClose: true,
+              grouping: true,
               type: "error"
             })
           }
@@ -85,6 +87,8 @@ export default {
             } else {
               ElMessage({
                 message: "获取班级信息失败",
+                showClose: true,
+                grouping: true,
                 type: "error"
               })
             }
@@ -126,6 +130,8 @@ export default {
               if (resp.code === 200) {
                 ElMessage({
                   message: "提交成功",
+                  showClose: true,
+                  grouping: true,
                   type: "success",
                 })
               }
@@ -135,6 +141,8 @@ export default {
       } else {
         ElMessage({
           message: "请完成所有评价",
+          showClose: true,
+          grouping: true,
           type: "warning",
         })
       }

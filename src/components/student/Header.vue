@@ -39,7 +39,7 @@
       title="修改密码"
       width="400px"
       @open="cleanUserPassword()"
-      @keyup.enter="changePwd()"
+      @keyup.enter="judgePwd()"
   >
     <label class="password_label" for="oldP">旧密码</label>
     <el-input show-password id="oldP" v-model="user.oldPassword" style="width: 200px;"/>
@@ -50,7 +50,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="changePwd()">
+        <el-button type="primary" @click="judgePwd()">
           确定
         </el-button>
       </span>
@@ -61,7 +61,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import request from "@/utils/request";
+import studentRequest from "@/utils/studentRequest";
 
 export default {
   name: "Header",
@@ -90,64 +90,95 @@ export default {
       this.user.oldPassword = this.user.confirmPassword = this.user.newPassword = ''
     },
     // 修改密码
-    changePwd() {
+    judgePwd() {
       // 分别判断是否为空
       if (this.user.oldPassword === '') {
         ElMessage({
           message: '旧密码不能为空',
-          type: 'warning',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
         })
-      } else if (this.user.newPassword === '') {
+      } else {
+        // TODO 判断旧密码是否正确
+        studentRequest
+            .post("/user/judgePassword", {
+              "password": this.user.oldPassword
+            })
+            .then(resp => {
+              if (resp.code === 200) {
+                // 密码正确 进行修改密码
+                this.changePwd()
+              } else {
+                // 密码错误
+                ElMessage({
+                  message: '旧密码错误',
+                  showClose: true,
+                  grouping: true,
+                  type: 'error',
+                })
+              }
+            })
+      }
+    },
+    // 修改密码
+    changePwd() {
+      if (this.user.newPassword === '') {
         ElMessage({
           message: '新密码不能为空',
-          type: 'warning',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
         })
       } else if (this.user.confirmPassword === '') {
         ElMessage({
           message: '请再次输入新密码',
-          type: 'warning',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
+        })
+      } else if (this.user.confirmPassword !== this.user.newPassword) {
+        // 判断两次输入是否相同
+        ElMessage({
+          message: '请输入相同的新密码',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
+        })
+      } else if (this.user.newPassword.length > 32 || this.user.newPassword.length < 6) {
+        ElMessage({
+          message: "密码长度应为 6~32 位",
+          showClose: true,
+          grouping: true,
+          type: "warning",
         })
       } else {
-        // TODO 判断旧密码是否正确
-        // let oldPasswordFlag = false
-        let oldPasswordFlag = true
-        request
-            .post("/user/judge_password", {
-              "password": this.user.oldPassword
+        // TODO 修改密码
+        studentRequest
+            .put("/user/updatePassword", {
+              "password": this.user.newPassword
             })
             .then(resp => {
-              // 密码正确
-              // oldPasswordFlag = true
-              // 密码错误
-              // oldPasswordFlag = false
-            })
-        if (this.user.confirmPassword !== this.user.newPassword) {
-          // 判断两次输入是否相同
-          ElMessage({
-            message: '请输入相同的新密码',
-            type: 'warning',
-          })
-        } else if (!oldPasswordFlag) {
-          ElMessage({
-            message: '旧密码错误',
-            type: 'warning',
-          })
-        } else {
-          // TODO 修改密码
-          request
-              .put("/user/update_password", {
-                "password": this.user.newPassword
-              })
-              .then(resp => {
-                alert("修改成功，请重新登录")
+              console.log(resp)
+              if (resp.code === 200) {
+                alert("密码修改成功，请重新登录")
                 // TODO 清除数据 返回登录界面 session token
+                sessionStorage.clear()
                 window.location.href = "/"
-              })
-        }
+              } else {
+                ElMessage({
+                  message: "密码修改失败",
+                  showClose: true,
+                  grouping: true,
+                  type: "error"
+                })
+              }
+            })
       }
     },
     // 退出登录
     exit() {
+      sessionStorage.clear()
       // TODO 清除数据 返回登录界面 session token
       window.location.href = "/"
     }

@@ -67,6 +67,8 @@ export default {
                   }else {
                     ElMessage({
                       message: "获取同学信息失败",
+                      showClose: true,
+                      grouping: true,
                       type: "error",
                     })
                     return
@@ -82,6 +84,8 @@ export default {
                   }else{
                     ElMessage({
                       message: "获取教师信息失败",
+                      showClose: true,
+                      grouping: true,
                       type: "error",
                     })
                     return
@@ -91,6 +95,8 @@ export default {
           } else {
             ElMessage({
               message: "获取班级信息失败",
+              showClose: true,
+              grouping: true,
               type: "error",
             })
             return
