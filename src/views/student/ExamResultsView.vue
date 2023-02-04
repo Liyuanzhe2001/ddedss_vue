@@ -17,7 +17,11 @@
       <el-table height="370" :data="result" style="width: 180px;display: inline-block">
         <el-table-column type="index" label="#" width="60"/>
         <el-table-column prop="subjectName" label="科目" width="60"/>
-        <el-table-column prop="score" label="分数" width="60"/>
+        <el-table-column label="分数" width="60">
+          <template #default="scope">
+            <span>{{ scope.row.score === -1 ? 0 : scope.row.score }}</span>
+          </template>
+        </el-table-column>
       </el-table>
       <div id="e_main" class="echarts_part">
       </div>
@@ -28,154 +32,30 @@
 <script>
 import * as echarts from "echarts";
 import request from "@/utils/request";
+import studentRequest from "@/utils/studentRequest";
+import {ElMessage} from "element-plus";
 
 export default {
   name: "ExamResultsView",
   mounted() {
     // TODO 获取考试列表
-    this.exams = [
-      {
-        examId: 1,
-        examName: "2022第一学期期末考试",
-      },
-      {
-        examId: 2,
-        examName: "2022第二学期期末考试",
-      },
-      {
-        examId: 3,
-        examName: "2021第一学期期末考试",
-      },
-      {
-        examId: 4,
-        examName: "2021第二学期期末考试",
-      },
-      {
-        examId: 5,
-        examName: "2020第一学期期末考试",
-      },
-      {
-        examId: 6,
-        examName: "2020第二学期期末考试",
-      },
-      {
-        examId: 7,
-        examName: "2019第一学期期末考试",
-      },
-      {
-        examId: 8,
-        examName: "2019第二学期期末考试",
-      },
-      {
-        examId: 9,
-        examName: "2018第一学期期末考试",
-      },
-      {
-        examId: 10,
-        examName: "2018第二学期期末考试",
-      },
-    ]
-    request
-        .get(`/exam/get_exam_list_by_student_id`)
+    studentRequest
+        .get('/exam/getExamListByStudentId')
         .then(resp => {
-          console.log(resp)
-        })
-
-    // 根据第一个考试id查询考试数据
-    this.result = [
-      {
-        subjectName: "Java",
-        score: 90,
-      },
-      {
-        subjectName: "Golang",
-        score: 92,
-      },
-
-      {
-        subjectName: "C",
-        score: 98,
-      },
-      {
-        subjectName: "C++",
-        score: 93,
-      },
-      {
-        subjectName: "Java",
-        score: 90,
-      },
-      {
-        subjectName: "Java",
-        score: 90,
-      },
-      {
-        subjectName: "Java",
-        score: 90,
-      },
-      {
-        subjectName: "Java",
-        score: 90,
-      },
-      {
-        subjectName: "Java",
-        score: 90,
-      },
-      {
-        subjectName: "Java",
-        score: 90,
-      },
-      {
-        subjectName: "Java",
-        score: 90,
-      },
-      {
-        subjectName: "Java",
-        score: 90,
-      },
-    ]
-    this.queryResults(this.exams[0].examId)
-
-    // TODO 获取平均分
-    this.getAvgScore(this.exams[0].examId)
-
-    let myChart = echarts.init(document.getElementById('e_main'));
-    let option = {
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          type: 'shadow'
-        }
-      },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-      },
-      xAxis: [
-        {
-          type: 'category',
-          data: ['我的分数', '平均分'],
-          axisTick: {
-            alignWithLabel: true
+          if (resp.code === 200) {
+            this.exams = resp.data
+            // 如果exams不为空
+            if (this.exams.length !== 0) {
+              // TODO 根据第一个考试id查询考试数据
+              this.queryResults(this.exams[0].examId)
+            }
+          } else {
+            ElMessage({
+              message: "获取考试列表失败",
+              type: "error"
+            })
           }
-        }
-      ],
-      yAxis: [
-        {
-          type: 'value'
-        }
-      ],
-      series: [
-        {
-          name: 'Direct',
-          type: 'bar',
-          barWidth: '60%',
-          data: [this.totalScore, this.avgScore]
-        }
-      ]
-    };
-    myChart.setOption(option);
+        })
   },
   data() {
     return {
@@ -183,35 +63,100 @@ export default {
       exams: [],
       result: [],
       totalScore: 0,
-      avgScore: 1023,
+      avgScore: 0,
     }
   },
   methods: {
+    // 选择考试
     selectExam(key, keyPath) {
       this.activeExam = key
+      this.queryResults(key)
     },
+    // 获取考试分数，获取成功后计算总分，再获取平均分
     queryResults(examId) {
       // TODO 根据id查询分数
-      request
-          .get(`/result/get_result_by_exam_id/${examId}`)
+      studentRequest
+          .get(`/result/getResultByExamId/${examId}`)
           .then(resp => {
-            console.log(resp)
-          })
+            if (resp.code === 200) {
+              this.result = resp.data
+              // 获取总分
+              this.totalScore = 0
+              for (let i = 0; i < this.result.length; i++) {
+                let r = this.result[i]
+                this.totalScore += r.score
+              }
 
-      // 获取总分
-      this.totalScore = 0
-      for (let i = 0; i < this.result.length; i++) {
-        let r = this.result[i]
-        this.totalScore += r.score
-      }
-    },
-    getAvgScore(examId) {
-      this.avgScore = 1023
-      request
-          .get(`/result/get_avg_score_by_exam_id/${examId}`)
-          .then(resp => {
-            console.log(resp)
+              // 成功获取总分，再获取平均分
+              this.getAvgScore(examId)
+
+            } else {
+              ElMessage({
+                message: "获取成绩失败",
+                type: "error"
+              })
+            }
           })
+    },
+    // 获取平均分，获取成功后绘制echarts表
+    getAvgScore(examId) {
+      studentRequest
+          .get(`/result/getAvgScoreByExamId/${examId}`)
+          .then(resp => {
+            if (resp.code === 200) {
+              this.avgScore = resp.data.avgScore
+
+              // 成功获取平均分 绘制echarts图
+              this.drawECharts()
+
+            } else {
+              ElMessage({
+                message: "获取平均分失败",
+                type: "error"
+              })
+            }
+          })
+    },
+    // 绘制echarts表
+    drawECharts() {
+      let myChart = echarts.init(document.getElementById('e_main'));
+      let option = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: ['我的分数', '平均分'],
+            axisTick: {
+              alignWithLabel: true
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: 'Direct',
+            type: 'bar',
+            barWidth: '60%',
+            data: [this.totalScore, this.avgScore]
+          }
+        ]
+      };
+      myChart.setOption(option);
     }
   }
 }

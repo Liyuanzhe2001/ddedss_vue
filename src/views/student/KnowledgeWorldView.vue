@@ -69,7 +69,7 @@ export default {
             } else {
               ElMessage({
                 message: "获取知识列表失败",
-                type: "danger",
+                type: "error",
               })
             }
           })

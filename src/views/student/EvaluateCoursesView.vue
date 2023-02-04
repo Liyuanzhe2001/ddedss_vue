@@ -42,123 +42,32 @@
 <script>
 import {ElMessage} from "element-plus";
 import request from "@/utils/request";
+import studentRequest from "@/utils/studentRequest";
 
 export default {
   teacherName: "EvaluateCoursesView",
   mounted() {
     // TODO 是否有课程需要评价
-    this.haveNotice = true
-    request
-        .get("haveEvaluateCourseNotice")
+    studentRequest
+        .get("/evaluate/haveEvaluateCourseNotice")
         .then(resp => {
-          console.log(resp)
+          if (resp.code === 200) {
+            this.haveNotice = resp.data.haveOrNot === 1
+            if (this.haveNotice === true) {
+              // 如果有课程评价通知，获取班级，再通过班级id查询教师课程列表
+              this.getClass()
+            }
+          } else {
+            ElMessage({
+              message: "课程评价通知获取失败",
+              type: "error"
+            })
+          }
         })
-
-    // TODO 获取教师 课程表
-    // 1. 获取班级
-    request
-        .get("/student/query_class_name")
-        .then(resp=>{
-          console.log(resp)
-        })
-    let classId = 1
-    // 2. 通过班级id查询教师课程列表表
-    request
-        .get(`/teacher/query_teacher_list_by_class_id/${classId}`)
-        .then(resp=>{
-          console.log(resp)
-        })
-
-    if (this.haveNotice) {
-      this.teachers = [
-        {
-          teacherId: 0,
-          teacherName: "教师1",
-          subjectId: 0,
-          subjectName: "科目1",
-          final_: '',
-        },
-        {
-          subjectId: 0,
-          subjectName: "科目2",
-          teacherId: 0,
-          teacherName: "教师2",
-          final_: '',
-        },
-        {
-          subjectId: 0,
-          subjectName: "科目3",
-          teacherId: 0,
-          teacherName: "教师3",
-          final_: '',
-        },
-        {
-          subjectId: 0,
-          subjectName: "科目4",
-          teacherId: 0,
-          teacherName: "教师4",
-          final_: '',
-        },
-        {
-          subjectId: 0,
-          subjectName: "科目5",
-          teacherName: "教师5",
-          final_: '',
-        },
-        {
-          subjectId: 0,
-          subjectName: "科目6",
-          teacherId: 0,
-          teacherName: "教师6",
-          final_: '',
-        },
-        {
-          subjectId: 0,
-          subjectName: "科目7",
-          teacherId: 0,
-          teacherName: "教师7",
-          final_: '',
-        },
-        {
-          subjectId: 0,
-          subjectName: "科目8",
-          teacherName: "教师8",
-          final_: '',
-        },
-        {
-          subjectId: 0,
-          subjectName: "科目9",
-          teacherId: 0,
-          teacherName: "教师9",
-          final_: '',
-        },
-        {
-          subjectId: 0,
-          subjectName: "科目10",
-          teacherId: 0,
-          teacherName: "教师10",
-          final_: '',
-        },
-        {
-          subjectId: 0,
-          subjectName: "科目11",
-          teacherId: 0,
-          teacherName: "教师11",
-          final_: '',
-        },
-        {
-          subjectId: 0,
-          subjectName: "科目12",
-          teacherId: 0,
-          teacherName: "教师12",
-          final_: '',
-        }
-      ]
-    }
   },
   data() {
     return {
-      haveNotice: false,
+      haveNotice: true,
       loading: false,
       teachers: [],
       goodNum: 0,
@@ -166,6 +75,30 @@ export default {
     }
   },
   methods: {
+    // 1.获取班级
+    getClass() {
+      studentRequest
+          .get("/student/queryClassName")
+          .then(resp => {
+            if (resp.code === 200) {
+              this.getTeacherSubjectList(resp.data.classId)
+            } else {
+              ElMessage({
+                message: "获取班级信息失败",
+                type: "error"
+              })
+            }
+          })
+    },
+    // 2. 通过班级id查询教师课程列表
+    getTeacherSubjectList(classId) {
+      request
+          .get(`/teacher/queryTeacherListByClassId/${classId}`)
+          .then(resp => {
+            this.teachers = resp.data
+          })
+    },
+    // 选择评价触发，修改优的数量和差的数量
     evaluateChange() {
       this.goodNum = 0
       this.badNum = 0
@@ -178,13 +111,26 @@ export default {
         }
       }
     },
+    // 提交评价
     submitEvaluation() {
       this.loading = true
       if (this.goodNum + this.badNum === this.teachers.length) {
-        ElMessage({
-          message: "提交成功",
-          type: "success",
-        })
+        // TODO 提交
+        var formData = new FormData();
+        formData.append("gradeTeachers", this.teachers)
+        studentRequest
+            .post("/evaluateFinal/gradeTeacher", {
+              "gradeTeachers": this.teachers
+            })
+            .then(resp => {
+              if (resp.code === 200) {
+                ElMessage({
+                  message: "提交成功",
+                  type: "success",
+                })
+              }
+              this.haveNotice = 0
+            })
         this.haveNotice = false
       } else {
         ElMessage({
