@@ -53,149 +53,54 @@
 </template>
 
 <script>
+import teacherRequest from "@/utils/teacherRequest";
+import {ElMessage} from "element-plus";
+import studentRequest from "@/utils/studentRequest";
+
 export default {
   name: "MyClassView",
   mounted() {
-    this.classList = [
-      {
-        classId: 1,
-        className: "B200101",
-      },
-      {
-        classId: 2,
-        className: "B200102",
-      },
-      {
-        classId: 3,
-        className: "B200103",
-      },
-      {
-        classId: 4,
-        className: "B200104",
-      },
-      {
-        classId: 5,
-        className: "B200105",
-      },
-      {
-        classId: 6,
-        className: "B200106",
-      },
-    ]
-    this.selectClassId = this.classList[0].classId
-    this.showClassName = this.classList[0].className
-    this.students = [
-      {
-        studentId: 1,
-        studentName: "学生1",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生2",
-        studentSex: 0,
-      },
-      {
-        studentId: 1,
-        studentName: "学生3",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生4",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生5",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生6",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生7",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生8",
-        studentSex: 1,
-      },
-      {
-        studentId: 1,
-        studentName: "学生9",
-        studentSex: 1,
-      },
-    ]
-    this.teachers = [
-      {
-        teacherId: 1,
-        teacherName: "教师1",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "Java",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师2",
-        teacherSex: 0,
-        subjectId: 1,
-        subjectName: "Hadoop",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师3",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "C++",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师4",
-        teacherSex: 0,
-        subjectId: 1,
-        subjectName: "C",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师5",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "Spark",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师6",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "Golang",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师7",
-        teacherSex: 0,
-        subjectId: 1,
-        subjectName: "Python",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师8",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "Java",
-      },
-      {
-        teacherId: 1,
-        teacherName: "教师9",
-        teacherSex: 1,
-        subjectId: 1,
-        subjectName: "Java",
-      }
-    ]
+    // 判断用户身份
+    const identity = sessionStorage.getItem("identity")
+    switch (identity) {
+      case null:
+        alert("无账号信息，请重新登录")
+        this.$router.push("/")
+        return
+      case '0':
+        this.$router.push("/student")
+        return
+      case '1':
+        this.$router.push("/teacher")
+        return
+      case '2':
+        this.$router.push('/professional')
+        return
+      case 3:
+        this.$route.push("/admin/user_list")
+        return
+    }
+
+    teacherRequest
+        .get("/instructor/getManagedClass")
+        .then(resp => {
+          if (resp.code === 200) {
+            this.classList = resp.data
+            if (this.classList.length !== 0) {
+              this.selectClassId = this.classList[0].classId
+              this.showClassName = this.classList[0].className
+              // 获取学生列表和教师列表
+              this.queryClassAndTeacherList()
+            }
+          } else {
+            ElMessage({
+              message: "班级获取失败",
+              showClose: true,
+              grouping: true,
+              type: "error"
+            })
+          }
+        })
   },
   data() {
     return {
@@ -208,6 +113,7 @@ export default {
   },
   methods: {
     queryClassAndTeacherList() {
+      // 显示正在搜索的班级名
       for (let i = 0; i < this.classList.length; i++) {
         let c = this.classList[i]
         if (c.classId === this.selectClassId) {
@@ -217,8 +123,38 @@ export default {
       }
 
       // TODO 通过班级id查询班级学生列表
+      teacherRequest
+          .get(`/student/queryStudentListByClassId/${this.selectClassId}`)
+          .then(resp => {
+            if (resp.code === 200) {
+              this.students = resp.data
+            } else {
+              ElMessage({
+                message: "获取同学信息失败",
+                showClose: true,
+                grouping: true,
+                type: "error",
+              })
+              return
+            }
+          })
 
       // TODO 通过班级id查询班级教师列表
+      teacherRequest
+          .get(`/teacher/queryTeacherListByClassId/${this.selectClassId}`)
+          .then(resp => {
+            if (resp.code === 200) {
+              this.teachers = resp.data
+            } else {
+              ElMessage({
+                message: "获取教师信息失败",
+                showClose: true,
+                grouping: true,
+                type: "error",
+              })
+              return
+            }
+          })
     }
   }
 }

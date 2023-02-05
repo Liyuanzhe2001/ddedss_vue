@@ -42,16 +42,22 @@ export default {
   mounted() {
     // 判断用户身份
     const identity = sessionStorage.getItem("identity")
-    if (identity === null) {
-      alert("无账号信息，请重新登录")
-      this.$router.push("/")
-    } else if (identity === '0') {
-      this.$router.push("/student")
-    } else if (identity === '2') {
-      this.$router.push('/professional')
-    } else if (identity === '3') {
-      this.$route.push("/admin/user_list")
+    switch (identity) {
+      case null:
+        alert("无账号信息，请重新登录")
+        this.$router.push("/")
+        return
+      case '0':
+        this.$router.push("/student")
+        return
+      case '2':
+        this.$router.push('/professional')
+        return
+      case 3:
+        this.$route.push("/admin/user_list")
+        return
     }
+
     // TODO 分页 查询知识
     this.currentPage = this.$route.params.currentPage
     this.getKnowledge()

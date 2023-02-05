@@ -164,6 +164,7 @@ export default {
                     this.$router.push("/student")
                     break
                   case 1:
+                  case -1:
                     this.$router.push("/teacher")
                     break
                   case 2:

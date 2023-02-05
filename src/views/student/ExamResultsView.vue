@@ -31,13 +31,31 @@
 
 <script>
 import * as echarts from "echarts";
-import request from "@/utils/request";
 import studentRequest from "@/utils/studentRequest";
 import {ElMessage} from "element-plus";
 
 export default {
   name: "ExamResultsView",
   mounted() {
+    // 判断用户身份
+    const identity = sessionStorage.getItem("identity")
+    switch (identity) {
+      case null:
+        alert("无账号信息，请重新登录")
+        this.$router.push("/")
+        return
+      case '1':
+      case '-1':
+        this.$router.push("/teacher")
+        return
+      case '2':
+        this.$router.push('/professional')
+        return
+      case 3:
+        this.$route.push("/admin/user_list")
+        return
+    }
+
     // TODO 获取考试列表
     studentRequest
         .get('/exam/getExamListByStudentId')
