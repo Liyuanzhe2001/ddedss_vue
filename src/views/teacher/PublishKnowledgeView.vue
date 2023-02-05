@@ -48,39 +48,89 @@
           +
         </el-button>
       </div>
-      <el-button class="submit_btn" type="primary">提交</el-button>
+      <el-button class="submit_btn" type="primary" @click="submit">提交</el-button>
     </div>
   </div>
 </template>
 
 <script>
+import teacherRequest from "@/utils/teacherRequest";
+import {ElMessage} from "element-plus";
+
 export default {
   name: "PublishKnowledgeView",
+  mounted() {
+    // 判断用户身份
+    const identity = sessionStorage.getItem("identity")
+    if (identity === null) {
+      alert("无账号信息，请重新登录")
+      this.$router.push("/")
+    } else if (identity === '0') {
+      this.$router.push("/student")
+    } else if (identity === '2') {
+      this.$router.push('/professional')
+    } else if (identity === '3') {
+      this.$route.push("/admin/user_list")
+    }
+  },
   data() {
     return {
       form: {
         title: "",
         content: "",
+        tags: "",
       },
       inputValue: "",
-      dynamicTags: ['Tag 1', 'Tag 2', 'Tag 3'],
+      dynamicTags: [],
       inputVisible: false,
       InputRef: '',
     }
   },
   methods: {
+    // 删除标签
     handleClose(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
     },
+    // 点击标签加号
     showInput() {
       this.inputVisible = true
     },
+    // 确定标签
     handleInputConfirm() {
       if (this.inputValue) {
         this.dynamicTags.push(this.inputValue)
       }
       this.inputVisible = false
       this.inputValue = ''
+    },
+    // 提交发布知识
+    submit() {
+      this.form.tags = this.dynamicTags.join(",");
+      teacherRequest
+          .post("/knowledge/addKnowledge", this.form)
+          .then(resp => {
+            if (resp.code === 200) {
+              ElMessage({
+                message: "知识创建成功",
+                showClose: true,
+                grouping: true,
+                type: "success"
+              })
+              this.form={
+                title: "",
+                content: "",
+                tags: "",
+              }
+              this.dynamicTags = []
+            } else {
+              ElMessage({
+                message: "知识创建失败",
+                showClose: true,
+                grouping: true,
+                type: "success"
+              })
+            }
+          })
     }
   }
 }

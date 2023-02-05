@@ -3,7 +3,7 @@
     <div class="text">
       <div v-for="i in knowledgeList" v-bind="i">
         <span
-            v-text="i.title.length<50?i.title:(i.title.substring(0,50)+'...')"
+            v-text="i.knowledgeTitle.length<50?i.knowledgeTitle:(i.knowledgeTitle.substring(0,50)+'...')"
             @click="jumpUrl(i.knowledgeId)"
         />
         <el-popconfirm
@@ -35,11 +35,25 @@
 <script>
 import {ElMessage} from "element-plus";
 import request from "@/utils/request";
+import teacherRequest from "@/utils/teacherRequest";
 
 export default {
   name: "MyPublishView",
   mounted() {
+    // 判断用户身份
+    const identity = sessionStorage.getItem("identity")
+    if (identity === null) {
+      alert("无账号信息，请重新登录")
+      this.$router.push("/")
+    } else if (identity === '0') {
+      this.$router.push("/student")
+    } else if (identity === '2') {
+      this.$router.push('/professional')
+    } else if (identity === '3') {
+      this.$route.push("/admin/user_list")
+    }
     // TODO 分页 查询知识
+    this.currentPage = this.$route.params.currentPage
     this.getKnowledge()
   },
   data() {
@@ -51,56 +65,65 @@ export default {
     }
   },
   methods: {
+    // 获取知识列表
     getKnowledge() {
       // TODO 分页查询知识 this.page.current
-      request
-          .get("/knowledge/query_knowledge_list_by_id", {
-            "currentPage": this.currentPage,
-            "pageSize": this.pageSize,
+      teacherRequest
+          .get("/knowledge/queryKnowledgeListByTeacherId", {
+            params: {
+              currentPage: this.currentPage,
+              pageSize: this.pageSize,
+            }
           })
           .then(resp => {
-            console.log(resp)
+            if (resp.code === 200) {
+              this.knowledgeList = resp.data
+              this.total = resp.total
+            } else {
+              ElMessage({
+                message: "获取知识列表失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
           })
-
-      this.total = 10
-      this.knowledgeList = [
-        {
-          knowledgeId: 1,
-          title: "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
-        },
-        {
-          knowledgeId: 2,
-          title: "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
-        },
-        {
-          knowledgeId: 3,
-          title: "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
-        },
-        {
-          knowledgeId: 4,
-          title: "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
-        },
-        {
-          knowledgeId: 5,
-          title: "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
-        }
-      ]
     },
+    // 翻页
     handleCurrentChange(page) {
       this.$router.push("/teacher/my_publish/" + page)
       this.currentPage = page
+      this.getKnowledge()
     },
+    // 打开知识，跳转页面
     jumpUrl(knowledgeId) {
       window.open("/knowledge/" + knowledgeId)
     },
+    // 确定删除知识
     confirmDelete(knowledgeId) {
-      ElMessage({
-        message: "删除成功",
-        type: "success",
-      })
+      teacherRequest
+          .delete(`/knowledge/deleteKnowledge/${knowledgeId}`)
+          .then(resp=>{
+            if(resp.code === 200) {
+              this.getKnowledge()
+              ElMessage({
+                message: "知识删除成功",
+                showClose: true,
+                grouping:true,
+                type: "success",
+              })
+            }else{
+              ElMessage({
+                message: resp.msg,
+                showClose: true,
+                grouping: true,
+                type: "success",
+              })
+            }
+          })
     },
+    // 取消删除知识
     cancelDelete() {
-
     }
   }
 }

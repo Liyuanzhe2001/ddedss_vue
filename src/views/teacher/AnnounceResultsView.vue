@@ -38,138 +38,104 @@
 <script>
 import * as echarts from "echarts";
 import request from "@/utils/request";
+import teacherRequest from "@/utils/teacherRequest";
+import {ElMessage} from "element-plus";
 
 export default {
   name: "AnnounceResultsView",
-  created() {
-    // TODO 是否有成绩需要公布
-    this.haveNotice = true
-    request
-        .get("/result/have_announce_results_notice")
-        .then(resp => {
-          console.log(resp)
-        })
-
-  },
   mounted() {
-    if (this.haveNotice) {
-      // TODO 加载教师教的班级和科目
-      request
-          .get("/teacher/query_class_and_subject_by_teacher_id")
-          .then(resp => {
-            console.log(resp)
-          })
+    // 判断用户身份
+    const identity = sessionStorage.getItem("identity")
+    if (identity === null) {
+      alert("无账号信息，请重新登录")
+      this.$router.push("/")
+    } else if (identity === '0') {
+      this.$router.push("/student")
+    } else if (identity === '2') {
+      this.$router.push('/professional')
+    } else if (identity === '3') {
+      this.$route.push("/admin/user_list")
+    }
 
-      this.classSubject = [
-        {
-          classId: 1,
-          className: "B200101",
-          peopleNum: 40,
-          subjectId: 1,
-          subjectName: "Java",
-          haveFinish: 0,
-        },
-        {
-          classId: 2,
-          className: "B200102",
-          peopleNum: 41,
-          subjectId: 2,
-          subjectName: "C",
-          haveFinish: 1,
-        },
-        {
-          classId: 3,
-          className: "B200101",
-          peopleNum: 40,
-          subjectName: "Java",
-          haveFinish: 0,
-        },
-        {
-          classId: 4,
-          className: "B200101",
-          peopleNum: 40,
-          subjectName: "Java",
-          haveFinish: 0,
-        },
-        {
-          classId: 5,
-          className: "B200101",
-          peopleNum: 40,
-          subjectName: "Java",
-          haveFinish: 0,
-        },
-        {
-          classId: 6,
-          className: "C200101",
-          peopleNum: 40,
-          subjectName: "Java",
-          haveFinish: 1,
-        },
-        {
-          classId: 7,
-          className: "B200101",
-          peopleNum: 40,
-          subjectName: "Java",
-          haveFinish: 0,
-        },
-        {
-          classId: 8,
-          className: "B200101",
-          peopleNum: 40,
-          subjectName: "Java",
-          haveFinish: 0,
-        }, {
-          classId: 9,
-          className: "B200101",
-          peopleNum: 40,
-          subjectName: "Java",
-          haveFinish: 0,
-        },
-        {
-          classId: 10,
-          className: "B200101",
-          peopleNum: 40,
-          subjectName: "Java",
-          haveFinish: 0,
-        },
-        {
-          classId: 11,
-          className: "B200110",
-          peopleNum: 40,
-          subjectName: "Python",
-          haveFinish: 1,
-        },
-        {
-          classId: 12,
-          className: "B200112",
-          peopleNum: 44,
-          subjectName: "C++",
-          haveFinish: 0,
-        },
-      ]
-
-      let finishNum = 0;
-      let unFinishNum = 0;
-      for (let i = 0; i < this.classSubject.length; i++) {
-        let class_ = this.classSubject[i]
-        if (class_.haveFinish === 0) {
-          finishNum++
-        } else {
-          unFinishNum++
-        }
-      }
-      this.finishDate = [
+    // 判断有没有成绩公布通知
+    request
+        .get("/result/haveAnnounceResultsNotice")
+        .then(resp => {
+          if (resp.code === 200) {
+            this.haveNotice = resp.data.haveOrNot === 1
+            if (this.haveNotice) {
+              this.queryClassAndSubject()
+            }
+          } else {
+            ElMessage({
+              message: "获取成绩公布通知失败",
+              showClose: true,
+              grouping: true,
+              type: "error"
+            })
+          }
+        })
+  },
+  data() {
+    return {
+      haveNotice: true,
+      classSubject: [],
+      finishDate: [
         {
           name: "已完成",
-          value: finishNum,
+          value: 1123,
         },
         {
           name: "未完成",
-          value: unFinishNum,
+          value: 1230,
         }
       ]
-
-      // echarts
+    }
+  },
+  methods: {
+    // 加载教师教的班级和科目
+    queryClassAndSubject() {
+      teacherRequest
+          .get("/teacher/queryClassAndSubjectByTeacherId")
+          .then(resp => {
+            console.log(resp)
+            if (resp.code === 200) {
+              this.classSubject = resp.data
+              // 计算完成和未完成的数量
+              let finishNum = 0;
+              let unFinishNum = 0;
+              for (let i = 0; i < this.classSubject.length; i++) {
+                let class_ = this.classSubject[i]
+                if (class_.haveFinish === 0) {
+                  finishNum++
+                } else {
+                  unFinishNum++
+                }
+              }
+              this.finishDate = [
+                {
+                  name: "已完成",
+                  value: finishNum,
+                },
+                {
+                  name: "未完成",
+                  value: unFinishNum,
+                }
+              ]
+              // 绘图
+              this.drawECharts()
+            } else {
+              ElMessage({
+                message: "获取班级科目失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
+          })
+    },
+    // 绘制echarts图
+    drawECharts() {
       let myChart = echarts.init(document.getElementById('e_main'));
       let option = {
         title: {
@@ -193,23 +159,7 @@ export default {
       };
       myChart.setOption(option)
     }
-  },
-  data() {
-    return {
-      haveNotice: false,
-      classSubject: [],
-      finishDate: [
-        {
-          name: "已完成",
-          value: 1123,
-        },
-        {
-          name: "未完成",
-          value: 1230,
-        }
-      ]
-    }
-  },
+  }
 }
 </script>
 

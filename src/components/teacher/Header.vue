@@ -274,7 +274,6 @@ export default {
 
       changePwdVisible: false,
       user: {
-        id: 1,
         oldPassword: "",
         confirmPassword: "",
         newPassword: "",
@@ -365,10 +364,23 @@ export default {
             subjectLevelList: this.subjectLevel
           })
           .then(resp => {
-            console.log(resp)
+            if (resp.code === 200) {
+              ElMessage({
+                message: "修改成功",
+                showClose: true,
+                grouping: true,
+                type: "success"
+              })
+              this.addSubjectVisible = false
+            } else {
+              ElMessage({
+                message: "修改失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
           })
-      // 保存到数据库
-      this.addSubjectVisible = false
     },
     // 清空密码输入框
     cleanUserPassword() {

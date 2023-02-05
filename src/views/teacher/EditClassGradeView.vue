@@ -51,110 +51,43 @@
 
 import {ElMessage, ElMessageBox} from "element-plus";
 import request from "@/utils/request";
+import teacherRequest from "@/utils/teacherRequest";
 
 export default {
   name: "EditClassGradeView",
   mounted() {
+    // 判断用户身份
+    const identity = sessionStorage.getItem("identity")
+    if (identity === null) {
+      alert("无账号信息，请重新登录")
+      this.$router.push("/")
+    } else if (identity === '0') {
+      this.$router.push("/student")
+    } else if (identity === '2') {
+      this.$router.push('/professional')
+    } else if (identity === '3') {
+      this.$route.push("/admin/user_list")
+    }
+
     this.classId = this.$route.params.classId
     this.subjectId = this.$route.params.subjectId
     // TODO 根据id查询班级名称
     this.className = "B200113"
-    request
-        .get(`/class/get_class_name_by_id/${this.classId}`)
+    teacherRequest
+        .get(`/class/getClassNameById/${this.classId}`)
         .then(resp => {
-          console.log(resp)
+          if (resp.code === 200) {
+            this.className = resp.data.className
+            this.getSubjectName()
+          } else {
+            ElMessage({
+              message: "获取班级失败",
+              showClose: true,
+              grouping: true,
+              type: "error"
+            })
+          }
         })
-    // TODO 根据id查询科目名称
-    this.subjectName = "Java"
-    request
-        .get(`/lesson/get_subject_name_by_id/${this.subjectId}`)
-        .then(resp => {
-          console.log(resp)
-        })
-    // TODO 查询学生列表
-    request
-        .get(`/student/query_student_list_by_class_id/${this.classId}`)
-        .then(resp => {
-          console.log(resp)
-        })
-    this.students = [
-      {
-        studentId: 1,
-        studentName: "学生1",
-        score: "",
-      },
-      {
-        studentId: 2,
-        studentName: "学生2",
-        score: "",
-      },
-      {
-        studentId: 3,
-        studentName: "学生3",
-        score: "",
-      },
-      {
-        studentId: 4,
-        studentName: "学生4",
-        score: "",
-      },
-      {
-        studentId: 5,
-        studentName: "学生5",
-        score: "",
-      },
-      {
-        studentId: 6,
-        studentName: "学生6",
-        score: "",
-      },
-      {
-        studentId: 7,
-        studentName: "学生7",
-        score: "",
-      },
-      {
-        studentId: 8,
-        studentName: "学生8",
-        score: "",
-      },
-      {
-        studentId: 9,
-        studentName: "学生9",
-        score: "",
-      },
-      {
-        studentId: 10,
-        studentName: "学生10",
-        score: "",
-      },
-      {
-        studentId: 11,
-        studentName: "学生11",
-        score: "",
-      },
-      {
-        studentId: 12,
-        studentName: "学生12",
-        score: "",
-      },
-      {
-        studentId: 13,
-        studentName: "学生13",
-        score: "",
-      },
-      {
-        studentId: 14,
-        studentName: "学生14",
-        score: "",
-      },
-      {
-        studentId: 15,
-        studentName: "学生15",
-        score: "",
-      },
-    ]
-
   },
   data() {
     return {
@@ -164,13 +97,60 @@ export default {
       subjectName: "",
       students: [],
       finish: 0,
-      noFinish: 15,
+      noFinish: 0,
     }
   },
   methods: {
+    // 获取科目名
+    getSubjectName() {
+      // TODO 根据id查询科目名称
+      this.subjectName = "Java"
+      request
+          .get(`/subject/getSubjectNameById/${this.subjectId}`)
+          .then(resp => {
+            if (resp.code === 200) {
+              this.subjectName = resp.data.subjectName
+              // 获取学生列表
+              this.getStudentList()
+            } else {
+              ElMessage({
+                message: "获取科目失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
+          })
+    },
+    // 查询学生列表
+    getStudentList() {
+      teacherRequest
+          .get(`/result/getStudentScoreList`, {
+            params:{
+              classId: this.classId,
+              subjectId: this.subjectId
+            }
+          })
+          .then(resp => {
+            if (resp.code === 200) {
+              console.log(resp.data)
+              this.students = resp.data
+              this.noFinish = this.students.length
+            } else {
+              ElMessage({
+                message: "获取学生列表失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
+          })
+    },
+    // 返回
     goBack() {
       window.location.href = "../"
     },
+    // 完成输入，触发计算完成情况
     finishInputScore(row) {
       if (row.score > 100) {
         row.score = 100;
@@ -180,29 +160,51 @@ export default {
       this.finish = 0
       this.noFinish = this.students.length
       for (let i = 0; i < this.students.length; i++) {
-        if (this.students[i].score !== '') {
+        if (this.students[i].score !== null && this.students[i].score !== '') {
           this.finish++
           this.noFinish--
         }
       }
     },
+    // 回车确定
     enterFinishInputScore(row, target) {
       this.finishInputScore(row)
       target.blur()
     },
+    // 提交结果
     submit() {
       if (this.noFinish !== 0) {
         ElMessage({
           message: '还有学生未给出分数',
+          showClose: true,
           grouping: true,
           type: 'warning',
         })
       } else {
         // TODO 提交打分
-        ElMessage({
-          type: 'success',
-          message: '提交成功',
-        })
+        teacherRequest
+            .put("/result/modifyStudentsScore", {
+              subjectId: this.subjectId,
+              studentScores: this.students,
+            })
+            .then(resp => {
+              if (resp.code === 200) {
+                ElMessage({
+                  message: '分数提交成功',
+                  showClose: true,
+                  grouping: true,
+                  type: 'success',
+                })
+                this.$router.push("/teacher/announce_results")
+              } else {
+                ElMessage({
+                  message: '分数提交失败',
+                  showClose: true,
+                  grouping: true,
+                  type: 'error',
+                })
+              }
+            })
       }
     }
   }

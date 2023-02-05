@@ -40,7 +40,6 @@ export default {
   inject: ['reload'],
   mounted() {
     this.userIdentity = sessionStorage.getItem("identity");
-    this.userIdentity = "0"
   },
   data() {
     return {
