@@ -21,11 +21,11 @@ request.interceptors.request.use(
             return
         }
         if (identity === '0') {
-            this.$router.push("/student")
+            this.$router.push('/student')
+        }else if (identity === '1'||identity === '-1') {
+            this.$router.push("/teacher")
         } else if (identity === '2') {
             this.$router.push('/professional')
-        } else if(identity === '3') {
-            this.$router.push('/admin')
         }
         config.headers['token'] = token
         return config;

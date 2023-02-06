@@ -25,7 +25,6 @@ import UserListView from "@/views/administrator/UserListView";
 import KnowledgeListView from "@/views/administrator/KnowledgeListView";
 import AddProfessionalView from "@/views/administrator/AddProfessionalView";
 import AddTeacherView from "@/views/administrator/AddTeacherView";
-import AdministratorLoginView from "@/views/administrator/AdministratorLoginView";
 
 const routes = [
     {
@@ -49,11 +48,6 @@ const routes = [
                 name: "forget_pwd",
                 component: ForgetPwdView,
             },
-            {
-                path: "admin",
-                name: "admin_login",
-                component: AdministratorLoginView,
-            }
         ],
     },
     {
@@ -161,6 +155,7 @@ const routes = [
         path: "/admin",
         name: "admin",
         component: AdministratorLayout,
+        redirect: "/admin/user_list/1",
         children: [
             {
                 path: "user_list/:currentPage",

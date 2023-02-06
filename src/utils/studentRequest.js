@@ -20,12 +20,12 @@ request.interceptors.request.use(
             this.$router.push("/")
             return
         }
-        if (identity === '1') {
+        if (identity === '1' || identity === '-1') {
             this.$router.push("/teacher")
         } else if (identity === '2') {
             this.$router.push('/professional')
         } else if (identity === '3') {
-            this.$router.push('/admin/user_list/1')
+            this.$router.push('/admin')
         }
         config.headers['token'] = token
         return config;

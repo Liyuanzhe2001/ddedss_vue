@@ -29,7 +29,7 @@
         </el-icon>
         <span>修改密码</span>
       </el-menu-item>
-      <el-menu-item v-if="userIdentity==='0'" style="color: black" @click="this.codeVisible=true">
+      <el-menu-item v-if="userIdentity==='-1'" style="color: black" @click="this.codeVisible=true">
         <el-icon>
           <Key/>
         </el-icon>

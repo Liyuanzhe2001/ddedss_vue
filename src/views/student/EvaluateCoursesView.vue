@@ -62,7 +62,7 @@ export default {
         this.$router.push('/professional')
         return
       case 3:
-        this.$route.push("/admin/user_list")
+        this.$route.push("/admin")
         return
     }
 

@@ -30,7 +30,7 @@
             <label>了解</label>
             <el-tag
                 style="margin-right: 5px"
-                v-for="tag in teacherInfo.level"
+                v-for="tag in teacherInfo.subjectLevelList"
                 :key="tag"
                 closable
                 type="success"
@@ -60,7 +60,7 @@
             <label>熟练</label>
             <el-tag
                 style="margin-right: 5px"
-                v-for="tag in teacherInfo.level"
+                v-for="tag in teacherInfo.subjectLevelList"
                 :key="tag"
                 closable
                 type="warning"
@@ -90,7 +90,7 @@
             <label>精通</label>
             <el-tag
                 style="margin-right: 5px"
-                v-for="tag in teacherInfo.level"
+                v-for="tag in teacherInfo.subjectLevelList"
                 :key="tag"
                 closable
                 type="danger"
@@ -117,7 +117,7 @@
             </el-button>
           </div>
         </el-form-item>
-        <el-button type="primary" round class="btn">创建</el-button>
+        <el-button type="primary" round class="btn" @click="submit">创建</el-button>
       </div>
     </el-form>
   </div>
@@ -125,9 +125,30 @@
 
 <script>
 import {ElMessage} from "element-plus";
+import adminRequest from "@/utils/adminRequest";
 
 export default {
   name: "AddTeacherView",
+  mounted() {
+    // 判断用户身份
+    const identity = sessionStorage.getItem("identity")
+    switch (identity) {
+      case null:
+        alert("无账号信息，请重新登录")
+        this.$router.push("/")
+        return
+      case '0':
+        this.$router.push("/student")
+        return
+      case '1':
+      case '-1':
+        this.$router.push("/teacher")
+        return
+      case '2':
+        this.$router.push('/professional')
+        return
+    }
+  },
   data() {
     return {
       teacherInfo: {
@@ -135,12 +156,7 @@ export default {
         name: '',
         email: '',
         sex: '',
-        level: [
-          {
-            subjectName: "Java",
-            level: 0,
-          }
-        ]
+        subjectLevelList: []
       },
       knowInputVisible: false,
       skilledInputVisible: false,
@@ -149,11 +165,13 @@ export default {
     }
   },
   methods: {
+    // 删除擅长科目
     subjectClose(tag) {
-      this.teacherInfo.level = this.teacherInfo.level.filter(function (item) {
+      this.teacherInfo.subjectLevelList = this.teacherInfo.subjectLevelList.filter(function (item) {
         return item !== tag
       })
     },
+    // 增加擅长科目
     subjectAdd(n) {
       let input = this.levelInputValue
       if (input === '') {
@@ -161,26 +179,25 @@ export default {
         this.skilledInputVisible = false
         this.masterInputVisible = false
       }
-
-
       let flag = true
       if (input === '') {
         flag = false
       }
       if (flag) {
-        this.teacherInfo.level.forEach(function (value) {
+        this.teacherInfo.subjectLevelList.forEach(function (value) {
           if (value.subjectName === input) {
             ElMessage({
               message: "该科目已存在",
+              showClose: true,
+              grouping: true,
               type: "warning",
             })
             flag = false
           }
         })
       }
-
       if (flag) {
-        this.teacherInfo.level.push({
+        this.teacherInfo.subjectLevelList.push({
           subjectName: input,
           level: n
         })
@@ -196,8 +213,74 @@ export default {
             break
         }
       }
-      this.inputValue = ""
+      this.levelInputValue = ""
     },
+    // 提交
+    submit() {
+      if (this.teacherInfo.number === '') {
+        ElMessage({
+          message: "工号不能为空",
+          showClose: true,
+          grouping: true,
+          type: "warning",
+        })
+      } else if (this.teacherInfo.name === '') {
+        ElMessage({
+          message: "姓名不能为空",
+          showClose: true,
+          grouping: true,
+          type: "warning",
+        })
+      } else if (this.teacherInfo.sex === '') {
+        ElMessage({
+          message: "性别不能为空",
+          showClose: true,
+          grouping: true,
+          type: "warning",
+        })
+      } else if (this.teacherInfo.email === '') {
+        ElMessage({
+          message: "邮箱不能为空",
+          showClose: true,
+          grouping: true,
+          type: "warning",
+        })
+      } else if (this.teacherInfo.email.search("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(.com)")) {
+        ElMessage({
+          message: "邮箱格式错误",
+          showClose: true,
+          grouping: true,
+          type: "warning",
+        })
+      } else {
+        adminRequest
+            .post("/admin/addTeacher", this.teacherInfo)
+            .then(resp => {
+              if (resp.code === 200) {
+                ElMessage({
+                  message: "新增教师成功",
+                  showClose: true,
+                  grouping: true,
+                  type: "success",
+                })
+                this.teacherInfo = {
+                  number: '',
+                  name: '',
+                  email: '',
+                  sex: '',
+                  subjectLevelList: []
+                }
+              } else {
+                ElMessage({
+                  message: "新增教师失败",
+                  showClose: true,
+                  grouping: true,
+                  type: "error",
+                })
+              }
+            })
+      }
+    }
   }
 }
 </script>
@@ -241,7 +324,7 @@ export default {
   margin-bottom: 10px;
 }
 
-.main_part .form_part .right_part .btn{
+.main_part .form_part .right_part .btn {
   width: 140px;
   height: 40px;
   font-size: 17px;

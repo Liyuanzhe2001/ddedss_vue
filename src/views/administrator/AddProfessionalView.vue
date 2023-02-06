@@ -26,6 +26,26 @@
 <script>
 export default {
   name: "AddProfessionalView",
+  mounted() {
+    // 判断用户身份
+    const identity = sessionStorage.getItem("identity")
+    switch (identity) {
+      case null:
+        alert("无账号信息，请重新登录")
+        this.$router.push("/")
+        return
+      case '0':
+        this.$router.push("/student")
+        return
+      case '1':
+      case '-1':
+        this.$router.push("/teacher")
+        return
+      case '2':
+        this.$router.push('/professional')
+        return
+    }
+  },
   data() {
     return {
       professionalInfo: {
