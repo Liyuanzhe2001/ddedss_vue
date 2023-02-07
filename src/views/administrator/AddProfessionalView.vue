@@ -6,6 +6,7 @@
         label-width="120px"
         label-position="top"
         size="default"
+        @keydown.enter="submit"
     >
       <el-form-item label="工号">
         <el-input v-model="professionalInfo.number"/>
@@ -16,7 +17,7 @@
       <el-form-item label="邮箱">
         <el-input v-model="professionalInfo.email"/>
       </el-form-item>
-      <el-button class="btn" round type="primary">
+      <el-button class="btn" round type="primary" @click="submit">
         创建
       </el-button>
     </el-form>
@@ -24,6 +25,9 @@
 </template>
 
 <script>
+import adminRequest from "@/utils/adminRequest";
+import {ElMessage} from "element-plus";
+
 export default {
   name: "AddProfessionalView",
   mounted() {
@@ -45,6 +49,7 @@ export default {
         this.$router.push('/professional')
         return
     }
+
   },
   data() {
     return {
@@ -52,6 +57,64 @@ export default {
         number: '',
         name: '',
         email: '',
+      }
+    }
+  },
+  methods: {
+    submit() {
+      if (this.professionalInfo.number === "") {
+        ElMessage({
+          message: "工号不能为空",
+          showClose: true,
+          grouping: true,
+          type: "error"
+        })
+      } else if (this.professionalInfo.name === "") {
+        ElMessage({
+          message: "姓名不能为空",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+      } else if (this.professionalInfo.email === "") {
+        ElMessage({
+          message: "邮箱不能为空",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+      } else if (this.professionalInfo.email.search("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(.com)")) {
+        ElMessage({
+          message: "邮箱格式错误",
+          showClose: true,
+          grouping: true,
+          type: "warning",
+        })
+      } else {
+        adminRequest
+            .post("/admin/addProfessional", this.professionalInfo)
+            .then(resp => {
+              if (resp.code === 200) {
+                ElMessage({
+                  message: "创建成功",
+                  showClose: true,
+                  grouping: true,
+                  type: "success",
+                })
+                this.professionalInfo = {
+                  number: '',
+                  name: '',
+                  email: '',
+                }
+              } else {
+                ElMessage({
+                  message: "创建失败",
+                  showClose: true,
+                  grouping: true,
+                  type: "error",
+                })
+              }
+            })
       }
     }
   }

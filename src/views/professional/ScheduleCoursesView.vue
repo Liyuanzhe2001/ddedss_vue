@@ -3,40 +3,53 @@
     <div class="left">
       <div class="common">
         <p>选择班级</p>
-        <el-select size="default" v-model="form.classId" placeholder="选择班级">
+        <el-select
+            size="default"
+            v-model="form.classId"
+            placeholder="选择班级"
+            @change="initTime"
+            placement="right"
+        >
           <el-option
               v-for="c in classList"
-              v-bind="c"
-              :label="c.name"
-              :value="c.id"/>
+              :label="c.className"
+              :value="c.classId"/>
         </el-select>
       </div>
       <div class="common">
         <p>选择科目</p>
-        <el-select size="default" v-model="form.subjectId" placeholder="选择科目"
-                   @change="searchTeachers()">
+        <el-select
+            size="default"
+            v-model="form.subjectId"
+            placeholder="选择科目"
+            @change="loadTeacher"
+            placement="right">
           <el-option
               v-for="subject in subjectList"
-              v-bind="subject"
-              :label="subject.name"
-              :value="subject.id"/>
+              :label="subject.subjectName"
+              :value="subject.subjectId"/>
         </el-select>
       </div>
       <div class="common">
         <p>选择教师</p>
-        <el-select size="default" v-model="form.teacherId" placeholder="选择教师" @change="searchTime()">
+        <el-select
+            size="default"
+            v-model="form.teacherId"
+            placeholder="选择教师"
+            @change="initTime"
+            placement="right"
+        >
           <el-option
               v-for="teacher in teacherList"
-              v-bind="teacher"
-              :label="teacher.name"
-              :value="teacher.id"/>
+              :label="teacher.teacherName"
+              :value="teacher.teacherId"/>
         </el-select>
       </div>
     </div>
 
     <div class="right">
       <p>选择时间</p>
-      <el-table :data="teacherTime" style="width: 300px">
+      <el-table :data="lessonTime" style="width: 300px">
         <el-table-column prop="Monday" label="星期一" width="60">
           <template #default="scope">
             <el-button
@@ -118,7 +131,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-button class="submit_btn" type="primary" round>
+      <el-button class="submit_btn" type="primary" round @click="submit">
         提交
       </el-button>
     </div>
@@ -126,92 +139,49 @@
 </template>
 
 <script>
+import professionalRequest from "@/utils/professionalRequest";
+import {ElMessage} from "element-plus";
+
 export default {
   name: "ScheduleCoursesView",
+  mounted() {
+    // 加载所有班级
+    professionalRequest
+        .get("/class/getAllClass")
+        .then(resp => {
+          if (resp.code === 200) {
+            this.classList = resp.data
+          } else {
+            ElMessage({
+              message: "获取班级列表失败",
+              showClose: true,
+              grouping: true,
+              type: "error"
+            })
+          }
+        })
+    // 获加载所有科目
+    professionalRequest
+        .get("/subject/getAllSubject")
+        .then(resp => {
+          if (resp.code === 200) {
+            this.subjectList = resp.data
+          } else {
+            ElMessage({
+              message: "获取科目信息失败",
+              showClose: true,
+              grouping: true,
+              type: "error"
+            })
+          }
+        })
+  },
   data() {
     return {
-      classList: [
-        {
-          id: 1,
-          name: "B200101",
-        },
-        {
-          id: 2,
-          name: "B200102",
-        },
-        {
-          id: 3,
-          name: "B200103",
-        },
-        {
-          id: 4,
-          name: "B200104",
-        },
-        {
-          id: 5,
-          name: "B200105",
-        },
-        {
-          id: 6,
-          name: "B200106",
-        },
-        {
-          id: 7,
-          name: "B200107",
-        },
-        {
-          id: 8,
-          name: "B200108",
-        },
-        {
-          id: 9,
-          name: "B200109",
-        },
-        {
-          id: 10,
-          name: "B200110",
-        },
-      ],
-      subjectList: [
-        {
-          id: 1,
-          name: "Java",
-        },
-        {
-          id: 2,
-          name: "C++",
-        },
-        {
-          id: 3,
-          name: "C",
-        },
-        {
-          id: 4,
-          name: "Golang",
-        },
-        {
-          id: 5,
-          name: "Python",
-        },
-        {
-          id: 6,
-          name: "C#",
-        },
-        {
-          id: 7,
-          name: "Rust",
-        },
-        {
-          id: 8,
-          name: "R",
-        },
-        {
-          id: 9,
-          name: "Scala",
-        }
-      ],
+      classList: [],
+      subjectList: [],
       teacherList: [],
-      teacherTime: [
+      lessonTime: [
         {
           Monday: 0,
           Tuesday: 0,
@@ -246,75 +216,52 @@ export default {
         subjectId: '',
         teacherId: '',
         weekday: '',
-        lesson: '',
+        section: '',
       }
     }
-  },
+  }
+  ,
   methods: {
-    searchTeachers() {
-      console.log("搜索课程相关老师数据")
-      this.teacherList = [
-        {
-          id: 1,
-          name: "教师1",
-        },
-        {
-          id: 2,
-          name: "教师2",
-        },
-        {
-          id: 3,
-          name: "教师3",
-        },
-        {
-          id: 4,
-          name: "教师4",
-        },
-        {
-          id: 5,
-          name: "教师5",
-        },
-        {
-          id: 6,
-          name: "教师6",
-        },
-        {
-          id: 7,
-          name: "教师7",
-        },
-        {
-          id: 8,
-          name: "教师8",
-        },
-        {
-          id: 9,
-          name: "教师9",
-        },
-        {
-          id: 10,
-          name: "教师10",
-        },
-        {
-          id: 11,
-          name: "教师11",
-        },
-      ]
+    // 选择教师
+    selectTeacher() {
+      if (this.form.subjectId === "") {
+        ElMessage({
+          message: "请先选择科目",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+      } else {
+        this.initTime()
+      }
     },
-    searchTime() {
-      console.log("搜索教师课程安排时间")
-      this.teacherTime = [
-        {
-          Monday: 1,
-          Tuesday: 0,
-          Wednesday: 0,
-          Thursday: 1,
-          Friday: 0,
-        },
+    // 加载教师
+    loadTeacher() {
+      if (this.form.subjectId !== "") {
+        professionalRequest
+            .get(`/teacherSubject/getTeachersBySubjectId/${this.form.subjectId}`)
+            .then(resp => {
+              if (resp.code === 200) {
+                this.teacherList = resp.data
+              } else {
+                ElMessage({
+                  message: "获取教师信息失败",
+                  showClose: true,
+                  grouping: true,
+                  type: "error"
+                })
+              }
+            })
+      }
+    },
+    // 初始化课程时间
+    initTime() {
+      this.lessonTime = [
         {
           Monday: 0,
-          Tuesday: 1,
-          Wednesday: 1,
-          Thursday: 1,
+          Tuesday: 0,
+          Wednesday: 0,
+          Thursday: 0,
           Friday: 0,
         },
         {
@@ -322,46 +269,145 @@ export default {
           Tuesday: 0,
           Wednesday: 0,
           Thursday: 0,
-          Friday: 1,
+          Friday: 0,
         },
         {
           Monday: 0,
-          Tuesday: 1,
+          Tuesday: 0,
+          Wednesday: 0,
+          Thursday: 0,
+          Friday: 0,
+        },
+        {
+          Monday: 0,
+          Tuesday: 0,
           Wednesday: 0,
           Thursday: 0,
           Friday: 0,
         },
       ]
+      if (this.form.teacherId !== "") {
+        this.loadTeacherTime()
+      }
+      if (this.form.classId !== "") {
+        this.loadClassTime()
+      }
     },
+    // 加载班级课程安排时间
+    loadClassTime() {
+      professionalRequest
+          .get(`/lesson/getLessonsByClassId/${this.form.classId}`)
+          .then(resp => {
+            if (resp.code === 200) {
+              for (let i = 0; i < resp.data.length; i++) {
+                // 第几节课
+                let section = resp.data[i].section
+                // 星期几
+                let weekday = resp.data[i].weekday
+                switch (weekday) {
+                  case 1:
+                    this.lessonTime[section - 1].Monday = 1
+                    break
+                  case 2:
+                    this.lessonTime[section - 1].Tuesday = 1
+                    break
+                  case 3:
+                    this.lessonTime[section - 1].Wednesday = 1
+                    break
+                  case 4:
+                    this.lessonTime[section - 1].Thursday = 1
+                    break
+                  case 5:
+                    this.lessonTime[section - 1].Friday = 1
+                    break
+                }
+              }
+            } else {
+              ElMessage({
+                message: "获取课程时间失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
+          })
+    },
+    // 加载教师课程安排时间
+    loadTeacherTime() {
+      console.log("进入")
+      professionalRequest
+          .get(`/lesson/getLessonsByTeacherId/${this.form.teacherId}`)
+          .then(resp => {
+            console.log(resp)
+            if (resp.code === 200) {
+              for (let i = 0; i < resp.data.length; i++) {
+                // 第几节课
+                let section = resp.data[i].section
+                // 星期几
+                let weekday = resp.data[i].weekday
+                switch (weekday) {
+                  case 1:
+                    this.lessonTime[section - 1].Monday = 1
+                    break
+                  case 2:
+                    this.lessonTime[section - 1].Tuesday = 1
+                    break
+                  case 3:
+                    this.lessonTime[section - 1].Wednesday = 1
+                    break
+                  case 4:
+                    this.lessonTime[section - 1].Thursday = 1
+                    break
+                  case 5:
+                    this.lessonTime[section - 1].Friday = 1
+                    break
+                }
+              }
+            } else {
+              ElMessage({
+                message: "获取课程时间失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
+          })
+    },
+    // 选择课程时间
     selectTime(weekday, scope) {
-      console.log(scope.$index)
-
+      if (this.form.classId === '') {
+        ElMessage({
+          message: "请先选择班级",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+        return
+      }
       if (this.form.weekday !== null || this.form.weekday !== '') {
-        let weekday = this.teacherTime[this.form.lesson - 1];
-        console.log(weekday)
         switch (this.form.weekday) {
           case 1:
-            this.teacherTime[this.form.lesson - 1].Monday = 0;
+            this.lessonTime[this.form.section - 1].Monday = 0;
             break;
           case 2:
-            this.teacherTime[this.form.lesson - 1].Tuesday = 0;
+            this.lessonTime[this.form.section - 1].Tuesday = 0;
             break;
           case 3:
-            this.teacherTime[this.form.lesson - 1].Wednesday = 0;
+            this.lessonTime[this.form.section - 1].Wednesday = 0;
             break;
           case 4:
-            this.teacherTime[this.form.lesson - 1].Thursday = 0;
+            this.lessonTime[this.form.section - 1].Thursday = 0;
             break;
           case 5:
-            this.teacherTime[this.form.lesson - 1].Friday = 0;
+            this.lessonTime[this.form.section - 1].Friday = 0;
             break;
         }
       }
 
       let row = scope.row
-      let lesson = scope.$index + 1
+      let section = scope.$index + 1
       this.form.weekday = weekday
-      this.form.lesson = lesson
+      this.form.section = section
       switch (weekday) {
         case 1:
           row.Monday = 2;
@@ -378,6 +424,40 @@ export default {
         case 5:
           row.Friday = 2;
           break;
+      }
+    },
+    // 提交
+    submit() {
+      if (this.form.classId === "") {
+        ElMessage({
+          message: "请选择班级",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+      } else if (this.form.subjectId === "") {
+        ElMessage({
+          message: "请选择科目",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+      } else if (this.form.teacherId === "") {
+        ElMessage({
+          message: "请选择教师",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+      } else if (this.form.weekday === "" || this.form.section === "") {
+        ElMessage({
+          message: "请选择课程时间",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+      } else {
+        console.log(this.form)
       }
     }
   }

@@ -6,6 +6,7 @@
         label-width="120px"
         label-position="top"
         size="default"
+        @keydown.enter="submit"
     >
       <div class="left_part">
         <el-form-item label="工号">

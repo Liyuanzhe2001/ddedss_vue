@@ -77,7 +77,6 @@ export default {
       messageNum: "",
       dialogVisible: false,
       user: {
-        id: 1,
         oldPassword: "",
         confirmPassword: "",
         newPassword: "",

@@ -8,9 +8,9 @@
           style="border-right: none"
           @select="handleSelect"
       >
-        <el-menu-item :index="c.id" @click="selectClass(c)">
+        <el-menu-item :index="c.classId" @click="selectClass(c)">
           <span
-              v-text="c.name"
+              v-text="c.className"
               style="font-size: 17px"
           />
         </el-menu-item>
@@ -20,8 +20,8 @@
       <div v-if="classType!==''&&classMajor!==''">
         <el-table :data="classStudents" height="370" class="table_part">
           <el-table-column type="index" label="#" width="60"/>
-          <el-table-column prop="name" label="姓名" width="60"/>
-          <el-table-column prop="sex" label="性别" width="60"/>
+          <el-table-column prop="studentName" label="姓名" width="60"/>
+          <el-table-column prop="studentSex" label="性别" width="60"/>
         </el-table>
         <div class="label_part">
           <span>
@@ -48,135 +48,33 @@
 </template>
 
 <script>
+import professionalRequest from "@/utils/professionalRequest";
+import {ElMessage} from "element-plus";
+
 export default {
   name: "StudentListView",
+  mounted() {
+    // 获取所有班级
+    professionalRequest
+        .get("/class/getAllClass")
+        .then(resp => {
+          if (resp.code === 200) {
+            this.classList = resp.data
+          } else {
+            ElMessage({
+              message: "获取班级列表失败",
+              showClose: true,
+              grouping: true,
+              type: "error"
+            })
+          }
+        })
+  },
   data() {
     return {
       active: '',
-      classList: [
-        {
-          id: 1,
-          name: "B200101",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 2,
-          name: "B200102",
-          type: 1,
-          major: "人工智能",
-        },
-        {
-          id: 3,
-          name: "B200103",
-          type: 1,
-          major: "软件工程",
-        },
-        {
-          id: 4,
-          name: "B200104",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 5,
-          name: "B200105",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 6,
-          name: "B200106",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 7,
-          name: "B200107",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 8,
-          name: "B200108",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 9,
-          name: "B200109",
-          type: 1,
-          major: "软件工程",
-        },
-        {
-          id: 10,
-          name: "B200110",
-          type: 1,
-          major: "软件工程",
-        },
-      ],
-      classStudents: [
-        {
-          name: "学生1",
-          sex: "男",
-        },
-        {
-          name: "学生2",
-          sex: "女",
-        },
-        {
-          name: "学生3",
-          sex: "男",
-        },
-        {
-          name: "学生4",
-          sex: "男",
-        },
-        {
-          name: "学生5",
-          sex: "男",
-        },
-        {
-          name: "学生6",
-          sex: "男",
-        },
-        {
-          name: "学生7",
-          sex: "男",
-        },
-        {
-          name: "学生8",
-          sex: "男",
-        },
-        {
-          name: "学生9",
-          sex: "男",
-        },
-        {
-          name: "学生10",
-          sex: "男",
-        },
-        {
-          name: "学生11",
-          sex: "男",
-        },
-        {
-          name: "学生12",
-          sex: "男",
-        },
-        {
-          name: "学生13",
-          sex: "男",
-        },
-        {
-          name: "学生14",
-          sex: "男",
-        },
-        {
-          name: "学生15",
-          sex: "男",
-        },
-      ],
+      classList: [],
+      classStudents: [],
       classType: '',
       classMajor: '',
       studentNum: '',
@@ -185,16 +83,46 @@ export default {
     }
   },
   methods: {
+    // 点击高亮
     handleSelect(key, keyPath) {
       this.active = key
     },
+    // 选择班级
     selectClass(c) {
-      this.classType = c.type
+      this.classType = c.classType
       this.classMajor = c.major
-      // 查询班级人数，男性人数，女性人数
-      this.studentNum = 40
-      this.boyNum = 30
-      this.girlNum = 10
+      // 查询班级学生信息
+      professionalRequest
+          .get(`/student/queryStudentListByClassId/${c.classId}`)
+          .then(resp => {
+            if (resp.code === 200) {
+              this.classStudents = resp.data
+              this.getNumOfBoyAndGirl()
+            } else {
+              ElMessage({
+                message: "获取学生信息失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
+          })
+    },
+    // 查询班级人数，男性人数，女性人数
+    getNumOfBoyAndGirl() {
+      this.boyNum = 0
+      this.girlNum = 0
+      this.classStudents.forEach(student => {
+        if (student.studentSex === 0) {
+          student.studentSex = '女'
+          this.girlNum += 1
+        } else {
+          student.studentSex = '男'
+          this.boyNum += 1
+        }
+      })
+      this.studentNum = this.classStudents.length
+
     }
   }
 }

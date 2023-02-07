@@ -48,11 +48,11 @@
       @keyup.enter="changePwd()"
   >
     <label class="password_label" for="oldP">旧密码</label>
-    <el-input id="oldP" v-model="user.oldPassword" style="width: 200px;"/>
+    <el-input id="oldP" show-password v-model="user.oldPassword" style="width: 200px;"/>
     <label class="password_label" for="newP">新密码</label>
-    <el-input id="newP" v-model="user.newPassword" style="width: 200px;"/>
+    <el-input id="newP" show-password v-model="user.newPassword" style="width: 200px;"/>
     <label class="password_label" for="confirmP">确认密码</label>
-    <el-input id="confirmP" v-model="user.confirmPassword" style="width: 200px;"/>
+    <el-input id="confirmP" show-password v-model="user.confirmPassword" style="width: 200px;"/>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="changePwdVisible = false">取消</el-button>
@@ -67,7 +67,7 @@
       v-model="evaluateVisible"
       title="预定课程评价"
       width="400px"
-      @open="cleanEvaluateTime()"
+      @open="initEvaluate()"
       @keyup.enter="changePwd()"
   >
     <el-date-picker
@@ -92,7 +92,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import request from "@/utils/request";
+import professionalRequest from "@/utils/professionalRequest";
 
 export default {
   name: "Header",
@@ -106,7 +106,6 @@ export default {
 
       changePwdVisible: false,
       user: {
-        id: 1,
         oldPassword: "",
         confirmPassword: "",
         newPassword: "",
@@ -121,76 +120,112 @@ export default {
     }
   },
   methods: {
+    // 清空密码输入框
     cleanUserPassword() {
       this.user.oldPassword = this.user.confirmPassword = this.user.newPassword = ''
     },
     // 修改密码
-    changePwd() {
+    judgePwd() {
       // 分别判断是否为空
       if (this.user.oldPassword === '') {
         ElMessage({
           message: '旧密码不能为空',
-          type: 'warning',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
         })
-      } else if (this.user.newPassword === '') {
+      } else {
+        // TODO 判断旧密码是否正确
+        professionalRequest
+            .post("/user/judgePassword", {
+              "password": this.user.oldPassword
+            })
+            .then(resp => {
+              if (resp.code === 200) {
+                // 密码正确 进行修改密码
+                this.changePwd()
+              } else {
+                // 密码错误
+                ElMessage({
+                  message: '旧密码错误',
+                  showClose: true,
+                  grouping: true,
+                  type: 'error',
+                })
+              }
+            })
+      }
+    },
+    // 修改密码
+    changePwd() {
+      if (this.user.newPassword === '') {
         ElMessage({
           message: '新密码不能为空',
-          type: 'warning',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
         })
       } else if (this.user.confirmPassword === '') {
         ElMessage({
           message: '请再次输入新密码',
-          type: 'warning',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
+        })
+      } else if (this.user.confirmPassword !== this.user.newPassword) {
+        // 判断两次输入是否相同
+        ElMessage({
+          message: '请输入相同的新密码',
+          showClose: true,
+          grouping: true,
+          type: 'warning'
+        })
+      } else if (this.user.newPassword.length > 32 || this.user.newPassword.length < 6) {
+        ElMessage({
+          message: "密码长度应为 6~32 位",
+          showClose: true,
+          grouping: true,
+          type: "warning",
         })
       } else {
-        // 判断旧密码是否正确
-        if (this.user.oldPassword !== "1234") {
-          ElMessage({
-            message: '旧密码错误',
-            type: 'warning',
-          })
-        } else if (this.user.confirmPassword !== this.user.newPassword) {
-          // 判断两次输入是否相同
-          ElMessage({
-            message: '请输入相同的新密码',
-            type: 'warning',
-          })
-        } else {
-          // TODO 修改密码
-          request
-              .put("/user/update_password", {
-                "password": this.user.newPassword
-              })
-              .then(resp => {
-                alert("修改成功，请重新登录")
+        // TODO 修改密码
+        professionalRequest
+            .put("/user/updatePassword", {
+              "password": this.user.newPassword
+            })
+            .then(resp => {
+              console.log(resp)
+              if (resp.code === 200) {
+                alert("密码修改成功，请重新登录")
                 // TODO 清除数据 返回登录界面 session token
+                sessionStorage.clear()
                 window.location.href = "/"
-              })
-        }
+              } else {
+                ElMessage({
+                  message: "密码修改失败",
+                  showClose: true,
+                  grouping: true,
+                  type: "error"
+                })
+              }
+            })
       }
     },
-    // 打开课程评价设置窗口
-    // 清空输入时间框
-    cleanEvaluateTime() {
-      this.time.start = ''
-      this.time.end = ''
+    // 初始化评估时间（如果未设置评估时间，start,end设置为空）
+    initEvaluate() {
     },
-    // 提交，开始评估
+    // 提交，设定开始评估和结束时间
     startEvaluate() {
       this.time.start = this.inputTime[0]
       this.time.end = this.inputTime[1]
-      ElMessage({
-        message: "预定评估成功",
-        type: "success"
-      })
+      console.log(this.time)
       this.evaluateVisible = false
     },
     // 退出登录
     exit() {
-      // 清除用户信息
-      // ...
-      // 返回登录界面
-      window.location.href = "/login"
+      sessionStorage.clear()
+      // TODO 清除数据 返回登录界面 session token
+      window.location.href = "/"
     }
   }
 }
