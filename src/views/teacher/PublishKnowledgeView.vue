@@ -73,7 +73,7 @@ export default {
       case '2':
         this.$router.push('/professional')
         return
-      case 3:
+      case '3':
         this.$route.push("/admin")
         return
     }

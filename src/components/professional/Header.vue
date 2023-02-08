@@ -99,7 +99,7 @@ export default {
   data() {
     return {
       logoSrc: require("@/assets/images/LOGO.png"),
-      username: "张三",
+      username: sessionStorage.getItem("username"),
       teacherImg: require("@/assets/images/teacher.jpeg"),
       drawer: false,
       messageNum: "",

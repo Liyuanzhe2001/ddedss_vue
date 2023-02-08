@@ -3,15 +3,15 @@
     <div class="left_part">
       <el-scrollbar class="class_menu" height="380">
         <el-menu
-            :default-active="classActive"
+            :default-active="classId"
             v-for="c in classList"
             v-bind="c"
             style="border-right: none"
             @select="handleClassSelect"
         >
-          <el-menu-item :index="c.id">
+          <el-menu-item :index="c.classId">
           <span
-              v-text="c.name"
+              v-text="c.className"
               style="font-size: 17px"
           />
           </el-menu-item>
@@ -19,16 +19,16 @@
       </el-scrollbar>
       <el-scrollbar class="exam_menu" height="380">
         <el-menu
-            :default-active="examActive"
+            :default-active="examId"
             v-for="exam in examList"
             v-bind="exam"
             style="border-right: none"
             @select="handleExamSelect"
         >
-          <el-menu-item :index="exam.id">
+          <el-menu-item :index="exam.examId">
           <span
-              v-text="exam.name"
-              style="font-size: 17px"
+              v-text="exam.examName"
+              style="font-size: 15px"
           />
           </el-menu-item>
         </el-menu>
@@ -53,171 +53,125 @@
 
 <script>
 import * as echarts from "echarts";
+import professionalRequest from "@/utils/professionalRequest";
+import {ElMessage} from "element-plus";
 
 export default {
   name: "ResultsAnalysisView",
+  mounted() {
+    // 判断用户身份
+    const identity = sessionStorage.getItem("identity")
+    switch (identity) {
+      case null:
+        alert("无账号信息，请重新登录")
+        this.$router.push("/")
+        return
+      case '0':
+        this.$router.push('/student')
+        return
+      case '1':
+      case '-1':
+        this.$router.push("/teacher")
+        return
+      case '3':
+        this.$route.push("/admin")
+        return
+    }
+
+    // 获取所有班级
+    professionalRequest
+        .get("/class/getAllClass")
+        .then(resp => {
+          if (resp.code === 200) {
+            this.classList = resp.data
+          } else {
+            ElMessage({
+              message: "获取班级列表失败",
+              showClose: true,
+              grouping: true,
+              type: "error"
+            })
+          }
+        })
+
+  },
   data() {
     return {
       classActive: '',
       examActive: '',
-      classList: [
-        {
-          id: 1,
-          name: "B200101",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 2,
-          name: "B200102",
-          type: 1,
-          major: "人工智能",
-        },
-        {
-          id: 3,
-          name: "B200103",
-          type: 1,
-          major: "软件工程",
-        },
-        {
-          id: 4,
-          name: "B200104",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 5,
-          name: "B200105",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 6,
-          name: "B200106",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 7,
-          name: "B200107",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 8,
-          name: "B200108",
-          type: 0,
-          major: "软件工程",
-        },
-        {
-          id: 9,
-          name: "B200109",
-          type: 1,
-          major: "软件工程",
-        },
-        {
-          id: 10,
-          name: "B200110",
-          type: 1,
-          major: "软件工程",
-        },
-      ],
+      classList: [],
       examList: [],
       subjectList: [],
-      classId: '1',
-      examId: '1',
+      classId: '',
+      examId: '',
     }
   },
   methods: {
+    // 选择班级
     handleClassSelect(key, keyPath) {
-      this.classActive = key
       this.classId = key
-      // 获取该班级的成绩
-      this.examList = [
-        {
-          id: 1,
-          name: "2001年上半年期末",
-        },
-        {
-          id: 2,
-          name: "2001年下半年期末",
-        },
-        {
-          id: 3,
-          name: "2002年上半年期末",
-        },
-        {
-          id: 4,
-          name: "2002年下半年期末",
-        },
-        {
-          id: 5,
-          name: "2003年上半年期末",
-        },
-        {
-          id: 6,
-          name: "2003年下半年期末",
-        },
-        {
-          id: 7,
-          name: "2004年上半年期末",
-        },
-        {
-          id: 8,
-          name: "2004年下半年期末",
-        },
-        {
-          id: 9,
-          name: "2005年上半年期末",
-        },
-        {
-          id: 10,
-          name: "2005年下半年期末",
-        },
-      ]
+      this.examId = ''
+      this.subjectList = []
+      // 获取该班级的考试列表
+      professionalRequest
+          .get(`/exam/getAllExamByClassId/${key}`)
+          .then(resp => {
+            console.log(resp)
+            // examId: 1, year: 2018, month: 6
+            if (resp.code === 200) {
+              this.examList = []
+              const examInfo = resp.data
+              examInfo.forEach(exam => {
+                let i;
+                if (exam.month >= 3 && exam.month <= 8) {
+                  i = "下"
+                } else {
+                  i = "上"
+                }
+                const examName = exam.year + "年" + i + "学期期末考试"
+                this.examList.push({
+                  "examId": exam.examId,
+                  "examName": examName
+                })
+              })
+            } else {
+              ElMessage({
+                message: "获取考试列表失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
+          })
     },
+    // 选择考试
     handleExamSelect(key, keyPath) {
-      this.examActive = key
       this.examId = key
-      this.subjectList = [
-        {
-          name: "Java",
-          excellent: 20,
-          general: 10,
-          failed: 2,
-        },
-        {
-          name: "C",
-          excellent: 14,
-          general: 9,
-          failed: 9,
-        },
-        {
-          name: "Go",
-          excellent: 1,
-          general: 29,
-          failed: 2,
-        },
-        {
-          name: "PHP",
-          excellent: 11,
-          general: 12,
-          failed: 9,
-        },
-        {
-          name: "Rust",
-          excellent: 32,
-          general: 0,
-          failed: 0,
-        },
-        {
-          name: "C++",
-          excellent: 18,
-          general: 4,
-          failed: 10,
-        },
-      ]
-      this.renderChart()
+      professionalRequest
+          .get("/result/getExaminationResults", {
+            params: {
+              classId: this.classId,
+              examId: key
+            }
+          })
+          .then(resp => {
+            if (resp.code === 200) {
+              if (resp.data.length === 0) {
+                alert("该场考试暂未出成绩")
+                return
+              }
+              this.subjectList = resp.data
+              this.renderChart()
+            } else {
+              ElMessage({
+                message: "获取成绩情况失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
+            console.log(resp)
+          })
     },
     renderChart() {
       for (let i = 0; i < this.subjectList.length; i++) {
@@ -227,7 +181,7 @@ export default {
         let myChart = echarts.init(div);
         let option = {
           title: {
-            text: subject.name,
+            text: subject.subjectName,
             left: 'center'
           },
           tooltip: {
@@ -245,15 +199,15 @@ export default {
               data: [
                 {
                   name: "优秀 80-100",
-                  value: subject.excellent
+                  value: subject.good
                 },
                 {
                   name: "一般 60-80",
-                  value: subject.general
+                  value: subject.mid
                 },
                 {
                   name: "不及格 -60",
-                  value: subject.failed
+                  value: subject.bad
                 }
               ]
             }
