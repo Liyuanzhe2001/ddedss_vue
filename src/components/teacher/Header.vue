@@ -177,8 +177,7 @@
       v-model="codeVisible"
       title="创建注册码"
       width="400px"
-      @open="cleanUserPassword()"
-      @keyup.enter=""
+      @close="closeCode"
   >
     <el-select
         style="width: 100px"
@@ -203,7 +202,7 @@
         注册码还有{{ code.day }}天{{ code.hour }}时过期 <br>
       </div>
       <div>
-        {{ code.text }}
+        {{ code.invite }}
       </div>
     </div>
   </el-dialog>
@@ -226,34 +225,24 @@ export default {
 
     // 判断辅导员身份
     this.userIdentity = sessionStorage.getItem("identity");
-    if (this.userIdentity === "0") {
-      this.classList = [
-        {
-          classId: 1,
-          className: "B200101",
-        },
-        {
-          classId: 2,
-          className: "B200102",
-        },
-        {
-          classId: 3,
-          className: "B200103",
-        },
-        {
-          classId: 4,
-          className: "B200104",
-        },
-        {
-          classId: 5,
-          className: "B200105",
-        },
-        {
-          classId: 6,
-          className: "B200106",
-        },
-      ]
-      this.selectClassId = this.classList[0].classId
+    // 如果是辅导员，加载管理的班级
+    if (this.userIdentity === "-1") {
+      // 获取辅导员管理的班级
+      teacherRequest
+          .get("/instructor/getManagedClass")
+          .then(resp => {
+            if (resp.code === 200) {
+              this.classList = resp.data
+              this.selectClassId = this.classList[0].classId
+            } else {
+              ElMessage({
+                message: "获取班级信息失败",
+                showClose: true,
+                grouping: true,
+                type: "error",
+              })
+            }
+          })
     }
   },
   data() {
@@ -283,9 +272,9 @@ export default {
       selectClassId: '',
       classList: [],
       code: {
-        day: 6,
-        hour: 20,
-        text: "uwievbwoinapjocpqownwei",
+        day: '',
+        hour: '',
+        invite: '',
       }
     }
   },
@@ -322,7 +311,6 @@ export default {
       }
       if (flag) {
         this.subjectLevel.forEach(function (value) {
-          console.log(value)
           if (value.subjectName === input) {
             ElMessage({
               message: "该科目已存在",
@@ -456,7 +444,6 @@ export default {
               "password": this.user.newPassword
             })
             .then(resp => {
-              console.log(resp)
               if (resp.code === 200) {
                 alert("密码修改成功，请重新登录")
                 // TODO 清除数据 返回登录界面 session token
@@ -473,11 +460,28 @@ export default {
             })
       }
     },
+    // 关闭创建注册码窗口
+    closeCode(){
+      document.getElementById("displayCode").style.display = "none"
+    },
     // 创建注册码
     createCode() {
-      // TODO 创建注册码
-      console.log(this.selectClassId)
-      document.getElementById("displayCode").style.display = "block"
+      // TODO 创建注册码 或 查找注册码
+      teacherRequest
+          .get(`/teacher/createInvite/${this.selectClassId}`)
+          .then(resp=>{
+            if(resp.code === 200) {
+              this.code = resp.data
+              document.getElementById("displayCode").style.display = "block"
+            }else {
+              ElMessage({
+                message: '获取注册码失败',
+                showClose: true,
+                grouping: true,
+                type: 'error'
+              })
+            }
+          })
     },
     // 退出登录
     exit() {
