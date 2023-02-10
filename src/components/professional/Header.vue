@@ -27,7 +27,7 @@
         <el-icon>
           <SetUp/>
         </el-icon>
-        <span>开始课程评价</span>
+        <span>预定课程评价</span>
       </el-menu-item>
     </el-menu>
     <el-menu class="drawer_foot_part">
@@ -68,7 +68,6 @@
       title="预定课程评价"
       width="400px"
       @open="initEvaluate()"
-      @keyup.enter="changePwd()"
   >
     <el-date-picker
         v-model="inputTime"
@@ -194,7 +193,6 @@ export default {
               "password": this.user.newPassword
             })
             .then(resp => {
-              console.log(resp)
               if (resp.code === 200) {
                 alert("密码修改成功，请重新登录")
                 // TODO 清除数据 返回登录界面 session token
@@ -213,13 +211,55 @@ export default {
     },
     // 初始化评估时间（如果未设置评估时间，start,end设置为空）
     initEvaluate() {
+      professionalRequest
+          .get("/evaluate/getEvaluationTime")
+          .then(resp => {
+            if (resp.code === 200) {
+              this.time = resp.data
+            } else {
+              ElMessage({
+                message: "获取评价时间失败",
+                showClose: true,
+                grouping: true,
+                type: "error",
+              })
+            }
+          })
     },
     // 提交，设定开始评估和结束时间
     startEvaluate() {
       this.time.start = this.inputTime[0]
       this.time.end = this.inputTime[1]
-      console.log(this.time)
-      this.evaluateVisible = false
+      let now = new Date()
+      if (now > this.time.start) {
+        ElMessage({
+          message: "预定时间不得早于当前时间",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+        return
+      }
+      professionalRequest
+          .post("/evaluate/setCourseEvaluation", this.time)
+          .then(resp => {
+            if (resp.code === 200) {
+              ElMessage({
+                message: "预定成功",
+                showClose: true,
+                grouping: true,
+                type: "success"
+              })
+              this.evaluateVisible = false
+            } else {
+              ElMessage({
+                message: "预定失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
+          })
     },
     // 退出登录
     exit() {
