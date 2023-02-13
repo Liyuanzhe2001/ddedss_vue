@@ -50,7 +50,6 @@
 <script>
 
 import {ElMessage, ElMessageBox} from "element-plus";
-import request from "@/utils/request";
 import teacherRequest from "@/utils/teacherRequest";
 
 export default {
@@ -110,7 +109,7 @@ export default {
     getSubjectName() {
       // TODO 根据id查询科目名称
       this.subjectName = "Java"
-      request
+      teacherRequest
           .get(`/subject/getSubjectNameById/${this.subjectId}`)
           .then(resp => {
             if (resp.code === 200) {

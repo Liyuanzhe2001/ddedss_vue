@@ -92,6 +92,7 @@
 <script>
 import {ElMessage} from "element-plus";
 import professionalRequest from "@/utils/professionalRequest";
+import userRequest from "@/utils/userRequest";
 
 export default {
   name: "Header",
@@ -263,9 +264,29 @@ export default {
     },
     // 退出登录
     exit() {
-      sessionStorage.clear()
-      // TODO 清除数据 返回登录界面 session token
-      window.location.href = "/"
+      userRequest
+          .post("/user/exit")
+          .then(resp => {
+            if(resp.code === 200) {
+              ElMessage({
+                message: "退出登录成功",
+                showClose: true,
+                grouping: true,
+                type: "success"
+              })
+              sessionStorage.clear()
+              // TODO 清除数据 返回登录界面 session token
+              window.location.href = "/"
+            }else {
+              ElMessage({
+                message: "退出登录失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
+
+          })
     }
   }
 }

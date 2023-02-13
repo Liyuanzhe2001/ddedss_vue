@@ -37,7 +37,6 @@
 
 <script>
 import * as echarts from "echarts";
-import request from "@/utils/request";
 import teacherRequest from "@/utils/teacherRequest";
 import {ElMessage} from "element-plus";
 
@@ -63,7 +62,7 @@ export default {
     }
 
     // 判断有没有成绩公布通知
-    request
+    teacherRequest
         .get("/result/haveAnnounceResultsNotice")
         .then(resp => {
           if (resp.code === 200) {

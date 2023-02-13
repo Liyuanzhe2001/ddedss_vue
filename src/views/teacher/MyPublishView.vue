@@ -34,7 +34,6 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import request from "@/utils/request";
 import teacherRequest from "@/utils/teacherRequest";
 
 export default {

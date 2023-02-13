@@ -184,6 +184,7 @@ export default {
                   grouping: true,
                   type: "warning",
                 })
+                this.loading = false
                 this.$refs.ValidCode.refreshCode()
               }
             })

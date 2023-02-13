@@ -41,7 +41,6 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import request from "@/utils/request";
 import studentRequest from "@/utils/studentRequest";
 
 export default {
@@ -115,7 +114,7 @@ export default {
     },
     // 2. 通过班级id查询教师课程列表
     getTeacherSubjectList(classId) {
-      request
+      studentRequest
           .get(`/teacher/queryTeacherListByClassId/${classId}`)
           .then(resp => {
             this.teachers = resp.data

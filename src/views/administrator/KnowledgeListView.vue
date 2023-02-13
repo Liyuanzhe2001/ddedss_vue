@@ -32,9 +32,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import request from "@/utils/request";
 import adminRequest from "@/utils/adminRequest";
-import studentRequest from "@/utils/studentRequest";
 
 export default {
   name: "KnowledgeListView",
