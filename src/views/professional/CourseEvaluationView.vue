@@ -57,7 +57,6 @@ export default {
 
     this.search()
 
-
   },
   data() {
     return {

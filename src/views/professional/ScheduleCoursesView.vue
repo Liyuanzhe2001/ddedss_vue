@@ -36,7 +36,8 @@
             size="default"
             v-model="form.teacherId"
             placeholder="选择教师"
-            @change="selectTeacher"
+            @click="selectTeacher"
+            @change="initTime"
             placement="right"
         >
           <el-option
@@ -231,11 +232,11 @@ export default {
         },
       ],
       form: {
-        classId: '',
-        subjectId: '',
-        teacherId: '',
-        weekday: '',
-        section: '',
+        classId: "",
+        subjectId: "",
+        teacherId: "",
+        weekday: "",
+        section: "",
       }
     }
   }
@@ -250,8 +251,6 @@ export default {
           grouping: true,
           type: "warning"
         })
-      } else {
-        this.initTime()
       }
     },
     // 加载教师

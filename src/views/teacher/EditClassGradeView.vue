@@ -138,7 +138,6 @@ export default {
           })
           .then(resp => {
             if (resp.code === 200) {
-              console.log(resp.data)
               this.students = resp.data
               this.noFinish = this.students.length
             } else {

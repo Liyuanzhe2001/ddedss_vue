@@ -1,5 +1,5 @@
 <template>
-  <div class="login_form">
+  <div class="login_form" v-loading="loading">
     <!--登录部分-->
     <div class="login_left">
       <!--头部文字-->
@@ -83,6 +83,7 @@ export default {
   components: {ValidCode},
   data() {
     return {
+      loading: false,
       user: {
         number: "",
         password: "",
@@ -141,6 +142,7 @@ export default {
         })
         this.user.code = ''
       } else {
+        this.loading = true
         const form = new FormData();
         form.append("number", this.user.number)
         form.append("password", this.user.password)
