@@ -267,13 +267,8 @@ export default {
       userRequest
           .post("/user/exit")
           .then(resp => {
+            console.log(resp)
             if(resp.code === 200) {
-              ElMessage({
-                message: "退出登录成功",
-                showClose: true,
-                grouping: true,
-                type: "success"
-              })
               sessionStorage.clear()
               // TODO 清除数据 返回登录界面 session token
               window.location.href = "/"

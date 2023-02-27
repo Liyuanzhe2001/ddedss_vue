@@ -81,6 +81,24 @@ import userRequest from "@/utils/userRequest";
 export default {
   name: "LoginView",
   components: {ValidCode},
+  mounted() {
+    const identity = sessionStorage.getItem("identity")
+    switch (identity) {
+      case '0':
+        this.$router.push('/student')
+        return
+      case '1':
+      case '-1':
+        this.$router.push("/teacher")
+        return
+      case '2':
+        this.$router.push("/professional")
+        return;
+      case '3':
+        this.$route.push("/admin")
+        return
+    }
+  },
   data() {
     return {
       loading: false,

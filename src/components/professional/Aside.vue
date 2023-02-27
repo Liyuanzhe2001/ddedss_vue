@@ -41,12 +41,12 @@
         </el-icon>
         <span>成绩分析</span>
       </el-menu-item>
-<!--      <el-menu-item index="/7">-->
-<!--        <el-icon>-->
-<!--          <DataLine/>-->
-<!--        </el-icon>-->
-<!--        <span>成绩预测</span>-->
-<!--      </el-menu-item>-->
+      <el-menu-item index="/professional/performance_trend">
+        <el-icon>
+          <DataLine/>
+        </el-icon>
+        <span>成绩趋势</span>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>

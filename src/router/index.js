@@ -25,6 +25,7 @@ import UserListView from "@/views/administrator/UserListView";
 import KnowledgeListView from "@/views/administrator/KnowledgeListView";
 import AddProfessionalView from "@/views/administrator/AddProfessionalView";
 import AddTeacherView from "@/views/administrator/AddTeacherView";
+import PerformanceTrendView from "@/views/professional/PerformanceTrendView";
 
 const routes = [
     {
@@ -144,6 +145,11 @@ const routes = [
                 path: "results_analysis",
                 name: "results_analysis",
                 component: ResultsAnalysisView,
+            },
+            {
+                path: "performance_trend",
+                name: "performance_trend",
+                component: PerformanceTrendView,
             }
         ]
     },
