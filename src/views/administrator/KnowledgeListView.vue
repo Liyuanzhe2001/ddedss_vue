@@ -81,7 +81,6 @@ export default {
           })
           .then(resp => {
             if (resp.code === 200) {
-              console.log(resp)
               this.knowledgeList = resp.data
               this.total = resp.total
             } else {

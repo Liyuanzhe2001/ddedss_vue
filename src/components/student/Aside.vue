@@ -37,8 +37,8 @@
 export default {
   name: "Aside",
   inject: ['reload'],
-  methods:{
-    select(){
+  methods: {
+    select() {
       this.reload()
     }
   }
@@ -53,7 +53,7 @@ export default {
 }
 
 .main_part .el_menu {
-  min-height: 509px;
+  min-height: calc(100vh - 60px);
   padding-top: 30px;
 }
 

@@ -188,7 +188,8 @@ export default {
 <style scoped>
 .main_part {
   height: 60px;
-  width: 100%;
+  min-width: 1300px;
+  width: 100vw;
   text-align: left;
   line-height: 60px;
   background-color: purple;
