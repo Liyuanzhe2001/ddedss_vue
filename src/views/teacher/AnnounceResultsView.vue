@@ -93,7 +93,6 @@ export default {
       teacherRequest
           .get("/teacher/queryClassAndSubjectByTeacherId")
           .then(resp => {
-            console.log(resp)
             if (resp.code === 200) {
               this.classSubject = resp.data
               // 计算完成和未完成的数量

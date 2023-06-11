@@ -167,7 +167,6 @@ export default {
         userRequest
             .post("/user/login", form)
             .then(resp => {
-              console.log(resp)
               if (resp.code === 200) {
                 ElMessage({
                   message: "登录成功",

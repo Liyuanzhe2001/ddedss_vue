@@ -138,7 +138,7 @@ export default {
         }, 1000);
         // TODO 发送验证码
         userRequest
-            .post("/user/sendVerificationCode/" + this.registerForm.email)
+            .post(`/user/sendVerificationCode/${this.registerForm.email}`)
             .then(resp => {
               if (resp.code !== 200) {
                 ElMessage({

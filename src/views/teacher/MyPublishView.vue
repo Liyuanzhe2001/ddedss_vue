@@ -108,16 +108,16 @@ export default {
     confirmDelete(knowledgeId) {
       teacherRequest
           .delete(`/knowledge/deleteKnowledge/${knowledgeId}`)
-          .then(resp=>{
-            if(resp.code === 200) {
+          .then(resp => {
+            if (resp.code === 200) {
               this.getKnowledge()
               ElMessage({
                 message: "知识删除成功",
                 showClose: true,
-                grouping:true,
+                grouping: true,
                 type: "success",
               })
-            }else{
+            } else {
               ElMessage({
                 message: resp.msg,
                 showClose: true,

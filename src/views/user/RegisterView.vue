@@ -233,7 +233,6 @@ export default {
         userRequest
             .post("/user/register", this.registerForm)
             .then(resp => {
-              console.log(resp)
               if (resp.code === 200) {
                 alert("注册成功")
                 this.$router.push("/login")

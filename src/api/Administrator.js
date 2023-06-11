@@ -4,8 +4,8 @@ export function addProfessional(professionalInfo) {
     return axios({
         url: "/admin/addProfessional",
         method: "POST",
-        params: {
-            professionalInfo
+        data: {
+            ...professionalInfo
         }
     })
 }
@@ -14,8 +14,8 @@ export function addTeacher(professionalInfo) {
     return axios({
         url: "/admin/addProfessional",
         method: "POST",
-        params: {
-            professionalInfo
+        data: {
+            ...professionalInfo
         }
     })
 }
