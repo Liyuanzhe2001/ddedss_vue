@@ -356,7 +356,6 @@ export default {
       professionalRequest
           .get(`/lesson/getLessonsByTeacherId/${this.form.teacherId}`)
           .then(resp => {
-            console.log(resp)
             if (resp.code === 200) {
               for (let i = 0; i < resp.data.length; i++) {
                 // 第几节课

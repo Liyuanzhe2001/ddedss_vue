@@ -116,7 +116,6 @@ export default {
       professionalRequest
           .get(`/exam/getAllExamByClassId/${key}`)
           .then(resp => {
-            console.log(resp)
             // examId: 1, year: 2018, month: 6
             if (resp.code === 200) {
               this.examList = []
