@@ -50,6 +50,7 @@
 <script>
 import professionalRequest from "@/utils/professionalRequest";
 import {ElMessage} from "element-plus";
+import {getAllClass, queryStudentListByClassId} from "@/api/Professional";
 
 export default {
   name: "StudentListView",
@@ -74,8 +75,7 @@ export default {
     }
 
     // 获取所有班级
-    professionalRequest
-        .get("/class/getAllClass")
+    getAllClass()
         .then(resp => {
           if (resp.code === 200) {
             this.classList = resp.data
@@ -111,8 +111,7 @@ export default {
       this.classType = c.classType
       this.classMajor = c.major
       // 查询班级学生信息
-      professionalRequest
-          .get(`/student/queryStudentListByClassId/${c.classId}`)
+      queryStudentListByClassId(c.classId)
           .then(resp => {
             if (resp.code === 200) {
               this.classStudents = resp.data

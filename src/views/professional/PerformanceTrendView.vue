@@ -51,8 +51,8 @@
 <script>
 
 import * as echarts from "echarts";
-import professionalRequest from "@/utils/professionalRequest";
 import {ElMessage} from "element-plus";
+import {getAllSubject, getFiveYearResult} from "@/api/Professional";
 
 export default {
   name: "PerformanceTrendView",
@@ -76,8 +76,7 @@ export default {
         return
     }
     // 获取所有科目
-    professionalRequest
-        .get("/subject/getAllSubject")
+    getAllSubject()
         .then(resp => {
           if (resp.code === 200) {
             this.subjectList = resp.data
@@ -123,7 +122,9 @@ export default {
         },
         toolbox: {
           feature: {
-            saveAsImage: {}
+            saveAsImage: {
+              name:"成绩趋势"
+            }
           }
         },
         xAxis: {
@@ -180,12 +181,7 @@ export default {
       const year = date.getFullYear()
       this.showEcharts.yearList = [year - 4, year - 3, year - 2, year - 1, year]
 
-      professionalRequest
-          .get("/result/getFiveYearResult", {
-            params: {
-              subjectIds: [...this.subjectIds] + ""
-            }
-          })
+      getFiveYearResult([...this.subjectIds] + "")
           .then(resp => {
             if (resp.code === 200) {
               this.showEcharts.resultData = []

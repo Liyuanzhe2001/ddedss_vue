@@ -55,6 +55,7 @@
 import * as echarts from "echarts";
 import professionalRequest from "@/utils/professionalRequest";
 import {ElMessage} from "element-plus";
+import {getAllClass, getAllExamByClassId, getExaminationResults} from "@/api/Professional";
 
 export default {
   name: "ResultsAnalysisView",
@@ -79,8 +80,7 @@ export default {
     }
 
     // 获取所有班级
-    professionalRequest
-        .get("/class/getAllClass")
+    getAllClass()
         .then(resp => {
           if (resp.code === 200) {
             this.classList = resp.data
@@ -113,8 +113,7 @@ export default {
       this.examId = ''
       this.subjectList = []
       // 获取该班级的考试列表
-      professionalRequest
-          .get(`/exam/getAllExamByClassId/${key}`)
+      getAllExamByClassId(key)
           .then(resp => {
             // examId: 1, year: 2018, month: 6
             if (resp.code === 200) {
@@ -146,13 +145,7 @@ export default {
     // 选择考试
     handleExamSelect(key, keyPath) {
       this.examId = key
-      professionalRequest
-          .get("/result/getExaminationResults", {
-            params: {
-              classId: this.classId,
-              examId: key
-            }
-          })
+      getExaminationResults(this.classId,key)
           .then(resp => {
             if (resp.code === 200) {
               if (resp.data.length === 0) {

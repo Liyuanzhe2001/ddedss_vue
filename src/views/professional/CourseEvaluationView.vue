@@ -30,6 +30,7 @@
 <script>
 import professionalRequest from "@/utils/professionalRequest";
 import {ElMessage} from "element-plus";
+import {getEvaluationByTeacherName} from "@/api/Professional";
 
 export default {
   name: "CourseEvaluationView",
@@ -70,14 +71,7 @@ export default {
   methods: {
     // 搜索
     search() {
-      professionalRequest
-          .get("/evaluateFinal/getEvaluationByTeacherName", {
-            params: {
-              likeInputValue: this.inputSearch,
-              currentPage: this.currentPage,
-              pageSize: this.pageSize
-            }
-          })
+      getEvaluationByTeacherName(this.inputSearch, this.currentPage, this.pageSize)
           .then(resp => {
             if (resp.code === 200) {
               this.evaluationList = resp.data

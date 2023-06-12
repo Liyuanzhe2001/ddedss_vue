@@ -142,6 +142,13 @@
 <script>
 import professionalRequest from "@/utils/professionalRequest";
 import {ElMessage} from "element-plus";
+import {
+  getAllClass,
+  getAllSubject,
+  getLessonsByClassId,
+  getLessonsByTeacherId,
+  getTeachersBySubjectId
+} from "@/api/Professional";
 
 export default {
   name: "ScheduleCoursesView",
@@ -166,8 +173,7 @@ export default {
     }
 
     // 加载所有班级
-    professionalRequest
-        .get("/class/getAllClass")
+    getAllClass()
         .then(resp => {
           if (resp.code === 200) {
             this.classList = resp.data
@@ -181,8 +187,7 @@ export default {
           }
         })
     // 获加载所有科目
-    professionalRequest
-        .get("/subject/getAllSubject")
+    getAllSubject()
         .then(resp => {
           if (resp.code === 200) {
             this.subjectList = resp.data
@@ -256,8 +261,7 @@ export default {
     // 加载教师
     loadTeacher() {
       if (this.form.subjectId !== "") {
-        professionalRequest
-            .get(`/teacherSubject/getTeachersBySubjectId/${this.form.subjectId}`)
+        getTeachersBySubjectId(this.form.subjectId)
             .then(resp => {
               if (resp.code === 200) {
                 this.teacherList = resp.data
@@ -313,8 +317,7 @@ export default {
     },
     // 加载班级课程安排时间
     loadClassTime() {
-      professionalRequest
-          .get(`/lesson/getLessonsByClassId/${this.form.classId}`)
+      getLessonsByClassId(this.form.classId)
           .then(resp => {
             if (resp.code === 200) {
               for (let i = 0; i < resp.data.length; i++) {
@@ -352,9 +355,7 @@ export default {
     },
     // 加载教师课程安排时间
     loadTeacherTime() {
-      console.log("进入")
-      professionalRequest
-          .get(`/lesson/getLessonsByTeacherId/${this.form.teacherId}`)
+      getLessonsByTeacherId(this.form.teacherId)
           .then(resp => {
             if (resp.code === 200) {
               for (let i = 0; i < resp.data.length; i++) {
@@ -444,6 +445,7 @@ export default {
       }
     },
     // 提交
+    // TODO: 未完成
     submit() {
       if (this.form.classId === "") {
         ElMessage({
