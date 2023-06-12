@@ -56,6 +56,7 @@
 <script>
 import teacherRequest from "@/utils/teacherRequest";
 import {ElMessage} from "element-plus";
+import {addKnowledge} from "@/api/teacher";
 
 export default {
   name: "PublishKnowledgeView",
@@ -111,8 +112,7 @@ export default {
     // 提交发布知识
     submit() {
       this.form.tags = this.dynamicTags.join(",");
-      teacherRequest
-          .post("/knowledge/addKnowledge", this.form)
+      addKnowledge(this.form)
           .then(resp => {
             if (resp.code === 200) {
               ElMessage({

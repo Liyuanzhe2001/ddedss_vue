@@ -35,6 +35,7 @@
 <script>
 import {ElMessage} from "element-plus";
 import teacherRequest from "@/utils/teacherRequest";
+import {deleteKnowledge, queryKnowledgeListByTeacherId} from "@/api/teacher";
 
 export default {
   name: "MyPublishView",
@@ -73,13 +74,7 @@ export default {
     // 获取知识列表
     getKnowledge() {
       // TODO 分页查询知识 this.page.current
-      teacherRequest
-          .get("/knowledge/queryKnowledgeListByTeacherId", {
-            params: {
-              currentPage: this.currentPage,
-              pageSize: this.pageSize,
-            }
-          })
+      queryKnowledgeListByTeacherId(this.currentPage, this.pageSize)
           .then(resp => {
             if (resp.code === 200) {
               this.knowledgeList = resp.data
@@ -106,8 +101,7 @@ export default {
     },
     // 确定删除知识
     confirmDelete(knowledgeId) {
-      teacherRequest
-          .delete(`/knowledge/deleteKnowledge/${knowledgeId}`)
+      deleteKnowledge(knowledgeId)
           .then(resp => {
             if (resp.code === 200) {
               this.getKnowledge()

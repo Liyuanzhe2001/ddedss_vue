@@ -51,6 +51,7 @@
 
 import {ElMessage, ElMessageBox} from "element-plus";
 import teacherRequest from "@/utils/teacherRequest";
+import {getClassNameById, getStudentScoreList, getSubjectNameById, modifyStudentsScore} from "@/api/teacher";
 
 export default {
   name: "EditClassGradeView",
@@ -76,9 +77,8 @@ export default {
     this.classId = this.$route.params.classId
     this.subjectId = this.$route.params.subjectId
     // TODO 根据id查询班级名称
-    this.className = "B200113"
-    teacherRequest
-        .get(`/class/getClassNameById/${this.classId}`)
+    this.className = ""
+    getClassNameById(this.classId)
         .then(resp => {
           if (resp.code === 200) {
             this.className = resp.data.className
@@ -109,8 +109,7 @@ export default {
     getSubjectName() {
       // TODO 根据id查询科目名称
       this.subjectName = "Java"
-      teacherRequest
-          .get(`/subject/getSubjectNameById/${this.subjectId}`)
+      getSubjectNameById(this.subjectId)
           .then(resp => {
             if (resp.code === 200) {
               this.subjectName = resp.data.subjectName
@@ -128,13 +127,7 @@ export default {
     },
     // 查询学生列表
     getStudentList() {
-      teacherRequest
-          .get(`/result/getStudentScoreList`, {
-            params:{
-              classId: this.classId,
-              subjectId: this.subjectId
-            }
-          })
+      getStudentScoreList(this.classId, this.subjectId)
           .then(resp => {
             if (resp.code === 200) {
               this.students = resp.data
@@ -185,11 +178,7 @@ export default {
         })
       } else {
         // TODO 提交打分
-        teacherRequest
-            .put("/result/modifyStudentsScore", {
-              subjectId: this.subjectId,
-              studentScores: this.students,
-            })
+        modifyStudentsScore(this.subjectId,this.students)
             .then(resp => {
               if (resp.code === 200) {
                 ElMessage({

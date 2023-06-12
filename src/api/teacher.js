@@ -94,7 +94,7 @@ export function addKnowledge(form) {
         url: "/knowledge/addKnowledge",
         method: "POST",
         data: {
-            form
+            ...form
         }
     })
 }

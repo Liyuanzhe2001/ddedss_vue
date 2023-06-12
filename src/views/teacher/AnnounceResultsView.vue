@@ -37,8 +37,8 @@
 
 <script>
 import * as echarts from "echarts";
-import teacherRequest from "@/utils/teacherRequest";
 import {ElMessage} from "element-plus";
+import {haveAnnounceResultsNotice, queryClassAndSubjectByTeacherId} from "@/api/teacher";
 
 export default {
   name: "AnnounceResultsView",
@@ -62,8 +62,7 @@ export default {
     }
 
     // 判断有没有成绩公布通知
-    teacherRequest
-        .get("/result/haveAnnounceResultsNotice")
+    haveAnnounceResultsNotice()
         .then(resp => {
           if (resp.code === 200) {
             this.haveNotice = resp.data.haveOrNot === 1
@@ -82,7 +81,7 @@ export default {
   },
   data() {
     return {
-      haveNotice: true,
+      haveNotice: false,
       classSubject: [],
       finishDate: []
     }
@@ -90,8 +89,7 @@ export default {
   methods: {
     // 加载教师教的班级和科目
     queryClassAndSubject() {
-      teacherRequest
-          .get("/teacher/queryClassAndSubjectByTeacherId")
+      queryClassAndSubjectByTeacherId()
           .then(resp => {
             if (resp.code === 200) {
               this.classSubject = resp.data

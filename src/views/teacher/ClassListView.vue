@@ -56,6 +56,7 @@
 import teacherRequest from "@/utils/teacherRequest";
 import {ElMessage} from "element-plus";
 import studentRequest from "@/utils/studentRequest";
+import {getManagedClass, queryStudentListByClassId, queryTeacherListByClassId} from "@/api/teacher";
 
 export default {
   name: "MyClassView",
@@ -81,8 +82,7 @@ export default {
         return
     }
 
-    teacherRequest
-        .get("/instructor/getManagedClass")
+    getManagedClass()
         .then(resp => {
           if (resp.code === 200) {
             this.classList = resp.data
@@ -123,8 +123,7 @@ export default {
       }
 
       // TODO 通过班级id查询班级学生列表
-      teacherRequest
-          .get(`/student/queryStudentListByClassId/${this.selectClassId}`)
+      queryStudentListByClassId(this.selectClassId)
           .then(resp => {
             if (resp.code === 200) {
               this.students = resp.data
@@ -140,8 +139,7 @@ export default {
           })
 
       // TODO 通过班级id查询班级教师列表
-      teacherRequest
-          .get(`/teacher/queryTeacherListByClassId/${this.selectClassId}`)
+      queryTeacherListByClassId(this.selectClassId)
           .then(resp => {
             if (resp.code === 200) {
               this.teachers = resp.data
