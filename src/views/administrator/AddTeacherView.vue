@@ -126,7 +126,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import adminRequest from "@/utils/adminRequest";
+import {addTeacher} from "@/api/Administrator";
 
 export default {
   name: "AddTeacherView",
@@ -254,8 +254,7 @@ export default {
           type: "warning",
         })
       } else {
-        adminRequest
-            .post("/admin/addTeacher", this.teacherInfo)
+        addTeacher(this.teacherInfo)
             .then(resp => {
               if (resp.code === 200) {
                 ElMessage({

@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import adminRequest from "@/utils/adminRequest";
 import {ElMessage} from "element-plus";
+import {addProfessional} from "@/api/Administrator";
 
 export default {
   name: "AddProfessionalView",
@@ -91,8 +91,7 @@ export default {
           type: "warning",
         })
       } else {
-        adminRequest
-            .post("/admin/addProfessional", this.professionalInfo)
+        addProfessional(this.professionalInfo)
             .then(resp => {
               if (resp.code === 200) {
                 ElMessage({

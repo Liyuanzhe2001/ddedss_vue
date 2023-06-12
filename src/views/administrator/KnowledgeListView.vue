@@ -32,7 +32,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import adminRequest from "@/utils/adminRequest";
+import {deleteKnowledge, queryKnowledgeList} from "@/api/Administrator";
 
 export default {
   name: "KnowledgeListView",
@@ -72,13 +72,7 @@ export default {
     // TODO 分页查询知识
     getAllKnowledge() {
       // TODO 分页查询知识 this.page.current
-      adminRequest
-          .get("/knowledge/queryKnowledgeList", {
-            params: {
-              currentPage: this.currentPage,
-              pageSize: this.pageSize,
-            }
-          })
+      queryKnowledgeList(this.currentPage, this.pageSize)
           .then(resp => {
             if (resp.code === 200) {
               this.knowledgeList = resp.data
@@ -105,8 +99,7 @@ export default {
     },
     // 确定删除知识
     confirmDelete(knowledgeId) {
-      adminRequest
-          .delete(`/admin/deleteKnowledge/${knowledgeId}`)
+      deleteKnowledge(knowledgeId)
           .then(resp => {
             if (resp.code === 200) {
               ElMessage({

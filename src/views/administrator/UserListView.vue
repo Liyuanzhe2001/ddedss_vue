@@ -72,8 +72,8 @@
 </template>
 
 <script>
-import adminRequest from "@/utils/adminRequest";
 import {ElMessage} from "element-plus";
+import {deleteUser, initPassword, queryAllUserList} from "@/api/Administrator";
 
 export default {
   name: "UserListView",
@@ -98,7 +98,6 @@ export default {
     }
 
     this.currentPage = this.$route.params.currentPage
-    console.log(this.currentPage)
     // 获取用户列表
     this.getAllUserList()
 
@@ -115,14 +114,7 @@ export default {
   methods: {
     // 获取用户列表
     getAllUserList() {
-      adminRequest
-          .get("/admin/queryAllUserList", {
-            params: {
-              searchInput: this.searchInput,
-              currentPage: this.currentPage,
-              pageSize: this.pageSize
-            }
-          })
+      queryAllUserList(this.searchInput, this.currentPage, this.pageSize)
           .then(resp => {
             if (resp.code === 200) {
               this.userList = resp.data
@@ -139,8 +131,7 @@ export default {
     },
     // 确定删除用户
     confirmDelete(userId) {
-      adminRequest
-          .delete(`/admin/deleteUser/${userId}`)
+      deleteUser(userId)
           .then(resp => {
             if (resp.code === 200) {
               ElMessage({
@@ -162,8 +153,7 @@ export default {
     },
     // 确定重置用户密码
     confirmInitPassword(userId) {
-      adminRequest
-          .put(`/admin/initPassword/${userId}`)
+      initPassword(userId)
           .then(resp => {
             if (resp.code === 200) {
               ElMessage({
