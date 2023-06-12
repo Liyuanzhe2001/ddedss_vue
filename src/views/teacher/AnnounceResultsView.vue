@@ -1,6 +1,6 @@
 <template>
-  <div v-if="haveNotice">
-    <div class="main_part">
+  <div id="main" v-loading="loading" class="main_part">
+    <div v-if="haveNotice">
       <el-table :data="classSubject" max-height="390" class="table_part">
         <el-table-column type="index" label="#" width="60"/>
         <el-table-column prop="className" label="班级" width="80"/>
@@ -29,9 +29,9 @@
       </el-table>
       <div id="e_main" class="echarts_part"/>
     </div>
-  </div>
-  <div v-else class="no_notice">
-    暂无成绩发布
+    <div v-else class="no_notice">
+      暂无成绩发布
+    </div>
   </div>
 </template>
 
@@ -64,26 +64,43 @@ export default {
     // 判断有没有成绩公布通知
     haveAnnounceResultsNotice()
         .then(resp => {
-          if (resp.code === 200) {
-            this.haveNotice = resp.data.haveOrNot === 1
-            if (this.haveNotice) {
-              this.queryClassAndSubject()
-            }
-          } else {
-            ElMessage({
-              message: "获取成绩公布通知失败",
-              showClose: true,
-              grouping: true,
-              type: "error"
-            })
-          }
+          this.loading = false;
+          this.haveNotice = true;
+          this.queryClassAndSubject()
+          //
+          // if (resp.code === 200) {
+          //   this.haveNotice = resp.data.haveOrNot === 1
+          //   if (this.haveNotice) {
+          //     this.queryClassAndSubject()
+          //   } else {
+          //     document.getElementById("main").style.backgroundColor = "darkgray"
+          //   }
+          // } else {
+          //   ElMessage({
+          //     message: "获取成绩公布通知失败",
+          //     showClose: true,
+          //     grouping: true,
+          //     type: "error"
+          //   })
+          // }
         })
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 800) {
+        document.getElementById("e_main").style.display = 'none'
+      } else {
+        document.getElementById("e_main").style.display = ''
+        this.drawECharts()
+      }
+    });
   },
   data() {
     return {
       haveNotice: false,
       classSubject: [],
-      finishDate: []
+      finishDate: [],
+      haveDraw: false,
+      loading: true,
     }
   },
   methods: {
@@ -115,7 +132,11 @@ export default {
                 }
               ]
               // 绘图
-              this.drawECharts()
+              if (window.innerWidth > 800) {
+                this.drawECharts()
+              } else {
+                document.getElementById("e_main").style.display = 'none'
+              }
             } else {
               ElMessage({
                 message: "获取班级科目失败",
@@ -161,7 +182,8 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: auto;
+  min-width: 500px;
   height: 450px;
   margin: 20px auto 0;
   text-align: left;
@@ -169,7 +191,7 @@ export default {
 
 .main_part .table_part {
   float: left;
-  width: 430px;
+  width: auto;
   margin: 20px 0 20px 40px;
 }
 
@@ -181,12 +203,7 @@ export default {
 }
 
 .no_notice {
-  background-color: darkgray;
-  border-radius: 10px;
-  padding: 10px;
-  width: 940px;
-  height: 450px;
-  margin: 20px auto 0;
+  margin: 0 auto;
   line-height: 450px;
   font-size: 60px;
   text-align: center;

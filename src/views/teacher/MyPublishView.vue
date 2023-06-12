@@ -3,7 +3,7 @@
     <div class="text">
       <div v-for="i in knowledgeList" v-bind="i">
         <span
-            v-text="i.knowledgeTitle.length<50?i.knowledgeTitle:(i.knowledgeTitle.substring(0,50)+'...')"
+            v-text="i.knowledgeTitle.length<fontNum?i.knowledgeTitle:(i.knowledgeTitle.substring(0,fontNum)+'...')"
             @click="jumpUrl(i.knowledgeId)"
         />
         <el-popconfirm
@@ -12,7 +12,7 @@
             title="确认删除?"
         >
           <template #reference>
-            <el-icon class="icon_part">
+            <el-icon style="margin-left: 80px" class="icon_part">
               <Delete/>
             </el-icon>
           </template>
@@ -34,7 +34,6 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import teacherRequest from "@/utils/teacherRequest";
 import {deleteKnowledge, queryKnowledgeListByTeacherId} from "@/api/teacher";
 
 export default {
@@ -61,13 +60,18 @@ export default {
     // TODO 分页 查询知识
     this.currentPage = this.$route.params.currentPage
     this.getKnowledge()
+
+    window.addEventListener('resize', () => {
+      this.fontNum = window.innerWidth / 40 + 10;
+    });
   },
   data() {
     return {
       currentPage: 1,
       pageSize: 5,
       total: 10,
-      knowledgeList: []
+      knowledgeList: [],
+      fontNum: window.innerWidth / 40 + 10,
     }
   },
   methods: {
@@ -134,7 +138,8 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: auto;
+  min-width: 600px;
   margin: 20px auto 0;
   text-align: left;
   height: 450px

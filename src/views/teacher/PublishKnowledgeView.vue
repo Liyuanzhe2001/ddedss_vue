@@ -54,7 +54,6 @@
 </template>
 
 <script>
-import teacherRequest from "@/utils/teacherRequest";
 import {ElMessage} from "element-plus";
 import {addKnowledge} from "@/api/teacher";
 
@@ -143,11 +142,11 @@ export default {
 
 <style scoped>
 .main_part {
-  display: inline-block;
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  min-width: 700px;
+  max-width: 700px;
   margin: 20px auto 0;
   text-align: left;
   height: 450px;
@@ -161,18 +160,19 @@ label {
 }
 
 .main_part .form_part {
-  width: 910px;
+  width: auto;
   height: 420px;
   margin: 15px;
 }
 
 .main_part .title_part {
   height: 70px;
+  width: auto;
   padding-left: 20px;
 }
 
 .main_part .title_part .title_input {
-  width: 870px;
+  width: 100%;
   height: 30px;
   font-size: 20px;
 }
@@ -185,7 +185,6 @@ label {
 
 .main_part .content_part .content_input {
   font-size: 17px;
-  width: 870px;
 }
 
 .main_part .tag_part {

@@ -5,29 +5,31 @@
         <span> {{ className }} </span>
       </template>
     </el-page-header>
-    <el-table :data="students" max-height="390" class="table_part">
-      <el-table-column type="index" label="#" width="60"/>
-      <el-table-column prop="studentName" label="姓名" width="80"/>
-      <el-table-column label="科目" width="80">
+    <div style="display: inline-block">
+      <el-table :data="students" max-height="390" class="table_part">
+        <el-table-column type="index" label="#" width="60"/>
+        <el-table-column prop="studentName" label="姓名" width="80"/>
+        <el-table-column label="科目" width="80">
         <span>
           {{ subjectName }}
         </span>
-      </el-table-column>
-      <el-table-column label="分数" width="80">
-        <template #default="scope">
-          <el-input
-              class="scoreInput"
-              type="number"
-              max="100"
-              min="0"
-              v-model="scope.row.score"
-              @keyup.enter="enterFinishInputScore(scope.row, $event.target)"
-              @blur="finishInputScore(scope.row)"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="right_part">
+        </el-table-column>
+        <el-table-column label="分数" width="80">
+          <template #default="scope">
+            <el-input
+                class="scoreInput"
+                type="number"
+                max="100"
+                min="0"
+                v-model="scope.row.score"
+                @keyup.enter="enterFinishInputScore(scope.row, $event.target)"
+                @blur="finishInputScore(scope.row)"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div id="right_part" class="right_part">
       <p class="title">
         完成情况
       </p>
@@ -35,15 +37,16 @@
         <p>已完成：{{ finish }}</p>
         <p>未完成：{{ noFinish }}</p>
       </div>
-      <el-button
-          class="btn"
-          type="primary"
-          @click="submit()"
-          round
-      >
-        提交
-      </el-button>
     </div>
+<div></div>
+    <el-button
+        class="btn"
+        type="primary"
+        @click="submit()"
+        round
+    >
+      提交
+    </el-button>
   </div>
 </template>
 
@@ -178,7 +181,7 @@ export default {
         })
       } else {
         // TODO 提交打分
-        modifyStudentsScore(this.subjectId,this.students)
+        modifyStudentsScore(this.subjectId, this.students)
             .then(resp => {
               if (resp.code === 200) {
                 ElMessage({
@@ -209,7 +212,8 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: auto;
+  min-width: 440px;
   height: 450px;
   margin: 20px auto 0;
   text-align: left;
@@ -223,7 +227,7 @@ export default {
 }
 
 .main_part .right_part {
-  float: right;
+  display: inline-block;
   width: 300px;
   margin-right: 40px;
   padding: 80px;
@@ -245,11 +249,27 @@ export default {
   font-size: 20px;
 }
 
-.main_part .right_part .btn {
+.btn {
+  float: right;
   width: 130px;
   height: 40px;
   font-size: 20px;
-  margin-top: 60px;
+  margin-top: 20px;
+  margin-right: 80px;
+}
+
+@media (max-width: 1140px) {
+  .main_part .right_part {
+    display: none;
+  }
+
+  .btn{
+    float: right;
+    width: 130px;
+    height: 40px;
+    font-size: 20px;
+    margin-top: 20px;
+  }
 }
 
 /deep/ .scoreInput input::-webkit-outer-spin-button,

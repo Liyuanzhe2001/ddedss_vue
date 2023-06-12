@@ -96,11 +96,12 @@ const routes = [
                 name: "my_publish",
                 component: MyPublishView,
             },
-            {
-                path: "class_list",
-                name: "class_list",
-                component: ClassListView,
-            },
+            // TODO：辅导员身份教师权限，未完成
+            // {
+            //     path: "class_list",
+            //     name: "class_list",
+            //     component: ClassListView,
+            // },
             {
                 path: "publish_knowledge",
                 name: "publish_knowledge",
