@@ -81,6 +81,7 @@
 import {ElMessage} from "element-plus";
 import axios from "axios";
 import userRequest from "@/utils/userRequest";
+import {forgetPassword, sendVerificationCode} from "@/api/user";
 
 export default {
   name: "ForgetPwdView",
@@ -137,8 +138,7 @@ export default {
           }
         }, 1000);
         // TODO 发送验证码
-        userRequest
-            .post(`/user/sendVerificationCode/${this.registerForm.email}`)
+        sendVerificationCode(this.registerForm.email)
             .then(resp => {
               if (resp.code !== 200) {
                 ElMessage({
@@ -191,8 +191,7 @@ export default {
         })
       } else {
         // TODO 忘记密码
-        userRequest
-            .post("/user/forgetPassword", this.registerForm)
+        forgetPassword(this.registerForm)
             .then(resp => {
               if (resp.code === 200) {
                 alert("修改成功")

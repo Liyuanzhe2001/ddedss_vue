@@ -102,6 +102,7 @@
 import {ElMessage} from "element-plus";
 import axios from "axios";
 import userRequest from "@/utils/userRequest";
+import {register, sendVerificationCode} from "@/api/user";
 
 export default {
   name: "RegisterView",
@@ -163,8 +164,7 @@ export default {
         }, 1000);
       }
       // TODO 发送验证码
-      userRequest
-          .post("/user/sendVerificationCode/" + this.registerForm.email)
+      sendVerificationCode(this.registerForm.email)
           .then(resp => {
             if (resp.code !== 200) {
               ElMessage({
@@ -230,8 +230,7 @@ export default {
         })
       } else {
         // TODO 提交注册信息
-        userRequest
-            .post("/user/register", this.registerForm)
+        register(this.registerForm)
             .then(resp => {
               if (resp.code === 200) {
                 alert("注册成功")

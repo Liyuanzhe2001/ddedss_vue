@@ -18,12 +18,13 @@ export function forgetPassword(registerForm) {
     })
 }
 
-export function login(form) {
+export function login(number,password) {
     return axios({
         url: "/user/login",
         method: "POST",
         data: {
-            ...form
+            number,
+            password
         }
     })
 }

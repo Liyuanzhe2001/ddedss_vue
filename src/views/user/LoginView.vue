@@ -77,6 +77,7 @@
 import ValidCode from "@/components/ValidCode";
 import {ElMessage} from "element-plus";
 import userRequest from "@/utils/userRequest";
+import {login} from "@/api/user";
 
 export default {
   name: "LoginView",
@@ -161,11 +162,7 @@ export default {
         this.user.code = ''
       } else {
         this.loading = true
-        const form = new FormData();
-        form.append("number", this.user.number)
-        form.append("password", this.user.password)
-        userRequest
-            .post("/user/login", form)
+        login(this.user.number, this.user.password)
             .then(resp => {
               if (resp.code === 200) {
                 ElMessage({
