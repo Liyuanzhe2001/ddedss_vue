@@ -32,7 +32,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import {deleteKnowledge, queryKnowledgeList} from "@/api/Administrator";
+import {deleteKnowledge, queryKnowledgeList} from "@/api/administrator";
 
 export default {
   name: "KnowledgeListView",

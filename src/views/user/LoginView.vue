@@ -192,7 +192,6 @@ export default {
                   case 3:
                     this.$router.push("/admin")
                     break
-
                 }
               } else {
                 ElMessage({

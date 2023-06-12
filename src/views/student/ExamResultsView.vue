@@ -33,6 +33,7 @@
 import * as echarts from "echarts";
 import studentRequest from "@/utils/studentRequest";
 import {ElMessage} from "element-plus";
+import {getAvgScoreByExamId, getExamListByStudentId, getResultByExamId} from "@/api/student";
 
 export default {
   name: "ExamResultsView",
@@ -57,8 +58,7 @@ export default {
     }
 
     // TODO 获取考试列表
-    studentRequest
-        .get('/exam/getExamListByStudentId')
+    getExamListByStudentId()
         .then(resp => {
           if (resp.code === 200) {
             this.exams = resp.data
@@ -95,8 +95,7 @@ export default {
     // 获取考试分数，获取成功后计算总分，再获取平均分
     queryResults(examId) {
       // TODO 根据id查询分数
-      studentRequest
-          .get(`/result/getResultByExamId/${examId}`)
+      getResultByExamId(examId)
           .then(resp => {
             if (resp.code === 200) {
               this.result = resp.data
@@ -122,8 +121,7 @@ export default {
     },
     // 获取平均分，获取成功后绘制echarts表
     getAvgScore(examId) {
-      studentRequest
-          .get(`/result/getAvgScoreByExamId/${examId}`)
+      getAvgScoreByExamId(examId)
           .then(resp => {
             if (resp.code === 200) {
               this.avgScore = resp.data.avgScore

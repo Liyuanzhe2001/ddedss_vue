@@ -126,7 +126,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import {addTeacher} from "@/api/Administrator";
+import {addTeacher} from "@/api/administrator";
 
 export default {
   name: "AddTeacherView",

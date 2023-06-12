@@ -34,6 +34,8 @@
 <script>
 import studentRequest from "@/utils/studentRequest";
 import {ElMessage} from "element-plus";
+import {queryClassName, queryTeacherListByClassId} from "@/api/student";
+import {queryStudentListByClassId} from "@/api/teacher";
 
 export default {
   name: "MyClassView",
@@ -58,20 +60,18 @@ export default {
     }
 
     // TODO 查询用户的班级
-    studentRequest
-        .get("/student/queryClassName")
+    queryClassName()
         .then(resp => {
           if (resp.code === 200) {
             this.classId = resp.data.classId
             this.className = resp.data.className
 
             // TODO 查询班级人列表
-            studentRequest
-                .get(`/student/queryStudentListByClassId/${this.classId}`)
+            queryStudentListByClassId(this.classId)
                 .then(resp => {
-                  if(resp.code === 200) {
+                  if (resp.code === 200) {
                     this.students = resp.data
-                  }else {
+                  } else {
                     ElMessage({
                       message: "获取同学信息失败",
                       showClose: true,
@@ -83,12 +83,11 @@ export default {
                 })
 
             // TODO 查询班级教师
-            studentRequest
-                .get(`/teacher/queryTeacherListByClassId/${this.classId}`)
+            queryTeacherListByClassId(this.classId)
                 .then(resp => {
-                  if(resp.code === 200) {
+                  if (resp.code === 200) {
                     this.teachers = resp.data
-                  }else{
+                  } else {
                     ElMessage({
                       message: "获取教师信息失败",
                       showClose: true,

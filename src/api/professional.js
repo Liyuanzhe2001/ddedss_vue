@@ -2,7 +2,7 @@ import axios from '@/plugins/axios'
 
 export function getEvaluationByTeacherName(likeInputValue, currentPage, pageSize) {
     return axios({
-        url: "/evaluateFinal/getEvaluationByTeacherName",
+        url: "evaluateFinal/getEvaluationByTeacherName",
         method: "GET",
         params: {
             likeInputValue,
@@ -14,14 +14,14 @@ export function getEvaluationByTeacherName(likeInputValue, currentPage, pageSize
 
 export function getAllSubject() {
     return axios({
-        url: "/subject/getAllSubject",
+        url: "subject/getAllSubject",
         method: "GET"
     })
 }
 
 export function getFiveYearResult(subjectIds) {
     return axios({
-        url: "/result/getFiveYearResult",
+        url: "result/getFiveYearResult",
         method: "GET",
         params: {
             subjectIds
@@ -32,21 +32,21 @@ export function getFiveYearResult(subjectIds) {
 
 export function getAllClass() {
     return axios({
-        url: "/class/getAllClass",
+        url: "class/getAllClass",
         method: "GET"
     })
 }
 
 export function getAllExamByClassId(key) {
     return axios({
-        url: `/exam/getAllExamByClassId/${key}`,
+        url: `exam/getAllExamByClassId/${key}`,
         method: "GET"
     })
 }
 
 export function getExaminationResults(classId, examId) {
     return axios({
-        url: "/result/getExaminationResults",
+        url: "result/getExaminationResults",
         method: "GET",
         params: {
             classId,
@@ -57,28 +57,28 @@ export function getExaminationResults(classId, examId) {
 
 export function getTeachersBySubjectId(subjectId) {
     return axios({
-        url: `/teacherSubject/getTeachersBySubjectId/${subjectId}`,
+        url: `teacherSubject/getTeachersBySubjectId/${subjectId}`,
         method: "GET"
     })
 }
 
 export function getLessonsByClassId(classId) {
     return axios({
-        url: `/lesson/getLessonsByClassId/${classId}`,
+        url: `lesson/getLessonsByClassId/${classId}`,
         method: "GET"
     })
 }
 
 export function getLessonsByTeacherId(teacherId) {
     return axios({
-        url: `/lesson/getLessonsByTeacherId/${teacherId}`,
+        url: `lesson/getLessonsByTeacherId/${teacherId}`,
         method: "GET"
     })
 }
 
 export function queryStudentListByClassId(classId) {
     return axios({
-        url: `/student/queryStudentListByClassId/${classId}`,
+        url: `student/queryStudentListByClassId/${classId}`,
         method: "GET"
     })
 }

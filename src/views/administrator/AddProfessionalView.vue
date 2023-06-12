@@ -26,7 +26,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import {addProfessional} from "@/api/Administrator";
+import {addProfessional} from "@/api/administrator";
 
 export default {
   name: "AddProfessionalView",

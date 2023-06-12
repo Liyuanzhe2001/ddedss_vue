@@ -52,7 +52,7 @@
 
 import * as echarts from "echarts";
 import {ElMessage} from "element-plus";
-import {getAllSubject, getFiveYearResult} from "@/api/Professional";
+import {getAllSubject, getFiveYearResult} from "@/api/professional";
 
 export default {
   name: "PerformanceTrendView",

@@ -73,7 +73,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import {deleteUser, initPassword, queryAllUserList} from "@/api/Administrator";
+import {deleteUser, initPassword, queryAllUserList} from "@/api/administrator";
 
 export default {
   name: "UserListView",

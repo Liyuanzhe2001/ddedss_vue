@@ -23,6 +23,7 @@
 <script>
 import studentRequest from "@/utils/studentRequest";
 import {ElMessage} from "element-plus";
+import {queryKnowledgeList} from "@/api/student";
 
 export default {
   name: "KnowledgeWorldView",
@@ -61,13 +62,7 @@ export default {
   methods: {
     getKnowledge() {
       // TODO 分页查询知识 this.page.current
-      studentRequest
-          .get("/knowledge/queryKnowledgeList", {
-            params: {
-              currentPage: this.currentPage,
-              pageSize: this.pageSize,
-            }
-          })
+      queryKnowledgeList(this.currentPage, this.pageSize)
           .then(resp => {
             if (resp.code === 200) {
               console.log(resp)

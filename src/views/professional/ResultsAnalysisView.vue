@@ -55,7 +55,7 @@
 import * as echarts from "echarts";
 import professionalRequest from "@/utils/professionalRequest";
 import {ElMessage} from "element-plus";
-import {getAllClass, getAllExamByClassId, getExaminationResults} from "@/api/Professional";
+import {getAllClass, getAllExamByClassId, getExaminationResults} from "@/api/professional";
 
 export default {
   name: "ResultsAnalysisView",

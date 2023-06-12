@@ -148,7 +148,7 @@ import {
   getLessonsByClassId,
   getLessonsByTeacherId,
   getTeachersBySubjectId
-} from "@/api/Professional";
+} from "@/api/professional";
 
 export default {
   name: "ScheduleCoursesView",

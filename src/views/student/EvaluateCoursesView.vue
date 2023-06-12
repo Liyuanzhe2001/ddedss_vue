@@ -42,6 +42,7 @@
 <script>
 import {ElMessage} from "element-plus";
 import studentRequest from "@/utils/studentRequest";
+import {gradeTeacher, haveEvaluateCourseNotice, queryClassName, queryTeacherListByClassId} from "@/api/student";
 
 export default {
   teacherName: "EvaluateCoursesView",
@@ -66,8 +67,7 @@ export default {
     }
 
     // TODO 是否有课程需要评价
-    studentRequest
-        .get("/evaluate/haveEvaluateCourseNotice")
+    haveEvaluateCourseNotice()
         .then(resp => {
           if (resp.code === 200) {
             this.haveNotice = resp.data.haveOrNot === 1
@@ -97,8 +97,7 @@ export default {
   methods: {
     // 1.获取班级
     getClass() {
-      studentRequest
-          .get("/student/queryClassName")
+      queryClassName()
           .then(resp => {
             if (resp.code === 200) {
               this.getTeacherSubjectList(resp.data.classId)
@@ -114,8 +113,7 @@ export default {
     },
     // 2. 通过班级id查询教师课程列表
     getTeacherSubjectList(classId) {
-      studentRequest
-          .get(`/teacher/queryTeacherListByClassId/${classId}`)
+      queryTeacherListByClassId(classId)
           .then(resp => {
             this.teachers = resp.data
           })
@@ -140,10 +138,7 @@ export default {
         // TODO 提交
         var formData = new FormData();
         formData.append("gradeTeachers", this.teachers)
-        studentRequest
-            .post("/evaluateFinal/gradeTeacher", {
-              "gradeTeachers": this.teachers
-            })
+        gradeTeacher(this.teachers)
             .then(resp => {
               if (resp.code === 200) {
                 ElMessage({
