@@ -19,7 +19,7 @@ import ResultsAnalysisView from "@/views/professional/ResultsAnalysisView";
 import EvaluateCoursesView from "@/views/student/EvaluateCoursesView";
 import KnowledgeShowLayout from "@/layout/KnowledgeShowLayout";
 import CourseEvaluationView from "@/views/professional/CourseEvaluationView";
-import ClassListView from "@/views/teacher/ClassListView";
+// import ClassListView from "@/views/teacher/ClassListView";
 import AdministratorLayout from "@/layout/AdministratorLayout";
 import UserListView from "@/views/administrator/UserListView";
 import KnowledgeListView from "@/views/administrator/KnowledgeListView";

@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 800px">
+  <div style="min-width: 930px">
     <!--    头部-->
     <Header/>
     <!--侧边栏-->

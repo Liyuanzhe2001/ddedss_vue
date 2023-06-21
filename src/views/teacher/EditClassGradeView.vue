@@ -53,7 +53,6 @@
 <script>
 
 import {ElMessage, ElMessageBox} from "element-plus";
-import teacherRequest from "@/utils/teacherRequest";
 import {getClassNameById, getStudentScoreList, getSubjectNameById, modifyStudentsScore} from "@/api/teacher";
 
 export default {

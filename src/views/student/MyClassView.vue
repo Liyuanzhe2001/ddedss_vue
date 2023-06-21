@@ -5,10 +5,10 @@
     </div>
     <div class="left_part">
       <span>班级同学</span>
-      <el-table :data="students" height="250" style="width: 300px;font-size: 14px">
-        <el-table-column type="index" label="#" width="60"/>
-        <el-table-column prop="studentName" label="姓名" width="120"/>
-        <el-table-column prop="studentSex" label="性别" width="120">
+      <el-table :data="students" height="250" style="width: 100%;font-size: 14px">
+        <el-table-column type="index" label="#" min-width="30"/>
+        <el-table-column prop="studentName" label="姓名" min-width="50"/>
+        <el-table-column prop="studentSex" label="性别" min-width="50">
           <template #default="scope">
             {{ scope.row.studentSex === 0 ? "女" : "男" }}
           </template>
@@ -17,15 +17,15 @@
     </div>
     <div class="right_part">
       <span>班级教师</span>
-      <el-table :data="teachers" height="250" style="width: 420px;font-size: 14px">
-        <el-table-column type="index" label="#" width="60"/>
-        <el-table-column prop="teacherName" label="姓名" width="120"/>
-        <el-table-column prop="teacherName" label="性别" width="120">
+      <el-table :data="teachers" height="250" style="width: 100%;font-size: 14px">
+        <el-table-column type="index" label="#" min-width="30"/>
+        <el-table-column prop="teacherName" label="姓名" min-width="50"/>
+        <el-table-column prop="teacherName" label="性别" min-width="50">
           <template #default="scope">
             {{ scope.row.teacherSex === 0 ? "女" : "男" }}
           </template>
         </el-table-column>
-        <el-table-column prop="subjectName" label="科目" width="120"/>
+        <el-table-column prop="subjectName" label="科目" min-width="50"/>
       </el-table>
     </div>
   </el-scrollbar>
@@ -124,13 +124,11 @@ export default {
 <style scoped>
 
 .main_part {
-  display: inline-block;
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: 680px;
   margin: 20px auto 0;
-  text-align: left;
   height: 450px;
 }
 
@@ -144,8 +142,9 @@ export default {
 }
 
 .main_part .left_part {
-  float: left;
-  margin: 10px 20px 16px 20px;
+  width: 30%;
+  display: inline-block;
+  margin: 10px 0 0 20px;
   padding: 30px;
   border-radius: 10px;
   border: solid 1px darkgray;
@@ -158,8 +157,9 @@ export default {
 }
 
 .main_part .right_part {
-  float: right;
-  margin: 10px 20px 16px 20px;
+  display: inline-block;
+  width: 40%;
+  margin: 10px 0 0 20px;
   padding: 30px;
   border-radius: 10px;
   border: solid 1px darkgray;

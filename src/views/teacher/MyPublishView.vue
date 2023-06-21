@@ -62,7 +62,7 @@ export default {
     this.getKnowledge()
 
     window.addEventListener('resize', () => {
-      this.fontNum = window.innerWidth / 40 + 10;
+      this.fontNum = window.innerWidth > 1000 ? window.innerWidth / 40 + 10 :33;
     });
   },
   data() {
@@ -71,7 +71,7 @@ export default {
       pageSize: 5,
       total: 10,
       knowledgeList: [],
-      fontNum: window.innerWidth / 40 + 10,
+      fontNum: window.innerWidth > 1000 ? window.innerWidth / 40 + 10 :33,
     }
   },
   methods: {

@@ -41,7 +41,6 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import studentRequest from "@/utils/studentRequest";
 import {gradeTeacher, haveEvaluateCourseNotice, queryClassName, queryTeacherListByClassId} from "@/api/student";
 
 export default {
@@ -171,7 +170,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: auto;
   height: 450px;
   margin: 20px auto 0;
   text-align: left;
@@ -179,7 +178,7 @@ export default {
 
 .main_part .table_part {
   display: inline-block;
-  width: 340px;
+  width: 50%;
   margin-top: 40px;
   margin-left: 80px;
 }

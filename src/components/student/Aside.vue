@@ -2,6 +2,7 @@
   <div class="main_part">
     <el-menu
         router
+        :collapse="isCollapse"
         :default-active="this.$route.matched[1].path"
         class="el_menu"
     >
@@ -37,6 +38,16 @@
 export default {
   name: "Aside",
   inject: ['reload'],
+  mounted() {
+    window.addEventListener('resize', () => {
+      this.isCollapse = window.innerWidth < 930;
+    });
+  },
+  data() {
+    return {
+      isCollapse: window.innerWidth < 930,
+    }
+  },
   methods: {
     select() {
       this.reload()
@@ -48,13 +59,17 @@ export default {
 
 <style scoped>
 .main_part {
-  width: 240px;
+  width: 100%;
   background-color: white;
 }
 
 .main_part .el_menu {
-  min-height: calc(100vh - 60px);
+  min-height: 509px;
   padding-top: 30px;
+}
+
+.el_menu:not(.el-menu--collapse) {
+  width: 220px;
 }
 
 </style>

@@ -188,11 +188,11 @@ export default {
 <style scoped>
 .main_part {
   height: 60px;
-  min-width: 1300px;
-  width: 100vw;
+  width: 100%;
   text-align: left;
   line-height: 60px;
   background-color: purple;
+  min-width: 900px;
 }
 
 .main_part .logo {

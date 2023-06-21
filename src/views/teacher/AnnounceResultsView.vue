@@ -65,24 +65,21 @@ export default {
     haveAnnounceResultsNotice()
         .then(resp => {
           this.loading = false;
-          this.haveNotice = true;
-          this.queryClassAndSubject()
-          //
-          // if (resp.code === 200) {
-          //   this.haveNotice = resp.data.haveOrNot === 1
-          //   if (this.haveNotice) {
-          //     this.queryClassAndSubject()
-          //   } else {
-          //     document.getElementById("main").style.backgroundColor = "darkgray"
-          //   }
-          // } else {
-          //   ElMessage({
-          //     message: "获取成绩公布通知失败",
-          //     showClose: true,
-          //     grouping: true,
-          //     type: "error"
-          //   })
-          // }
+          if (resp.code === 200) {
+            this.haveNotice = resp.data.haveOrNot === 1
+            if (this.haveNotice) {
+              this.queryClassAndSubject()
+            } else {
+              document.getElementById("main").style.backgroundColor = "darkgray"
+            }
+          } else {
+            ElMessage({
+              message: "获取成绩公布通知失败",
+              showClose: true,
+              grouping: true,
+              type: "error"
+            })
+          }
         })
 
     window.addEventListener('resize', () => {

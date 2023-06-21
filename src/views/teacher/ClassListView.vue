@@ -59,7 +59,7 @@
 <!--export default {-->
 <!--  name: "MyClassView",-->
 <!--  mounted() {-->
-<!--    // 判断用户身份-->
+<!--    // 判断用户身份-->·
 <!--    const identity = sessionStorage.getItem("identity")-->
 <!--    switch (identity) {-->
 <!--      case null:-->
