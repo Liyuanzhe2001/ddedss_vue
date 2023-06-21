@@ -3,7 +3,7 @@
     <div class="text">
       <div v-for="i in knowledgeList" v-bind="i">
         <span
-            v-text="i.knowledgeTitle.length<50?i.knowledgeTitle:(i.knowledgeTitle.substring(0,50)+'...')"
+            v-text="i.knowledgeTitle"
             @click="jumpUrl(i.knowledgeId)"
         />
         <el-popconfirm
@@ -132,7 +132,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: 840px;
   margin: 20px auto 0;
   text-align: left;
   height: 450px
@@ -143,8 +143,12 @@ export default {
 }
 
 .main_part .text span {
-  line-height: 10px;
   cursor: pointer;
+  width: 650px;
+  overflow: hidden; /*超出部分隐藏*/
+  text-overflow: ellipsis; /*超出部分省略号表示*/
+  white-space: nowrap; /*强制单行显示*/
+  display: inline-block; /*转换为行内块元素*/
 }
 
 .main_part .text .icon_part {

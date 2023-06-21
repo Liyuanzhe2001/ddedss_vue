@@ -178,6 +178,7 @@ export default {
   height: 60px;
   width: 100%;
   text-align: center;
+  min-width: 1000px;
   line-height: 60px;
   font-size: 27px;
   color: white;
