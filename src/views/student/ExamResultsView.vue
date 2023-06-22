@@ -171,7 +171,6 @@ export default {
         ],
         series: [
           {
-            name: 'Direct',
             type: 'bar',
             barWidth: '60%',
             data: [this.totalScore, this.avgScore]
@@ -190,7 +189,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: 840px;
   margin: 20px auto 0;
   text-align: left;
   height: 450px;
@@ -198,7 +197,7 @@ export default {
 
 .main_part .left_part {
   float: left;
-  width: 220px;
+  width: 190px;
   height: 370px;
   margin: 20px;
   padding: 20px;
@@ -208,7 +207,7 @@ export default {
 
 .main_part .right_part {
   float: right;
-  width: 530px;
+  width: 480px;
   height: 370px;
   margin: 20px;
   padding: 20px;
@@ -220,7 +219,7 @@ export default {
   display: inline-block;
   margin-top: 20px;
   margin-bottom: 20px;
-  width: 340px;
+  width: 300px;
   height: 300px;
 }
 

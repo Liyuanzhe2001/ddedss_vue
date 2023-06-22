@@ -40,12 +40,12 @@ export default {
   inject: ['reload'],
   mounted() {
     window.addEventListener('resize', () => {
-      this.isCollapse = window.innerWidth < 930;
+      this.isCollapse = window.innerWidth < 1100;
     });
   },
   data() {
     return {
-      isCollapse: window.innerWidth < 930,
+      isCollapse: window.innerWidth < 1100,
     }
   },
   methods: {

@@ -127,15 +127,15 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 680px;
+  width: 840px;
   margin: 20px auto 0;
   height: 450px;
 }
 
 .main_part .label_part {
   width: 150px;
-  padding: 20px 0;
-  margin-left: 20px;
+  padding: 20px 0 10px;
+  margin-left: 60px;
   text-align: center;
   font-size: 1.7rem;
   border-bottom: solid 1px gray;
@@ -144,7 +144,7 @@ export default {
 .main_part .left_part {
   width: 30%;
   display: inline-block;
-  margin: 10px 0 0 20px;
+  margin: 10px 20px 0 20px;
   padding: 30px;
   border-radius: 10px;
   border: solid 1px darkgray;

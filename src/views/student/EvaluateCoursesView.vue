@@ -70,7 +70,7 @@ export default {
         .then(resp => {
           if (resp.code === 200) {
             this.haveNotice = resp.data.haveOrNot === 1
-            if (this.haveNotice === true) {
+            if (this.haveNotice) {
               // 如果有课程评价通知，获取班级，再通过班级id查询教师课程列表
               this.getClass()
             }
@@ -170,7 +170,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: auto;
+  width: 840px;
   height: 450px;
   margin: 20px auto 0;
   text-align: left;
@@ -202,7 +202,7 @@ export default {
   background-color: darkgray;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: 840px;
   height: 450px;
   margin: 20px auto 0;
   line-height: 450px;
