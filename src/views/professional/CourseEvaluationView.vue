@@ -79,6 +79,12 @@ export default {
               this.evaluationList.forEach(evaluation => {
                 const good = evaluation.goodNum
                 const bad = evaluation.badNum
+                if (good === "" || good === undefined || good === null) {
+                  evaluation.goodNum = 0;
+                }
+                if (bad === "" || bad === undefined || bad === null) {
+                  evaluation.badNum = 0;
+                }
                 evaluation.goodAvg = 0
                 if (good !== "" && good !== undefined && good !== null && bad !== "" && bad !== undefined && bad !== null) {
                   const sum = good + bad
@@ -115,7 +121,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: 840px;
   height: 450px;
   margin: 20px auto 0;
   text-align: left;

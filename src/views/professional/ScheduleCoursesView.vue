@@ -490,7 +490,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: 840px;
   height: 450px;
   margin: 20px auto 0;
   text-align: left;
@@ -499,7 +499,7 @@ export default {
 .main_part .left {
   float: left;
   margin-top: 30px;
-  margin-left: 80px;
+  margin-left: 30px;
   padding-right: 20px;
   padding-bottom: 20px;
   border-right: solid 1px gray;
@@ -516,8 +516,8 @@ p {
 
 .right {
   float: right;
-  margin: 20px 0 0 80px;
-  width: 460px;
+  margin: 50px 0 0 80px;
+  width: 420px;
   height: 400px;
 }
 

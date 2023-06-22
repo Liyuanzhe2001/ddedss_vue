@@ -152,7 +152,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: 840px;
   margin: 20px auto 0;
   text-align: left;
   height: 450px;
@@ -160,7 +160,7 @@ export default {
 
 .main_part .left_part {
   float: left;
-  width: 220px;
+  width: 140px;
   height: 370px;
   margin: 20px;
   padding: 20px;

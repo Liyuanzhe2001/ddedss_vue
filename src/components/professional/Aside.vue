@@ -2,6 +2,7 @@
   <div class="main_part">
     <el-menu
         router
+        :collapse="isCollapse"
         :default-active="this.$route.matched[1].path"
         class="el_menu"
     >
@@ -17,24 +18,25 @@
         </el-icon>
         <span>安排课程</span>
       </el-menu-item>
-<!--      <el-menu-item index="/3">-->
-<!--        <el-icon>-->
-<!--          <Switch/>-->
-<!--        </el-icon>-->
-<!--        <span>选课倾向</span>-->
-<!--      </el-menu-item>-->
-      <el-menu-item route="/professional/course_evaluation/1" index="/professional/course_evaluation/:currentPage" @click="select()">
+      <!--      <el-menu-item index="/3">-->
+      <!--        <el-icon>-->
+      <!--          <Switch/>-->
+      <!--        </el-icon>-->
+      <!--        <span>选课倾向</span>-->
+      <!--      </el-menu-item>-->
+      <el-menu-item route="/professional/course_evaluation/1" index="/professional/course_evaluation/:currentPage"
+                    @click="select()">
         <el-icon>
           <Postcard/>
         </el-icon>
         <span>课程评价</span>
       </el-menu-item>
-<!--      <el-menu-item index="/5">-->
-<!--        <el-icon>-->
-<!--          <Link/>-->
-<!--        </el-icon>-->
-<!--        <span>学习分组</span>-->
-<!--      </el-menu-item>-->
+      <!--      <el-menu-item index="/5">-->
+      <!--        <el-icon>-->
+      <!--          <Link/>-->
+      <!--        </el-icon>-->
+      <!--        <span>学习分组</span>-->
+      <!--      </el-menu-item>-->
       <el-menu-item index="/professional/results_analysis">
         <el-icon>
           <PieChart/>
@@ -55,8 +57,18 @@
 export default {
   name: "Aside",
   inject: ['reload'],
-  methods:{
-    select(){
+  mounted() {
+    window.addEventListener('resize', () => {
+      this.isCollapse = window.innerWidth < 1100;
+    });
+  },
+  data() {
+    return {
+      isCollapse: window.innerWidth < 1100,
+    }
+  },
+  methods: {
+    select() {
       this.reload()
     }
   }
@@ -65,13 +77,17 @@ export default {
 
 <style scoped>
 .main_part {
-  width: 240px;
+  width: 100%;
   background-color: white;
 }
 
 .main_part .el_menu {
   min-height: 509px;
   padding-top: 30px;
+}
+
+.el_menu:not(.el-menu--collapse) {
+  width: 220px;
 }
 
 </style>

@@ -218,7 +218,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: 840px;
   margin: 20px auto 0;
   text-align: left;
   height: 450px;
@@ -226,7 +226,7 @@ export default {
 
 .main_part .left_part {
   float: left;
-  width: 300px;
+  width: 280px;
   height: 370px;
   margin: 20px;
   padding: 20px;
@@ -236,7 +236,7 @@ export default {
 
 .main_part .left_part .class_menu {
   display: inline-block;
-  width: 120px;
+  width: 100px;
   height: 370px;
 }
 
@@ -248,7 +248,7 @@ export default {
 
 .main_part .right_part {
   float: right;
-  width: 470px;
+  width: 390px;
   height: 370px;
   margin: 20px;
   padding: 20px;
@@ -268,7 +268,7 @@ export default {
 }
 
 .main_part .right_part .select_tip {
-  width: 470px;
+  width: 390px;
   height: 370px;
   line-height: 370px;
   text-align: center;
@@ -276,8 +276,8 @@ export default {
 }
 
 .echarts_part {
-  width: 214px;
-  height: 200px;
+  width: 175px;
+  height: 175px;
   margin: 0 10px 20px 10px;
   float: left;
 }

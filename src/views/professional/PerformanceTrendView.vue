@@ -217,7 +217,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: 940px;
+  width: 840px;
   height: 450px;
   margin: 20px auto 0;
   text-align: left;
@@ -225,11 +225,11 @@ export default {
 
 .top_part {
   margin: 20px auto;
-  width: 900px;
+  width: 800px;
 }
 
 .top_part .select_part {
-  width: 120px;
+  width: 100px;
   margin-left: 30px;
 }
 
@@ -240,7 +240,7 @@ export default {
 }
 
 .echarts_part {
-  width: 900px;
+  width: 800px;
   height: 370px;
   margin: 0 auto;
 }

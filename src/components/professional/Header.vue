@@ -291,6 +291,7 @@ export default {
 .main_part {
   height: 60px;
   width: 100%;
+  min-width: 1000px;
   text-align: left;
   line-height: 60px;
   background-color: purple;
