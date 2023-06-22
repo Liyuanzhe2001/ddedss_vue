@@ -499,7 +499,7 @@ export default {
   text-align: left;
   line-height: 60px;
   background-color: purple;
-  min-width: 900px;
+  min-width: 1000px;
 }
 
 .main_part .logo {

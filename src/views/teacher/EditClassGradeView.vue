@@ -29,7 +29,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div id="right_part" class="right_part">
+    <div class="right_part">
       <p class="title">
         完成情况
       </p>
@@ -38,7 +38,7 @@
         <p>未完成：{{ noFinish }}</p>
       </div>
     </div>
-<div></div>
+    <div></div>
     <el-button
         class="btn"
         type="primary"
@@ -52,7 +52,7 @@
 
 <script>
 
-import {ElMessage, ElMessageBox} from "element-plus";
+import {ElMessage} from "element-plus";
 import {getClassNameById, getStudentScoreList, getSubjectNameById, modifyStudentsScore} from "@/api/teacher";
 
 export default {
@@ -133,7 +133,15 @@ export default {
           .then(resp => {
             if (resp.code === 200) {
               this.students = resp.data
-              this.noFinish = this.students.length
+              this.students.forEach(student => {
+                this.noFinish +=
+                    student.score === 0 ||
+                    student.score === undefined ||
+                    student.score === "" ||
+                    student.score === null
+                        ? 1 : 0;
+              })
+              this.finish = this.students.length - this.noFinish;
             } else {
               ElMessage({
                 message: "获取学生列表失败",
@@ -211,8 +219,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: auto;
-  min-width: 440px;
+  width: 840px;
   height: 450px;
   margin: 20px auto 0;
   text-align: left;
@@ -227,7 +234,6 @@ export default {
 
 .main_part .right_part {
   display: inline-block;
-  width: 300px;
   margin-right: 40px;
   padding: 80px;
 }
@@ -255,20 +261,6 @@ export default {
   font-size: 20px;
   margin-top: 20px;
   margin-right: 80px;
-}
-
-@media (max-width: 1140px) {
-  .main_part .right_part {
-    display: none;
-  }
-
-  .btn{
-    float: right;
-    width: 130px;
-    height: 40px;
-    font-size: 20px;
-    margin-top: 20px;
-  }
 }
 
 /deep/ .scoreInput input::-webkit-outer-spin-button,

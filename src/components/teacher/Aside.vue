@@ -42,13 +42,13 @@ export default {
   mounted() {
     this.userIdentity = sessionStorage.getItem("identity");
     window.addEventListener('resize', () => {
-      this.isCollapse = window.innerWidth < 1000;
+      this.isCollapse = window.innerWidth < 1100;
     });
   },
   data() {
     return {
       userIdentity: 0,
-      isCollapse: window.innerWidth < 1000,
+      isCollapse: window.innerWidth < 1100,
     }
   },
   methods: {

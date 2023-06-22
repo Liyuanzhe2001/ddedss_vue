@@ -145,8 +145,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  min-width: 700px;
-  max-width: 700px;
+  width: 840px;
   margin: 20px auto 0;
   text-align: left;
   height: 450px;

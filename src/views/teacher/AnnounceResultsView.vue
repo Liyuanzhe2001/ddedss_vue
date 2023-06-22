@@ -1,7 +1,7 @@
 <template>
   <div id="main" v-loading="loading" class="main_part">
     <div v-if="haveNotice">
-      <el-table :data="classSubject" max-height="390" class="table_part">
+      <el-table :data="classSubject" max-height="400" class="table_part">
         <el-table-column type="index" label="#" width="60"/>
         <el-table-column prop="className" label="班级" width="80"/>
         <el-table-column prop="peopleNum" label="人数" width="60"/>
@@ -66,7 +66,8 @@ export default {
         .then(resp => {
           this.loading = false;
           if (resp.code === 200) {
-            this.haveNotice = resp.data.haveOrNot === 1
+            // this.haveNotice = resp.data.haveOrNot === 1
+            this.haveNotice = true;
             if (this.haveNotice) {
               this.queryClassAndSubject()
             } else {
@@ -81,15 +82,6 @@ export default {
             })
           }
         })
-
-    window.addEventListener('resize', () => {
-      if (window.innerWidth <= 800) {
-        document.getElementById("e_main").style.display = 'none'
-      } else {
-        document.getElementById("e_main").style.display = ''
-        this.drawECharts()
-      }
-    });
   },
   data() {
     return {
@@ -179,28 +171,28 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: auto;
-  min-width: 500px;
-  height: 450px;
+  width: 840px;
   margin: 20px auto 0;
   text-align: left;
+  height: 450px
 }
 
 .main_part .table_part {
   float: left;
-  width: auto;
+  width: 430px;
   margin: 20px 0 20px 40px;
 }
 
 .main_part .echarts_part {
   float: right;
-  width: 390px;
-  height: 390px;
+  width: 280px;
+  height: 280px;
   margin: 20px 40px;
 }
 
 .no_notice {
   margin: 0 auto;
+  width: 840px;
   line-height: 450px;
   font-size: 60px;
   text-align: center;

@@ -3,7 +3,7 @@
     <div class="text">
       <div v-for="i in knowledgeList" v-bind="i">
         <span
-            v-text="i.knowledgeTitle.length<fontNum?i.knowledgeTitle:(i.knowledgeTitle.substring(0,fontNum)+'...')"
+            v-text="i.knowledgeTitle"
             @click="jumpUrl(i.knowledgeId)"
         />
         <el-popconfirm
@@ -60,10 +60,6 @@ export default {
     // TODO 分页 查询知识
     this.currentPage = this.$route.params.currentPage
     this.getKnowledge()
-
-    window.addEventListener('resize', () => {
-      this.fontNum = window.innerWidth > 1000 ? window.innerWidth / 40 + 10 :33;
-    });
   },
   data() {
     return {
@@ -71,7 +67,6 @@ export default {
       pageSize: 5,
       total: 10,
       knowledgeList: [],
-      fontNum: window.innerWidth > 1000 ? window.innerWidth / 40 + 10 :33,
     }
   },
   methods: {
@@ -138,8 +133,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  width: auto;
-  min-width: 600px;
+  width: 840px;
   margin: 20px auto 0;
   text-align: left;
   height: 450px
@@ -150,8 +144,12 @@ export default {
 }
 
 .main_part .text span {
-  line-height: 10px;
   cursor: pointer;
+  width: 650px;
+  overflow: hidden; /*超出部分隐藏*/
+  text-overflow: ellipsis; /*超出部分省略号表示*/
+  white-space: nowrap; /*强制单行显示*/
+  display: inline-block; /*转换为行内块元素*/
 }
 
 .main_part .text .icon_part {
