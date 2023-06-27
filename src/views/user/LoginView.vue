@@ -76,7 +76,6 @@
 <script>
 import ValidCode from "@/components/ValidCode";
 import {ElMessage} from "element-plus";
-import userRequest from "@/utils/userRequest";
 import {login} from "@/api/user";
 
 export default {
