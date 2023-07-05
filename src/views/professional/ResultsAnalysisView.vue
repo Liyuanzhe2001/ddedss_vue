@@ -161,7 +161,6 @@ export default {
                 type: "error"
               })
             }
-            console.log(resp)
           })
     },
     renderChart() {

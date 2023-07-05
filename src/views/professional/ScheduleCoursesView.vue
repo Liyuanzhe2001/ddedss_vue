@@ -64,6 +64,18 @@
                 type="primary"
                 style="width: 50px"
             />
+            <el-popconfirm
+                v-else-if="scope.row.Monday === -1"
+                title="确定删除该课程安排？"
+                @confirm="deleteScheduleLesson(1,scope)"
+            >
+              <template #reference>
+                <el-button
+                    type="warning"
+                    style="width: 50px"
+                />
+              </template>
+            </el-popconfirm>
             <el-button v-else disabled type="danger" style="width: 50px"/>
           </template>
         </el-table-column>
@@ -80,6 +92,18 @@
                 type="primary"
                 style="width: 50px"
             />
+            <el-popconfirm
+                v-else-if="scope.row.Tuesday == -1"
+                title="确定删除该课程安排？"
+                @confirm="deleteScheduleLesson(2,scope)"
+            >
+              <template #reference>
+                <el-button
+                    type="warning"
+                    style="width: 50px"
+                />
+              </template>
+            </el-popconfirm>
             <el-button v-else disabled type="danger" style="width: 50px"/>
           </template>
         </el-table-column>
@@ -96,6 +120,18 @@
                 type="primary"
                 style="width: 50px"
             />
+            <el-popconfirm
+                v-else-if="scope.row.Wednesday === -1"
+                title="确定删除该课程安排？"
+                @confirm="deleteScheduleLesson(3,scope)"
+            >
+              <template #reference>
+                <el-button
+                    type="warning"
+                    style="width: 50px"
+                />
+              </template>
+            </el-popconfirm>
             <el-button v-else disabled type="danger" style="width: 50px"/>
           </template>
         </el-table-column>
@@ -112,6 +148,18 @@
                 type="primary"
                 style="width: 50px"
             />
+            <el-popconfirm
+                v-else-if="scope.row.Thursday === -1"
+                title="确定删除该课程安排？"
+                @confirm="deleteScheduleLesson(4,scope)"
+            >
+              <template #reference>
+                <el-button
+                    type="warning"
+                    style="width: 50px"
+                />
+              </template>
+            </el-popconfirm>
             <el-button v-else disabled type="danger" style="width: 50px"/>
           </template>
         </el-table-column>
@@ -128,6 +176,18 @@
                 type="primary"
                 style="width: 50px"
             />
+            <el-popconfirm
+                v-else-if="scope.row.Friday === -1"
+                title="确定删除该课程安排？"
+                @confirm="deleteScheduleLesson(5,scope)"
+            >
+              <template #reference>
+                <el-button
+                    type="warning"
+                    style="width: 50px"
+                />
+              </template>
+            </el-popconfirm>
             <el-button v-else disabled type="danger" style="width: 50px"/>
           </template>
         </el-table-column>
@@ -142,11 +202,12 @@
 <script>
 import {ElMessage} from "element-plus";
 import {
+  deleteScheduleLesson,
   getAllClass,
   getAllSubject,
   getLessonsByClassId,
   getLessonsByTeacherId,
-  getTeachersBySubjectId
+  getTeachersBySubjectId, scheduleLesson
 } from "@/api/professional";
 
 export default {
@@ -170,6 +231,8 @@ export default {
         this.$route.push("/admin")
         return
     }
+
+
 
     // 加载所有班级
     getAllClass()
@@ -259,6 +322,7 @@ export default {
     },
     // 加载教师
     loadTeacher() {
+      this.form.teacherId = ""
       if (this.form.subjectId !== "") {
         getTeachersBySubjectId(this.form.subjectId)
             .then(resp => {
@@ -307,11 +371,11 @@ export default {
           Friday: 0,
         },
       ]
-      if (this.form.teacherId !== "") {
-        this.loadTeacherTime()
-      }
       if (this.form.classId !== "") {
         this.loadClassTime()
+      }
+      if (this.form.teacherId !== "") {
+        this.loadTeacherTime()
       }
     },
     // 加载班级课程安排时间
@@ -364,19 +428,39 @@ export default {
                 let weekday = resp.data[i].weekday
                 switch (weekday) {
                   case 1:
-                    this.lessonTime[section - 1].Monday = 1
+                    if (this.lessonTime[section - 1].Monday == 1) {
+                      this.lessonTime[section - 1].Monday = -1
+                    } else {
+                      this.lessonTime[section - 1].Monday = 1
+                    }
                     break
                   case 2:
-                    this.lessonTime[section - 1].Tuesday = 1
+                    if (this.lessonTime[section - 1].Tuesday == 1) {
+                      this.lessonTime[section - 1].Tuesday = 1
+                    } else {
+                      this.lessonTime[section - 1].Tuesday = 1
+                    }
                     break
                   case 3:
-                    this.lessonTime[section - 1].Wednesday = 1
+                    if (this.lessonTime[section - 1].Wednesday == 1) {
+                      this.lessonTime[section - 1].Wednesday = -1
+                    } else {
+                      this.lessonTime[section - 1].Wednesday = 1
+                    }
                     break
                   case 4:
-                    this.lessonTime[section - 1].Thursday = 1
+                    if (this.lessonTime[section - 1].Thursday == 1) {
+                      this.lessonTime[section - 1].Thursday = -1
+                    } else {
+                      this.lessonTime[section - 1].Thursday = 1
+                    }
                     break
                   case 5:
-                    this.lessonTime[section - 1].Friday = 1
+                    if (this.lessonTime[section - 1].Friday == 1) {
+                      this.lessonTime[section - 1].Friday = -1
+                    } else {
+                      this.lessonTime[section - 1].Friday = 1
+                    }
                     break
                 }
               }
@@ -394,7 +478,25 @@ export default {
     selectTime(weekday, scope) {
       if (this.form.classId === '') {
         ElMessage({
-          message: "请先选择班级",
+          message: "请选择班级",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+        return
+      }
+      if (this.form.subjectId === '') {
+        ElMessage({
+          message: "请先选择科目",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+        return
+      }
+      if (this.form.teacherId === '') {
+        ElMessage({
+          message: "请先选择教师",
           showClose: true,
           grouping: true,
           type: "warning"
@@ -444,7 +546,6 @@ export default {
       }
     },
     // 提交
-    // TODO: 未完成
     submit() {
       if (this.form.classId === "") {
         ElMessage({
@@ -475,8 +576,81 @@ export default {
           type: "warning"
         })
       } else {
-        console.log(this.form)
+        scheduleLesson(this.form)
+            .then(resp => {
+              if (resp.code === 200) {
+                ElMessage({
+                  message: "课程安排成功",
+                  showClose: true,
+                  grouping: true,
+                  type: "success"
+                })
+                var section = this.form.section
+                switch (this.form.weekday) {
+                  case 1:
+                    this.lessonTime[section - 1].Monday = -1
+                    break
+                  case 2:
+                    this.lessonTime[section - 1].Tuesday = -1
+                    break
+                  case 3:
+                    this.lessonTime[section - 1].Wednesday = -1
+                    break
+                  case 4:
+                    this.lessonTime[section - 1].Thursday = -1
+                    break
+                  case 5:
+                    this.lessonTime[section - 1].Friday = -1
+                    break
+                }
+              } else {
+                ElMessage({
+                  message: "课程安排失败",
+                  showClose: true,
+                  grouping: true,
+                  type: "error"
+                })
+              }
+            })
       }
+    },
+    deleteScheduleLesson(weekday, scope) {
+      deleteScheduleLesson(this.form.classId, weekday, scope.$index + 1)
+          .then(resp => {
+            if (resp.code === 200) {
+              ElMessage({
+                message: "课程安排删除成功",
+                showClose: true,
+                grouping: true,
+                type: "success"
+              })
+              var section = scope.$index + 1
+              switch (weekday) {
+                case 1:
+                  this.lessonTime[section - 1].Monday = 0
+                  break
+                case 2:
+                  this.lessonTime[section - 1].Tuesday = 0
+                  break
+                case 3:
+                  this.lessonTime[section - 1].Wednesday = 0
+                  break
+                case 4:
+                  this.lessonTime[section - 1].Thursday = 0
+                  break
+                case 5:
+                  this.lessonTime[section - 1].Friday = 0
+                  break
+              }
+            } else {
+              ElMessage({
+                message: "课程安排删除失败",
+                showClose: true,
+                grouping: true,
+                type: "error"
+              })
+            }
+          })
     }
   }
 }

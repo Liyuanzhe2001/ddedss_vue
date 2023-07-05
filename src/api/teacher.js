@@ -136,9 +136,16 @@ export function updatePassword(password) {
     })
 }
 
-export function createInvite(selectClassId){
+export function createInvite(selectClassId) {
     return axios({
-        url:`/teacher/createInvite/${selectClassId}`,
-        method:"GET"
+        url: `/teacher/createInvite/${selectClassId}`,
+        method: "GET"
+    })
+}
+
+export function getAllRelevantClasses() {
+    return axios({
+        url: "/class/getAllRelevantClasses",
+        method: "GET"
     })
 }

@@ -103,20 +103,42 @@ export function updatePassword(password) {
     })
 }
 
-export function getEvaluationTime(){
+export function getEvaluationTime() {
     return axios({
-        url:"/evaluate/getEvaluationTime",
-        method:"GET"
+        url: "/evaluate/getEvaluationTime",
+        method: "GET"
     })
 }
 
 
-export function setCourseEvaluation(time){
+export function setCourseEvaluation(time) {
     return axios({
-        url:"/evaluate/setCourseEvaluation",
-        method:"POST",
-        data:{
+        url: "/evaluate/setCourseEvaluation",
+        method: "POST",
+        data: {
             time
+        }
+    })
+}
+
+export function scheduleLesson(form) {
+    return axios({
+        url: "/lesson/scheduleLesson",
+        method: "POST",
+        data: {
+            ...form
+        }
+    })
+}
+
+export function deleteScheduleLesson(classId, weekday, section) {
+    return axios({
+        url: "/lesson/deleteScheduleLesson",
+        method: "DELETE",
+        data: {
+            classId,
+            weekday,
+            section
         }
     })
 }

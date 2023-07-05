@@ -30,7 +30,7 @@
       <div id="e_main" class="echarts_part"/>
     </div>
     <div v-else class="no_notice">
-      暂无成绩发布
+      暂无成绩需要公布
     </div>
   </div>
 </template>
@@ -66,8 +66,7 @@ export default {
         .then(resp => {
           this.loading = false;
           if (resp.code === 200) {
-            // this.haveNotice = resp.data.haveOrNot === 1
-            this.haveNotice = true;
+            this.haveNotice = resp.data.haveOrNot === 1
             if (this.haveNotice) {
               this.queryClassAndSubject()
             } else {

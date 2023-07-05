@@ -4,11 +4,11 @@
         class="logo"
         :src="logoSrc"/>
     <div class="right_part">
-      <el-badge :value="messageNum" class="item">
-        <el-icon size="30">
-          <ChatDotRound/>
-        </el-icon>
-      </el-badge>
+<!--      <el-badge :value="messageNum" class="item">-->
+<!--        <el-icon size="30">-->
+<!--          <ChatDotRound/>-->
+<!--        </el-icon>-->
+<!--      </el-badge>-->
       <span>欢迎，{{ username }}</span>
       <div class="avatar">
         <el-avatar :size="30" :src="teacherImg" @click="drawer = true"/>
@@ -257,7 +257,7 @@ export default {
       userIdentity: 0,
       teacherImg: require("@/assets/images/teacher.jpeg"),
       drawer: false,
-      messageNum: "",
+      // messageNum: "",
 
       addSubjectVisible: false,
       subjectLevel: [],

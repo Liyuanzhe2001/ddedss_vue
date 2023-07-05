@@ -4,11 +4,11 @@
         class="logo"
         :src="logoSrc"/>
     <div class="right_part">
-      <el-badge :value="messageNum" class="item">
-        <el-icon size="30">
-          <ChatDotRound/>
-        </el-icon>
-      </el-badge>
+<!--      <el-badge :value="messageNum" class="item">-->
+<!--        <el-icon size="30">-->
+<!--          <ChatDotRound/>-->
+<!--        </el-icon>-->
+<!--      </el-badge>-->
       <span>欢迎，{{ username }}</span>
       <div class="avatar">
         <el-avatar :size="30" :src="studentImg" @click="drawer = true"/>
@@ -152,7 +152,6 @@ export default {
         // TODO 修改密码
         updatePassword(this.user.newPassword)
             .then(resp => {
-              console.log(resp)
               if (resp.code === 200) {
                 alert("密码修改成功，请重新登录")
                 // TODO 清除数据 返回登录界面 session token

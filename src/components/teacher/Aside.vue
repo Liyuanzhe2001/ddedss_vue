@@ -12,7 +12,7 @@
         </el-icon>
         <span>我的发布</span>
       </el-menu-item>
-      <el-menu-item v-if="this.userIdentity === '-1'" index="/teacher/class_list">
+      <el-menu-item route="/teacher/class_list" index="/teacher/class_list">
         <el-icon>
           <Guide/>
         </el-icon>

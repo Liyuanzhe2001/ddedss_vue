@@ -19,7 +19,7 @@ import ResultsAnalysisView from "@/views/professional/ResultsAnalysisView";
 import EvaluateCoursesView from "@/views/student/EvaluateCoursesView";
 import KnowledgeShowLayout from "@/layout/KnowledgeShowLayout";
 import CourseEvaluationView from "@/views/professional/CourseEvaluationView";
-// import ClassListView from "@/views/teacher/ClassListView";
+import ClassListView from "@/views/teacher/ClassListView";
 import AdministratorLayout from "@/layout/AdministratorLayout";
 import UserListView from "@/views/administrator/UserListView";
 import KnowledgeListView from "@/views/administrator/KnowledgeListView";
@@ -96,12 +96,11 @@ const routes = [
                 name: "my_publish",
                 component: MyPublishView,
             },
-            // TODO：辅导员身份教师权限，未完成
-            // {
-            //     path: "class_list",
-            //     name: "class_list",
-            //     component: ClassListView,
-            // },
+            {
+                path: "class_list",
+                name: "class_list",
+                component: ClassListView,
+            },
             {
                 path: "publish_knowledge",
                 name: "publish_knowledge",

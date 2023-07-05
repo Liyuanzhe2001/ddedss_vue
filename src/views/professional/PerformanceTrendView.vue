@@ -193,8 +193,6 @@ export default {
                 }
                 this.showEcharts.resultData.push(resp.data[i].resultData)
               }
-              console.log(this.showEcharts.resultData)
-
               this.drawEcharts()
             } else {
               ElMessage({
