@@ -38,3 +38,17 @@ export function register(registerForm) {
         }
     })
 }
+
+export function exit() {
+    return axios({
+        url: "/user/exit",
+        method: "POST"
+    })
+}
+
+export function queryKnowledgeById(knowledgeId){
+    return axios({
+        url:`/knowledge/queryKnowledgeById/${knowledgeId}`,
+        method:"GET"
+    })
+}

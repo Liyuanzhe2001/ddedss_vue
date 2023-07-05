@@ -62,3 +62,23 @@ export function queryKnowledgeList(currentPage, pageSize) {
         }
     })
 }
+
+export function judgePassword(password) {
+    return axios({
+        url: "/user/judgePassword",
+        method: "POST",
+        data: {
+            password
+        }
+    })
+}
+
+export function updatePassword(password) {
+    return axios({
+        url: "/user/updatePassword",
+        method: "PUT",
+        data: {
+            password
+        }
+    })
+}

@@ -25,14 +25,13 @@
 </template>
 
 <script>
-import userRequest from "@/utils/userRequest";
+import {queryKnowledgeById} from "@/api/user";
 
 export default {
   name: "KnowledgeShowLayout",
   mounted() {
     const knowledgeId = this.$route.params.id
-    userRequest
-        .get(`/knowledge/queryKnowledgeById/${knowledgeId}`)
+    queryKnowledgeById(knowledgeId)
         .then(resp => {
           this.title = resp.data.knowledgeTitle
           this.teacherName = resp.data.teacherName

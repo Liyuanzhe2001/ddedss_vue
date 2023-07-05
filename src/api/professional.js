@@ -82,3 +82,41 @@ export function queryStudentListByClassId(classId) {
         method: "GET"
     })
 }
+
+export function judgePassword(password) {
+    return axios({
+        url: "/user/judgePassword",
+        method: "POST",
+        data: {
+            password
+        }
+    })
+}
+
+export function updatePassword(password) {
+    return axios({
+        url: "/user/updatePassword",
+        method: "put",
+        data: {
+            password
+        }
+    })
+}
+
+export function getEvaluationTime(){
+    return axios({
+        url:"/evaluate/getEvaluationTime",
+        method:"GET"
+    })
+}
+
+
+export function setCourseEvaluation(time){
+    return axios({
+        url:"/evaluate/setCourseEvaluation",
+        method:"POST",
+        data:{
+            time
+        }
+    })
+}

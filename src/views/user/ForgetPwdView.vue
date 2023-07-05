@@ -79,8 +79,6 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import axios from "axios";
-import userRequest from "@/utils/userRequest";
 import {forgetPassword, sendVerificationCode} from "@/api/user";
 
 export default {

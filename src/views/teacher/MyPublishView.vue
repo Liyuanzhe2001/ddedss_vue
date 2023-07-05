@@ -75,12 +75,13 @@ export default {
       // TODO 分页查询知识 this.page.current
       queryKnowledgeListByTeacherId(this.currentPage, this.pageSize)
           .then(resp => {
+            console.log(this.currentPage + " " + this.pageSize + " " + resp);
             if (resp.code === 200) {
               this.knowledgeList = resp.data
               this.total = resp.total
             } else {
               ElMessage({
-                message: "获取知识列表失败",
+                message: "知识列表获取失败",
                 showClose: true,
                 grouping: true,
                 type: "error"

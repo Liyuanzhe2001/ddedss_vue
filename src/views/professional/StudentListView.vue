@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import professionalRequest from "@/utils/professionalRequest";
 import {ElMessage} from "element-plus";
 import {getAllClass, queryStudentListByClassId} from "@/api/professional";
 

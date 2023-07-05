@@ -31,7 +31,6 @@
 
 <script>
 import * as echarts from "echarts";
-import studentRequest from "@/utils/studentRequest";
 import {ElMessage} from "element-plus";
 import {getAvgScoreByExamId, getExamListByStudentId, getResultByExamId} from "@/api/student";
 

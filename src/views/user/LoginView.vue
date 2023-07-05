@@ -173,7 +173,7 @@ export default {
                 const user = resp.data
                 sessionStorage.setItem("username", user.username)
                 sessionStorage.setItem("identity", user.identity)
-                sessionStorage.setItem("token", user.token)
+                localStorage.setItem("token", user.token)
                 switch (user.identity) {
                   case 0:
                     this.$router.push("/student")

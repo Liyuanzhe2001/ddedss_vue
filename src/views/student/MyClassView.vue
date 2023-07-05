@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import studentRequest from "@/utils/studentRequest";
 import {ElMessage} from "element-plus";
 import {queryClassName, queryTeacherListByClassId} from "@/api/student";
 import {queryStudentListByClassId} from "@/api/teacher";

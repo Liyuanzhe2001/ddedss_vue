@@ -91,8 +91,8 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import professionalRequest from "@/utils/professionalRequest";
-import userRequest from "@/utils/userRequest";
+import {getEvaluationTime, judgePassword, setCourseEvaluation, updatePassword} from "@/api/professional";
+import {exit} from "@/api/user";
 
 export default {
   name: "Header",
@@ -136,10 +136,8 @@ export default {
         })
       } else {
         // TODO 判断旧密码是否正确
-        professionalRequest
-            .post("/user/judgePassword", {
-              "password": this.user.oldPassword
-            })
+
+        judgePassword(this.user.oldPassword)
             .then(resp => {
               if (resp.code === 200) {
                 // 密码正确 进行修改密码
@@ -189,10 +187,7 @@ export default {
         })
       } else {
         // TODO 修改密码
-        professionalRequest
-            .put("/user/updatePassword", {
-              "password": this.user.newPassword
-            })
+        updatePassword(this.user.newPassword)
             .then(resp => {
               if (resp.code === 200) {
                 alert("密码修改成功，请重新登录")
@@ -212,8 +207,7 @@ export default {
     },
     // 初始化评估时间（如果未设置评估时间，start,end设置为空）
     initEvaluate() {
-      professionalRequest
-          .get("/evaluate/getEvaluationTime")
+      getEvaluationTime()
           .then(resp => {
             if (resp.code === 200) {
               this.time = resp.data
@@ -241,8 +235,8 @@ export default {
         })
         return
       }
-      professionalRequest
-          .post("/evaluate/setCourseEvaluation", this.time)
+
+      setCourseEvaluation(this.time)
           .then(resp => {
             if (resp.code === 200) {
               ElMessage({
@@ -264,15 +258,14 @@ export default {
     },
     // 退出登录
     exit() {
-      userRequest
-          .post("/user/exit")
+      exit()
           .then(resp => {
             console.log(resp)
-            if(resp.code === 200) {
+            if (resp.code === 200) {
               sessionStorage.clear()
               // TODO 清除数据 返回登录界面 session token
               window.location.href = "/"
-            }else {
+            } else {
               ElMessage({
                 message: "退出登录失败",
                 showClose: true,

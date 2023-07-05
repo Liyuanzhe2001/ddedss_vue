@@ -61,7 +61,7 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import studentRequest from "@/utils/studentRequest";
+import {judgePassword, updatePassword} from "@/api/student";
 
 export default {
   name: "Header",
@@ -100,10 +100,7 @@ export default {
         })
       } else {
         // TODO 判断旧密码是否正确
-        studentRequest
-            .post("/user/judgePassword", {
-              "password": this.user.oldPassword
-            })
+        judgePassword(this.user.oldPassword)
             .then(resp => {
               if (resp.code === 200) {
                 // 密码正确 进行修改密码
@@ -153,10 +150,7 @@ export default {
         })
       } else {
         // TODO 修改密码
-        studentRequest
-            .put("/user/updatePassword", {
-              "password": this.user.newPassword
-            })
+        updatePassword(this.user.newPassword)
             .then(resp => {
               console.log(resp)
               if (resp.code === 200) {

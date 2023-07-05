@@ -211,7 +211,14 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import teacherRequest from "@/utils/teacherRequest";
+import {
+  createInvite,
+  getManagedClass,
+  judgePassword,
+  modifyTeacherSubjectLevel,
+  queryTeacherSubjectLevel,
+  updatePassword
+} from "@/api/teacher";
 
 export default {
   subjectName: "Header",
@@ -227,8 +234,7 @@ export default {
     // 如果是辅导员，加载管理的班级
     if (this.userIdentity === "-1") {
       // 获取辅导员管理的班级
-      teacherRequest
-          .get("/instructor/getManagedClass")
+      getManagedClass
           .then(resp => {
             if (resp.code === 200) {
               this.classList = resp.data
@@ -280,8 +286,7 @@ export default {
   methods: {
     // TODO 加载教师特长
     loadLevel() {
-      teacherRequest
-          .get("/teacherSubject/queryTeacherSubjectLevel")
+      queryTeacherSubjectLevel()
           .then(resp => {
             if (resp.code === 200) {
               this.subjectLevel = resp.data
@@ -346,10 +351,7 @@ export default {
     },
     // TODO 确定修改教师特长
     saveChangeSubject() {
-      teacherRequest
-          .put("/teacherSubject/modifyTeacherSubjectLevel", {
-            subjectLevelList: this.subjectLevel
-          })
+      modifyTeacherSubjectLevel(this.subjectLevel)
           .then(resp => {
             if (resp.code === 200) {
               ElMessage({
@@ -385,10 +387,7 @@ export default {
         })
       } else {
         // TODO 判断旧密码是否正确
-        teacherRequest
-            .post("/user/judgePassword", {
-              "password": this.user.oldPassword
-            })
+        judgePassword(this.user.oldPassword)
             .then(resp => {
               if (resp.code === 200) {
                 // 密码正确 进行修改密码
@@ -438,10 +437,7 @@ export default {
         })
       } else {
         // TODO 修改密码
-        teacherRequest
-            .put("/user/updatePassword", {
-              "password": this.user.newPassword
-            })
+        updatePassword(this.user.newPassword)
             .then(resp => {
               if (resp.code === 200) {
                 alert("密码修改成功，请重新登录")
@@ -460,19 +456,18 @@ export default {
       }
     },
     // 关闭创建注册码窗口
-    closeCode(){
+    closeCode() {
       document.getElementById("displayCode").style.display = "none"
     },
     // 创建注册码
     createCode() {
       // TODO 创建注册码 或 查找注册码
-      teacherRequest
-          .get(`/teacher/createInvite/${this.selectClassId}`)
-          .then(resp=>{
-            if(resp.code === 200) {
+      createInvite(this.selectClassId)
+          .then(resp => {
+            if (resp.code === 200) {
               this.code = resp.data
               document.getElementById("displayCode").style.display = "block"
-            }else {
+            } else {
               ElMessage({
                 message: '获取注册码失败',
                 showClose: true,

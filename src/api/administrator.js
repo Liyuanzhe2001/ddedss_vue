@@ -63,3 +63,23 @@ export function initPassword(userId) {
         method: "PUT"
     })
 }
+
+export function updatePassword(password) {
+    return axios({
+        url: "/user/updatePassword",
+        method: "PUT",
+        data: {
+            password
+        }
+    })
+}
+
+export function judgePassword(password) {
+    return axios({
+        url: "/user/judgePassword",
+        method: "POST",
+        data: {
+            password
+        }
+    })
+}

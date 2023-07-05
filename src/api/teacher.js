@@ -35,6 +35,13 @@ export function queryTeacherListByClassId(selectClassId) {
     })
 }
 
+export function queryTeacherSubjectLevel() {
+    return axios({
+        url: "/teacherSubject/queryTeacherSubjectLevel",
+        method: "GET",
+    })
+}
+
 export function queryKnowledgeListByTeacherId(currentPage, pageSize) {
     return axios({
         url: "/knowledge/queryKnowledgeListByTeacherId",
@@ -96,5 +103,42 @@ export function addKnowledge(form) {
         data: {
             ...form
         }
+    })
+}
+
+export function modifyTeacherSubjectLevel(subjectLevelList) {
+    return axios({
+        url: "/teacherSubject/modifyTeacherSubjectLevel",
+        method: "PUT",
+        data: {
+            subjectLevelList
+        }
+    })
+}
+
+export function judgePassword(password) {
+    return axios({
+        url: "/user/judgePassword",
+        method: "POST",
+        data: {
+            password
+        }
+    })
+}
+
+export function updatePassword(password) {
+    return axios({
+        url: "/user/updatePassword",
+        method: "PUT",
+        data: {
+            password
+        }
+    })
+}
+
+export function createInvite(selectClassId){
+    return axios({
+        url:`/teacher/createInvite/${selectClassId}`,
+        method:"GET"
     })
 }
