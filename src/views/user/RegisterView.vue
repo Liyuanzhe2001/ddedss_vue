@@ -12,7 +12,6 @@
         <el-form-item label="注册码">
           <el-input
               id="invite"
-              maxlength="8"
               style="height: 30px;width: 242px;"
               v-model="registerForm.invite"
               prefix-icon="Message"
@@ -24,6 +23,7 @@
               id="number"
               style="height: 30px;width: 242px;"
               v-model="registerForm.number"
+              maxlength="12"
               prefix-icon="Place"
               placeholder="请输入学号"
           />
@@ -230,6 +230,7 @@ export default {
         // TODO 提交注册信息
         register(this.registerForm)
             .then(resp => {
+              console.log(resp)
               if (resp.code === 200) {
                 alert("注册成功")
                 this.$router.push("/login")

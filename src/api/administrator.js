@@ -83,3 +83,39 @@ export function judgePassword(password) {
         }
     })
 }
+
+export function getAllClassCodeInfo(like, currentPage, pageSize) {
+    return axios({
+        url: "/class/getAllClassCodeInfo",
+        method: "GET",
+        params: {
+            like,
+            currentPage,
+            pageSize
+        }
+    })
+}
+
+export function createInvite(classId) {
+    return axios({
+        url: `/class/createInvite/${classId}`,
+        method: "GET",
+    })
+}
+
+export function deleteInvite(classId) {
+    return axios({
+        url: `/class/deleteInvite/${classId}`,
+        method: "DELETE",
+    })
+}
+
+export function modifyUser(form){
+    return axios({
+        url:"/admin/modifyUser",
+        method:"PUT",
+        data:{
+            ...form
+        }
+    })
+}

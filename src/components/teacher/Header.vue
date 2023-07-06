@@ -4,11 +4,11 @@
         class="logo"
         :src="logoSrc"/>
     <div class="right_part">
-<!--      <el-badge :value="messageNum" class="item">-->
-<!--        <el-icon size="30">-->
-<!--          <ChatDotRound/>-->
-<!--        </el-icon>-->
-<!--      </el-badge>-->
+      <!--      <el-badge :value="messageNum" class="item">-->
+      <!--        <el-icon size="30">-->
+      <!--          <ChatDotRound/>-->
+      <!--        </el-icon>-->
+      <!--      </el-badge>-->
       <span>欢迎，{{ username }}</span>
       <div class="avatar">
         <el-avatar :size="30" :src="teacherImg" @click="drawer = true"/>
@@ -28,12 +28,6 @@
           <Edit/>
         </el-icon>
         <span>修改密码</span>
-      </el-menu-item>
-      <el-menu-item v-if="userIdentity==='-1'" style="color: black" @click="this.codeVisible=true">
-        <el-icon>
-          <Key/>
-        </el-icon>
-        <span>创建注册码</span>
       </el-menu-item>
     </el-menu>
     <el-menu class="drawer_foot_part">
@@ -173,47 +167,11 @@
     </template>
   </el-dialog>
 
-  <el-dialog
-      v-model="codeVisible"
-      title="创建注册码"
-      width="400px"
-      @close="closeCode"
-  >
-    <el-select
-        style="width: 100px"
-        v-model="selectClassId"
-    >
-      <el-option
-          v-for="item in classList"
-          :key="item.classId"
-          :label="item.className"
-          :value="item.classId"
-      />
-    </el-select>
-    <el-button
-        type="primary"
-        style="margin-left:10px;width: 50px;height: 20px"
-        @click="createCode()"
-    >
-      确定
-    </el-button>
-    <div id="displayCode" style="display: none">
-      <div style="margin: 10px 0">
-        注册码还有{{ code.day }}天{{ code.hour }}时过期 <br>
-      </div>
-      <div>
-        {{ code.invite }}
-      </div>
-    </div>
-  </el-dialog>
-
 </template>
 
 <script>
 import {ElMessage} from "element-plus";
 import {
-  createInvite,
-  getManagedClass,
   judgePassword,
   modifyTeacherSubjectLevel,
   queryTeacherSubjectLevel,
@@ -228,27 +186,6 @@ export default {
 
     // 加载擅长科目
     this.loadLevel()
-
-    // 判断辅导员身份
-    this.userIdentity = sessionStorage.getItem("identity");
-    // 如果是辅导员，加载管理的班级
-    if (this.userIdentity === "-1") {
-      // 获取辅导员管理的班级
-      getManagedClass
-          .then(resp => {
-            if (resp.code === 200) {
-              this.classList = resp.data
-              this.selectClassId = this.classList[0].classId
-            } else {
-              ElMessage({
-                message: "获取班级信息失败",
-                showClose: true,
-                grouping: true,
-                type: "error",
-              })
-            }
-          })
-    }
   },
   data() {
     return {
@@ -272,15 +209,6 @@ export default {
         confirmPassword: "",
         newPassword: "",
       },
-
-      codeVisible: false,
-      selectClassId: '',
-      classList: [],
-      code: {
-        day: '',
-        hour: '',
-        invite: '',
-      }
     }
   },
   methods: {
@@ -454,28 +382,6 @@ export default {
               }
             })
       }
-    },
-    // 关闭创建注册码窗口
-    closeCode() {
-      document.getElementById("displayCode").style.display = "none"
-    },
-    // 创建注册码
-    createCode() {
-      // TODO 创建注册码 或 查找注册码
-      createInvite(this.selectClassId)
-          .then(resp => {
-            if (resp.code === 200) {
-              this.code = resp.data
-              document.getElementById("displayCode").style.display = "block"
-            } else {
-              ElMessage({
-                message: '获取注册码失败',
-                showClose: true,
-                grouping: true,
-                type: 'error'
-              })
-            }
-          })
     },
     // 退出登录
     exit() {

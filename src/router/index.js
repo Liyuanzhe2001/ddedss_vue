@@ -26,6 +26,7 @@ import KnowledgeListView from "@/views/administrator/KnowledgeListView";
 import AddProfessionalView from "@/views/administrator/AddProfessionalView";
 import AddTeacherView from "@/views/administrator/AddTeacherView";
 import PerformanceTrendView from "@/views/professional/PerformanceTrendView";
+import AddStudentView from "@/views/administrator/AddStudentView";
 
 const routes = [
     {
@@ -158,6 +159,10 @@ const routes = [
         redirect: "/admin/user_list/1",
     },
     {
+        path: "/admin/add_student",
+        redirect: "/admin/add_student/1",
+    },
+    {
         path: "/admin",
         name: "admin",
         component: AdministratorLayout,
@@ -182,6 +187,11 @@ const routes = [
                 path: "add_professional",
                 name: "add_professional",
                 component: AddProfessionalView,
+            },
+            {
+                path: "add_student/:currentPage",
+                name:"add_student",
+                component: AddStudentView,
             }
         ]
     }

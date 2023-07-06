@@ -19,16 +19,23 @@
       <el-table-column prop="userNumber" label="学号/工号" width="140"/>
       <el-table-column prop="userName" label="姓名" width="140"/>
       <el-table-column prop="userEmail" label="邮箱" width="180"/>
-      <el-table-column label="身份" width="120">
+      <el-table-column label="身份" width="80">
         <template #default="scope">
-          <p v-if="scope.row.userIdentity===-1">辅导员</p>
-          <p v-else-if="scope.row.userIdentity === 0">学生</p>
+          <p v-if="scope.row.userIdentity === 0">学生</p>
           <p v-else-if="scope.row.userIdentity === 1">教师</p>
           <p v-else-if="scope.row.userIdentity === 2">教育专家</p>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="120">
+      <el-table-column label="操作" width="160">
         <template #default="scope">
+          <el-button
+              link
+              type="primary"
+              size="small"
+              @click="showDialog(scope.$index)"
+          >
+            修改
+          </el-button>
           <el-popconfirm
               title="确定删除用户?"
               @confirm="confirmDelete(scope.row.userId)"
@@ -69,14 +76,40 @@
         @current-change="handleCurrentChange"
     />
   </div>
+
+  <el-dialog
+      v-model="dialogVisible"
+      title="修改密码"
+      width="400px"
+      @keyup.enter="changeInfo()"
+  >
+    <label class="user_form_label" for="number">学号/工号</label>
+    <el-input id="number" v-model="userForm.number" style="width: 200px;"/>
+    <label class="user_form_label" for="name">姓名</label>
+    <el-input id="name" v-model="userForm.name" style="width: 200px;"/>
+    <label class="user_form_label" for="email">邮箱</label>
+    <el-input id="email" v-model="userForm.email" style="width: 200px;"/>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="changeInfo()">
+          确定
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
+
 </template>
 
 <script>
 import {ElMessage} from "element-plus";
-import {deleteUser, initPassword, queryAllUserList} from "@/api/administrator";
+import {deleteUser, initPassword, modifyUser, queryAllUserList} from "@/api/administrator";
 
 export default {
   name: "UserListView",
+  created() {
+    this.currentPage = this.$route.params.currentPage
+  },
   mounted() {
     // 判断用户身份
     const identity = sessionStorage.getItem("identity")
@@ -89,7 +122,6 @@ export default {
         this.$router.push("/student")
         return
       case '1':
-      case '-1':
         this.$router.push("/teacher")
         return
       case '2':
@@ -97,7 +129,6 @@ export default {
         return
     }
 
-    this.currentPage = this.$route.params.currentPage
     // 获取用户列表
     this.getAllUserList()
 
@@ -105,8 +136,10 @@ export default {
   data() {
     return {
       userList: [],
+      dialogVisible: false,
+      userForm: [],
       searchInput: '',
-      currentPage: '',
+      currentPage: 1,
       pageSize: 10,
       total: 0,
     }
@@ -125,6 +158,38 @@ export default {
                 showClose: true,
                 grouping: true,
                 type: "error",
+              })
+            }
+          })
+    },
+    // 初始化用户信息
+    showDialog(index) {
+      console.log(this.userList[index])
+      this.userForm.id = this.userList[index].userId
+      this.userForm.number = this.userList[index].userNumber
+      this.userForm.name = this.userList[index].userName
+      this.userForm.email = this.userList[index].userEmail
+      this.dialogVisible = true
+    },
+    // 修改用户信息
+    changeInfo() {
+      modifyUser(this.userForm)
+          .then(resp => {
+            if (resp.code === 200) {
+              ElMessage({
+                message: '修改成功',
+                showClose: true,
+                grouping: true,
+                type: 'success'
+              })
+              location.reload()
+              this.dialogVisible = false;
+            } else {
+              ElMessage({
+                message: resp.msg,
+                showClose: true,
+                grouping: true,
+                type: 'warning'
               })
             }
           })
@@ -208,6 +273,14 @@ export default {
   width: 700px;
   margin: 0 auto;
   text-align: right;
+}
+
+.user_form_label {
+  display: block;
+  text-align: left;
+  margin-left: 80px;
+  margin-bottom: 5px;
+  margin-top: 10px;
 }
 
 </style>

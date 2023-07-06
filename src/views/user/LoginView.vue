@@ -209,7 +209,7 @@ export default {
 
 <style scoped>
 .login_form {
-  margin: 80px auto;
+  margin: 30px auto;
   border-radius: 10px;
   background-color: white;
   width: 1000px;

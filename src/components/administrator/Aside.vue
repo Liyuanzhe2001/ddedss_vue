@@ -30,6 +30,12 @@
         </el-icon>
         <span>新增教育专家</span>
       </el-menu-item>
+      <el-menu-item index="/admin/add_student">
+        <el-icon>
+          <DocumentAdd/>
+        </el-icon>
+        <span>新增学生</span>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>
