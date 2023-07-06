@@ -32,7 +32,7 @@ export function getFiveYearResult(subjectIds) {
 
 export function getAllClass() {
     return axios({
-        url: "class/getAllClass",
+        url: "/class/getAllClass",
         method: "GET"
     })
 }
@@ -116,7 +116,7 @@ export function setCourseEvaluation(time) {
         url: "/evaluate/setCourseEvaluation",
         method: "POST",
         data: {
-            time
+            ...time
         }
     })
 }
@@ -140,5 +140,22 @@ export function deleteScheduleLesson(classId, weekday, section) {
             weekday,
             section
         }
+    })
+}
+
+export function setScore(time) {
+    return axios({
+        url: "/result/setScore",
+        method: "POST",
+        data: {
+            ...time
+        }
+    })
+}
+
+export function getScoreTime() {
+    return axios({
+        url: "/result/getScoreTime",
+        method: "GET",
     })
 }

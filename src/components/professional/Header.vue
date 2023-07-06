@@ -4,11 +4,11 @@
         class="logo"
         :src="logoSrc"/>
     <div class="right_part">
-<!--      <el-badge :value="messageNum" class="item">-->
-<!--        <el-icon size="30">-->
-<!--          <ChatDotRound/>-->
-<!--        </el-icon>-->
-<!--      </el-badge>-->
+      <!--      <el-badge :value="messageNum" class="item">-->
+      <!--        <el-icon size="30">-->
+      <!--          <ChatDotRound/>-->
+      <!--        </el-icon>-->
+      <!--      </el-badge>-->
       <span>欢迎，{{ username }}</span>
       <div class="avatar">
         <el-avatar :size="30" :src="teacherImg" @click="drawer = true"/>
@@ -28,6 +28,12 @@
           <SetUp/>
         </el-icon>
         <span>预定课程评价</span>
+      </el-menu-item>
+      <el-menu-item style="color: black" @click="scoreVisible=true">
+        <el-icon>
+          <EditPen/>
+        </el-icon>
+        <span>预定考试评分</span>
       </el-menu-item>
     </el-menu>
     <el-menu class="drawer_foot_part">
@@ -70,7 +76,7 @@
       @open="initEvaluate()"
   >
     <el-date-picker
-        v-model="inputTime"
+        v-model="inputEvaluateTime"
         type="daterange"
         range-separator="To"
         start-placeholder="开始时间"
@@ -87,11 +93,42 @@
     </template>
   </el-dialog>
 
+  <el-dialog
+      v-model="scoreVisible"
+      title="预定考试评分"
+      width="400px"
+      @open="initScore()"
+  >
+    <el-date-picker
+        v-model="inputScoreTime"
+        type="daterange"
+        range-separator="To"
+        start-placeholder="开始时间"
+        end-placeholder="结束时间"
+        size="default"
+    />
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="scoreVisible = false">取消</el-button>
+        <el-button type="primary" @click="startScore()">
+          确定
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
+
 </template>
 
 <script>
-import {ElMessage} from "element-plus";
-import {getEvaluationTime, judgePassword, setCourseEvaluation, updatePassword} from "@/api/professional";
+import {ElMessage, ElMessageBox} from "element-plus";
+import {
+  getEvaluationTime,
+  getScoreTime,
+  judgePassword,
+  setCourseEvaluation,
+  setScore,
+  updatePassword
+} from "@/api/professional";
 import {exit} from "@/api/user";
 
 export default {
@@ -112,11 +149,19 @@ export default {
       },
 
       evaluateVisible: false,
-      inputTime: '',
-      time: {
+      inputEvaluateTime: [],
+      evaluateTime: {
+        start: "",
+        end: "",
+      },
+
+      scoreVisible: false,
+      inputScoreTime: [],
+      scoreTime: {
         start: "",
         end: "",
       }
+
     }
   },
   methods: {
@@ -136,7 +181,6 @@ export default {
         })
       } else {
         // TODO 判断旧密码是否正确
-
         judgePassword(this.user.oldPassword)
             .then(resp => {
               if (resp.code === 200) {
@@ -210,7 +254,8 @@ export default {
       getEvaluationTime()
           .then(resp => {
             if (resp.code === 200) {
-              this.time = resp.data
+              this.inputEvaluateTime = [resp.data.start, resp.data.end]
+              this.evaluateTime = resp.data
             } else {
               ElMessage({
                 message: "获取评价时间失败",
@@ -223,10 +268,20 @@ export default {
     },
     // 提交，设定开始评估和结束时间
     startEvaluate() {
-      this.time.start = this.inputTime[0]
-      this.time.end = this.inputTime[1]
       let now = new Date()
-      if (now > this.time.start) {
+      if (this.evaluateTime.start !== '' || this.evaluateTime.start !== undefined) {
+        if (now <= this.evaluateTime.start) {
+          ElMessage({
+            message: "课程评价已开始，不可取消",
+            showClose: true,
+            grouping: true,
+            type: "error"
+          })
+          return;
+        }
+      }
+
+      if (now > this.inputEvaluateTime[0]) {
         ElMessage({
           message: "预定时间不得早于当前时间",
           showClose: true,
@@ -236,25 +291,167 @@ export default {
         return
       }
 
-      setCourseEvaluation(this.time)
+      if (this.evaluateTime.start !== '' || this.evaluateTime.start !== undefined
+          || this.evaluateTime.end !== '' || this.evaluateTime.end !== undefined) {
+        ElMessageBox.confirm(
+            '已存在课程评价时间，是否修改？',
+            'Warning',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning',
+            }
+        )
+            .then(() => {
+              this.evaluateTime.start = this.inputEvaluateTime[0]
+              this.evaluateTime.end = this.inputEvaluateTime[1]
+              setCourseEvaluation(this.evaluateTime)
+                  .then(resp => {
+                    if (resp.code === 200) {
+                      ElMessage({
+                        message: "修改成功",
+                        showClose: true,
+                        grouping: true,
+                        type: "success"
+                      })
+                      this.evaluateVisible = false
+                    } else {
+                      ElMessage({
+                        message: "修改失败",
+                        showClose: true,
+                        grouping: true,
+                        type: "error"
+                      })
+                    }
+                  })
+            })
+            .catch(() => {
+            })
+      } else {
+        this.evaluateTime.start = this.inputEvaluateTime[0]
+        this.evaluateTime.end = this.inputEvaluateTime[1]
+        setCourseEvaluation(this.evaluateTime)
+            .then(resp => {
+              if (resp.code === 200) {
+                ElMessage({
+                  message: "预定成功",
+                  showClose: true,
+                  grouping: true,
+                  type: "success"
+                })
+                this.evaluateVisible = false
+              } else {
+                ElMessage({
+                  message: "预定失败",
+                  showClose: true,
+                  grouping: true,
+                  type: "error"
+                })
+              }
+            })
+      }
+    },
+    // 初始化考试评分时间（如果未设置评估时间，start,end设置为空）
+    initScore() {
+      getScoreTime()
           .then(resp => {
             if (resp.code === 200) {
-              ElMessage({
-                message: "预定成功",
-                showClose: true,
-                grouping: true,
-                type: "success"
-              })
-              this.evaluateVisible = false
+              this.inputScoreTime = [resp.data.start, resp.data.end]
+              this.scoreTime = resp.data
             } else {
               ElMessage({
-                message: "预定失败",
+                message: "获取考试评分时间失败",
                 showClose: true,
                 grouping: true,
-                type: "error"
+                type: "error",
               })
             }
           })
+    },
+    // 提交，设定开始评估和结束时间
+    startScore() {
+      let now = new Date()
+      if (this.scoreTime.start !== '' || this.scoreTime.start !== undefined) {
+        if (now <= this.scoreTime.start) {
+          ElMessage({
+            message: "考试评分已开始，不可取消",
+            showClose: true,
+            grouping: true,
+            type: "error"
+          })
+          return;
+        }
+      }
+
+      if (now > this.inputScoreTime[0]) {
+        ElMessage({
+          message: "预定时间不得早于当前时间",
+          showClose: true,
+          grouping: true,
+          type: "warning"
+        })
+        return
+      }
+
+      if (this.scoreTime.start !== '' || this.scoreTime.start !== undefined
+          || this.scoreTime.end !== '' || this.scoreTime.end !== undefined) {
+        ElMessageBox.confirm(
+            '已存在考试评分时间，是否修改？',
+            'Warning',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning',
+            }
+        )
+            .then(() => {
+              this.scoreTime.start = this.inputScoreTime[0]
+              this.scoreTime.end = this.inputScoreTime[1]
+              setScore(this.scoreTime)
+                  .then(resp => {
+                    if (resp.code === 200) {
+                      ElMessage({
+                        message: "修改成功",
+                        showClose: true,
+                        grouping: true,
+                        type: "success"
+                      })
+                      this.scoreVisible = false
+                    } else {
+                      ElMessage({
+                        message: "修改失败",
+                        showClose: true,
+                        grouping: true,
+                        type: "error"
+                      })
+                    }
+                  })
+            })
+            .catch(() => {
+            })
+      } else {
+        this.scoreTime.start = this.inputScoreTime[0]
+        this.scoreTime.end = this.inputScoreTime[1]
+        setScore(this.scoreTime)
+            .then(resp => {
+              if (resp.code === 200) {
+                ElMessage({
+                  message: "预定成功",
+                  showClose: true,
+                  grouping: true,
+                  type: "success"
+                })
+                this.scoreVisible = false
+              } else {
+                ElMessage({
+                  message: "预定失败",
+                  showClose: true,
+                  grouping: true,
+                  type: "error"
+                })
+              }
+            })
+      }
     },
     // 退出登录
     exit() {

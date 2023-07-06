@@ -16,6 +16,10 @@ request.interceptors.request.use(
 		if (identification && !(config.url.startsWith('http://') || config.url.startsWith('https://'))) {
 			config.headers.identification = identification
 		}
+		const token = localStorage.getItem('token') // 这里取token之前，你肯定需要先拿到token,存一下
+		if (token) {
+			config.headers.token = token //  如果要求携带在请求头中
+		}
 		return config
 	}
 )
