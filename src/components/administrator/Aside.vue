@@ -18,6 +18,12 @@
         </el-icon>
         <span>知识列表</span>
       </el-menu-item>
+      <el-menu-item route="/admin/class_management/1" index="/admin/class_management/:currentPage" @click="select()">
+        <el-icon>
+          <Setting/>
+        </el-icon>
+        <span>班级管理</span>
+      </el-menu-item>
       <el-menu-item index="/admin/add_teacher">
         <el-icon>
           <DocumentAdd/>
@@ -46,12 +52,12 @@ export default {
   inject: ['reload'],
   mounted() {
     window.addEventListener('resize', () => {
-      this.isCollapse = window.innerWidth < 1100;
+      this.isCollapse = true;
     });
   },
   data() {
     return {
-      isCollapse: window.innerWidth < 1100,
+      isCollapse: true,
     }
   },
   methods: {
@@ -65,17 +71,20 @@ export default {
 
 <style scoped>
 .main_part {
-  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 60px;
+  bottom: 0;
   background-color: white;
 }
 
 .main_part .el_menu {
-  min-height: 509px;
   padding-top: 30px;
 }
 
 .el_menu:not(.el-menu--collapse) {
   width: 220px;
 }
+
 
 </style>

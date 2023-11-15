@@ -27,6 +27,7 @@ import AddProfessionalView from "@/views/administrator/AddProfessionalView";
 import AddTeacherView from "@/views/administrator/AddTeacherView";
 import PerformanceTrendView from "@/views/professional/PerformanceTrendView";
 import AddStudentView from "@/views/administrator/AddStudentView";
+import ClassManagementView from "@/views/administrator/ClassManagementView";
 
 const routes = [
     {
@@ -177,6 +178,11 @@ const routes = [
                 path: "knowledge_list/:currentPage",
                 name: "knowledge_list",
                 component: KnowledgeListView,
+            },
+            {
+              path: "class_management/:currentPage",
+                name: "class_management",
+                component: ClassManagementView,
             },
             {
                 path: "add_teacher",

@@ -110,12 +110,41 @@ export function deleteInvite(classId) {
     })
 }
 
-export function modifyUser(form){
+export function modifyUser(form) {
     return axios({
-        url:"/admin/modifyUser",
-        method:"PUT",
-        data:{
+        url: "/admin/modifyUser",
+        method: "PUT",
+        data: {
             ...form
         }
+    })
+}
+
+export function getAllClasses(className, currentPage, pageSize) {
+    return axios({
+        url: "/class/getClasses",
+        method: "GET",
+        params: {
+            className,
+            currentPage,
+            pageSize,
+        }
+    })
+}
+
+export function modifyClass(form) {
+    return axios({
+        url: "/class/modifyClass",
+        method: "PUT",
+        data: {
+            ...form
+        }
+    })
+}
+
+export function deleteClass(classId) {
+    return axios({
+        url: `/class/deleteClass/${classId}`,
+        method: "DELETE",
     })
 }

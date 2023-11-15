@@ -3,11 +3,9 @@
     <!--    头部-->
     <Header/>
     <!--侧边栏-->
-    <div style="display: inline-block;float: left">
-      <Aside/>
-    </div>
+    <Aside/>
     <!--主要内容-->
-    <div style="display: inline-block;">
+    <div style="position:relative;left:20px;display: inline-block;">
       <router-view v-if="isRouterAlive"/>
     </div>
   </div>
