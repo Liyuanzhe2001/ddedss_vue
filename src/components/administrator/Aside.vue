@@ -52,12 +52,12 @@ export default {
   inject: ['reload'],
   mounted() {
     window.addEventListener('resize', () => {
-      this.isCollapse = true;
+      this.isCollapse = window.innerWidth < 1100;
     });
   },
   data() {
     return {
-      isCollapse: true,
+      isCollapse: window.innerWidth < 1100,
     }
   },
   methods: {

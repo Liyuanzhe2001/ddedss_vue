@@ -62,7 +62,10 @@ export default {
 
 <style scoped>
 .main_part {
-  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 60px;
+  bottom: 0;
   background-color: white;
 }
 

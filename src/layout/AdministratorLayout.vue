@@ -5,9 +5,7 @@
     <!--侧边栏-->
     <Aside/>
     <!--主要内容-->
-    <div style="position:relative;left:20px;display: inline-block;">
-      <router-view v-if="isRouterAlive"/>
-    </div>
+    <router-view v-if="isRouterAlive"/>
   </div>
 </template>
 

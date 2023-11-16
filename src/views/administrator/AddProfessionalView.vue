@@ -50,6 +50,10 @@ export default {
         return
     }
 
+    window.addEventListener('resize', () => {
+
+      this.isCollapse = window.innerWidth < 1100;
+    });
   },
   data() {
     return {
@@ -121,14 +125,32 @@ export default {
 </script>
 
 <style scoped>
-.main_part {
-  display: inline-block;
-  background-color: white;
-  border-radius: 10px;
-  padding: 10px;
-  width: 840px;
-  height: 450px;
-  text-align: left;
+@media screen and (min-width: 1100px) {
+  .main_part {
+    display: inline-block;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    width: 840px;
+    height: 450px;
+    margin: 20px auto 0 220px;
+    text-align: left;
+    transition: margin-left 0.8s;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .main_part {
+    display: inline-block;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    width: 840px;
+    height: 450px;
+    margin: 20px auto 0 64px;
+    text-align: left;
+    transition: margin-left 0.8s;
+  }
 }
 
 .main_part .form_part {
@@ -142,6 +164,4 @@ export default {
   font-size: 17px;
   margin-top: 80px;
 }
-
-
 </style>
